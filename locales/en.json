@@ -1,1 +1,24 @@
-{}
+{
+  "Navbar": {
+    "logo": "Creo",
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact",
+    "login": "Login",
+    "openMenu": "Open main menu"
+  },
+  "Hero": {
+    "headline": "Create Amazing",
+    "headlineHighlight": "Designs",
+    "subheadline": "Transform your creative ideas into stunning visual experiences with our powerful design platform. Build, collaborate, and bring your vision to life.",
+    "primaryButton": "Get Started",
+    "secondaryButton": "Learn More",
+    "stat1Number": "10K+",
+    "stat1Label": "Happy Users",
+    "stat2Number": "50K+",
+    "stat2Label": "Projects Created",
+    "stat3Number": "99%",
+    "stat3Label": "Satisfaction Rate"
+  }
+}

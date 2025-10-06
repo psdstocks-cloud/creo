@@ -1,1 +1,24 @@
-{}
+{
+  "Navbar": {
+    "logo": "كريو",
+    "home": "الرئيسية",
+    "about": "حول",
+    "services": "الخدمات",
+    "contact": "اتصل بنا",
+    "login": "تسجيل الدخول",
+    "openMenu": "فتح القائمة الرئيسية"
+  },
+  "Hero": {
+    "headline": "أنشئ تصاميم",
+    "headlineHighlight": "مذهلة",
+    "subheadline": "حول أفكارك الإبداعية إلى تجارب بصرية مذهلة مع منصة التصميم القوية لدينا. أنشئ، تعاون، وأحضر رؤيتك إلى الحياة.",
+    "primaryButton": "ابدأ الآن",
+    "secondaryButton": "اعرف المزيد",
+    "stat1Number": "10K+",
+    "stat1Label": "مستخدم سعيد",
+    "stat2Number": "50K+",
+    "stat2Label": "مشروع تم إنشاؤه",
+    "stat3Number": "99%",
+    "stat3Label": "معدل الرضا"
+  }
+}
