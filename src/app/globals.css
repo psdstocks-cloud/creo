@@ -51,3 +51,25 @@ body {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* Russian doll layering animations */
+@keyframes russian-doll-float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+
+.animate-russian-doll {
+  animation: russian-doll-float 8s ease-in-out infinite;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1s;
+}
+
+.animation-delay-3000 {
+  animation-delay: 3s;
+}

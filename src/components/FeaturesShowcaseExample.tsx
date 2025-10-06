@@ -1,0 +1,31 @@
+'use client';
+
+import { useState } from 'react';
+import FeaturesShowcase from './FeaturesShowcase';
+import CreoNavbar from './CreoNavbar';
+
+export default function FeaturesShowcaseExample() {
+  const [locale, setLocale] = useState('en');
+
+  const handleLocaleChange = (newLocale: string) => {
+    setLocale(newLocale);
+    document.documentElement.lang = newLocale;
+    document.documentElement.dir = newLocale === 'ar' ? 'rtl' : 'ltr';
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-deepPurple via-primaryOrange to-deepPurple">
+      <CreoNavbar 
+        locale={locale} 
+        onLocaleChange={handleLocaleChange} 
+      />
+      
+      {/* Main content with some spacing for the fixed navbar */}
+      <div className="pt-24">
+        <FeaturesShowcase
+          locale={locale}
+        />
+      </div>
+    </div>
+  );
+}
