@@ -12,7 +12,7 @@ import {
   getErrorMessage,
   getFieldError 
 } from '../lib/validation';
-import { auth } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { AUTH_PROVIDERS } from '../types/auth';
 import { 
   SignUpFormData, 
@@ -26,7 +26,7 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: 'signin' | 'signup' | 'reset' | 'update';
-  onSuccess?: (user: any) => void;
+  onSuccess?: (user: unknown) => void;
   className?: string;
 }
 
@@ -96,7 +96,7 @@ export default function AuthModal({
     signInForm.reset();
     resetForm.reset();
     updateForm.reset();
-  }, [mode]);
+  }, [mode, signUpForm, signInForm, resetForm, updateForm]);
 
   // Handle form submissions
   const handleSignUp = async (data: SignUpFormData) => {
@@ -104,11 +104,15 @@ export default function AuthModal({
     setError(null);
 
     try {
-      const { data: result, error } = await auth.signUp(
-        data.email,
-        data.password,
-        { full_name: data.fullName }
-      );
+      const { data: result, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: data.fullName,
+          },
+        },
+      });
 
       if (error) {
         setError({
@@ -120,7 +124,7 @@ export default function AuthModal({
         setMode('signin');
         onSuccess?.(result.user);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError({
         message: getErrorMessage(err, locale),
         code: 'unknown',
@@ -135,7 +139,10 @@ export default function AuthModal({
     setError(null);
 
     try {
-      const { data: result, error } = await auth.signIn(data.email, data.password);
+      const { data: result, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
       if (error) {
         setError({
@@ -147,7 +154,7 @@ export default function AuthModal({
         onSuccess?.(result.user);
         onClose();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError({
         message: getErrorMessage(err, locale),
         code: 'unknown',
@@ -162,7 +169,9 @@ export default function AuthModal({
     setError(null);
 
     try {
-      const { error } = await auth.resetPassword(data.email);
+      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
 
       if (error) {
         setError({
@@ -173,7 +182,7 @@ export default function AuthModal({
         setSuccess(t('checkEmailMessage'));
         setMode('signin');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError({
         message: getErrorMessage(err, locale),
         code: 'unknown',
@@ -188,7 +197,9 @@ export default function AuthModal({
     setError(null);
 
     try {
-      const { error } = await auth.updatePassword(data.password);
+      const { error } = await supabase.auth.updateUser({
+        password: data.password,
+      });
 
       if (error) {
         setError({
@@ -199,7 +210,7 @@ export default function AuthModal({
         setSuccess(t('passwordUpdatedMessage'));
         setMode('signin');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError({
         message: getErrorMessage(err, locale),
         code: 'unknown',
@@ -214,7 +225,12 @@ export default function AuthModal({
     setError(null);
 
     try {
-      const { error } = await auth.signInWithProvider(provider);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
       if (error) {
         setError({
@@ -222,7 +238,7 @@ export default function AuthModal({
           code: error.message,
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError({
         message: getErrorMessage(err, locale),
         code: 'unknown',

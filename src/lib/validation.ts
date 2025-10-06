@@ -28,7 +28,7 @@ export const signInSchema = z.object({
     .min(1, 'Email is required')
     .email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
-  rememberMe: z.boolean().optional(),
+  rememberMe: z.boolean().default(false),
 });
 
 // Reset password validation schema
@@ -55,7 +55,7 @@ export const updatePasswordSchema = z.object({
 });
 
 // Error message mapping for different languages
-export const getErrorMessage = (error: any, locale: 'en' | 'ar' = 'en'): string => {
+export const getErrorMessage = (error: unknown, locale: 'en' | 'ar' = 'en'): string => {
   const errorMessages: Record<string, { en: string; ar: string }> = {
     'Invalid login credentials': {
       en: 'Invalid email or password',
@@ -100,7 +100,7 @@ export const getErrorMessage = (error: any, locale: 'en' | 'ar' = 'en'): string 
 };
 
 // Form field error mapping
-export const getFieldError = (errors: any, field: string, locale: 'en' | 'ar' = 'en'): string | undefined => {
+export const getFieldError = (errors: unknown, field: string, locale: 'en' | 'ar' = 'en'): string | undefined => {
   const error = errors[field];
   if (!error) return undefined;
 

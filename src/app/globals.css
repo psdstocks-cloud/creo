@@ -27,7 +27,7 @@ body {
 
 /* Custom utility classes */
 .glass-card {
-  @apply bg-glassWhite backdrop-blur-glass rounded-2xl border border-white/20 shadow-lg;
+  @apply bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg;
 }
 
 /* Custom animations for Hero component */

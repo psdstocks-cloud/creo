@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import {
   useCredits,
   useMediaSearch,
@@ -10,6 +11,7 @@ import {
   useMediaCategories,
   useTrendingMedia,
 } from '../hooks';
+import { MediaItem, DownloadLink } from '../types/api';
 
 /**
  * Example component demonstrating how to use the API hooks
@@ -205,7 +207,7 @@ export default function ApiHooksExample() {
               Found {searchResults.results.total} results in {searchResults.searchTime}ms
             </p>
             <div className="grid grid-cols-4 gap-4">
-              {searchResults.results.items.map((media) => (
+              {searchResults.results.items.map((media: MediaItem) => (
                 <div
                   key={media.id}
                   className={`border-2 rounded-lg p-2 cursor-pointer transition-colors ${
@@ -215,11 +217,13 @@ export default function ApiHooksExample() {
                   }`}
                   onClick={() => handleMediaSelect(media.id)}
                 >
-                  <img
-                    src={media.thumbnailUrl}
-                    alt={media.title}
-                    className="w-full h-32 object-cover rounded"
-                  />
+                <Image
+                  src={media.thumbnailUrl}
+                  alt={media.title}
+                  width={200}
+                  height={128}
+                  className="w-full h-32 object-cover rounded"
+                />
                   <div className="mt-2">
                     <h3 className="font-semibold text-sm truncate">{media.title}</h3>
                     <p className="text-xs text-gray-600">{media.source}</p>
@@ -240,17 +244,19 @@ export default function ApiHooksExample() {
         {trendingLoading && <p>Loading trending media...</p>}
         {trendingMedia && (
           <div className="grid grid-cols-5 gap-4">
-            {trendingMedia.map((media) => (
+            {trendingMedia.map((media: MediaItem) => (
               <div
                 key={media.id}
                 className="border rounded-lg p-2 cursor-pointer hover:border-primaryOrange"
                 onClick={() => handleMediaSelect(media.id)}
               >
-                <img
-                  src={media.thumbnailUrl}
-                  alt={media.title}
-                  className="w-full h-24 object-cover rounded"
-                />
+                  <Image
+                    src={media.thumbnailUrl}
+                    alt={media.title}
+                    width={100}
+                    height={96}
+                    className="w-full h-24 object-cover rounded"
+                  />
                 <h3 className="font-semibold text-xs mt-1 truncate">{media.title}</h3>
               </div>
             ))}
@@ -264,7 +270,7 @@ export default function ApiHooksExample() {
         {categoriesLoading && <p>Loading categories...</p>}
         {categories && (
           <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
+            {categories.map((category: string) => (
               <span
                 key={category}
                 className="px-3 py-1 bg-gray-100 rounded-full text-sm"
@@ -310,7 +316,7 @@ export default function ApiHooksExample() {
         <div className="glass-card p-6">
           <h2 className="text-2xl font-semibold mb-4">Download Links</h2>
           {downloadLinksLoading && <p>Loading download links...</p>}
-          {downloadLinks.links.map((link) => (
+          {downloadLinks.links.map((link: DownloadLink) => (
             <div key={link.id} className="border rounded-lg p-4 mb-2">
               <h3 className="font-semibold">{link.fileName}</h3>
               <p className="text-sm text-gray-600">

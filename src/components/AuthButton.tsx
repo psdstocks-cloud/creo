@@ -8,7 +8,7 @@ interface AuthButtonProps {
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   initialMode?: 'signin' | 'signup';
-  onSuccess?: (user: any) => void;
+  onSuccess?: (user: unknown) => void;
   className?: string;
   children?: React.ReactNode;
 }

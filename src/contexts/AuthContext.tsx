@@ -1,18 +1,18 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { auth } from '../lib/supabase';
+import { Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 import { AuthUser, AuthState } from '../types/auth';
 import AuthButton from '../components/AuthButton';
 
 interface AuthContextType extends AuthState {
-  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>;
-  signUp: (email: string, password: string, metadata?: any) => Promise<{ data: any; error: any }>;
-  signOut: () => Promise<{ error: any }>;
-  signInWithProvider: (provider: 'google' | 'facebook' | 'github' | 'twitter') => Promise<{ data: any; error: any }>;
-  resetPassword: (email: string) => Promise<{ data: any; error: any }>;
-  updatePassword: (password: string) => Promise<{ data: any; error: any }>;
+  signIn: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>;
+  signUp: (email: string, password: string, metadata?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  signOut: () => Promise<{ error: unknown }>;
+  signInWithProvider: (provider: 'google' | 'facebook' | 'github' | 'twitter') => Promise<{ data: unknown; error: unknown }>;
+  resetPassword: (email: string) => Promise<{ data: unknown; error: unknown }>;
+  updatePassword: (password: string) => Promise<{ data: unknown; error: unknown }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      const { session, error } = await auth.getCurrentSession();
+      const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
         console.error('Error getting session:', error);
       } else {
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getInitialSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user || null);
       setLoading(false);
@@ -75,18 +75,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signIn = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const result = await auth.signIn(email, password);
-      return result;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      return { data, error };
     } finally {
       setLoading(false);
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: any) => {
+  const signUp = async (email: string, password: string, metadata?: Record<string, unknown>) => {
     setLoading(true);
     try {
-      const result = await auth.signUp(email, password, metadata);
-      return result;
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+        },
+      });
+      return { data, error };
     } finally {
       setLoading(false);
     }
@@ -95,8 +104,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = async () => {
     setLoading(true);
     try {
-      const result = await auth.signOut();
-      return result;
+      const { error } = await supabase.auth.signOut();
+      return { error };
     } finally {
       setLoading(false);
     }
@@ -105,8 +114,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signInWithProvider = async (provider: 'google' | 'facebook' | 'github' | 'twitter') => {
     setLoading(true);
     try {
-      const result = await auth.signInWithProvider(provider);
-      return result;
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      return { data, error };
     } finally {
       setLoading(false);
     }
@@ -115,8 +129,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const resetPassword = async (email: string) => {
     setLoading(true);
     try {
-      const result = await auth.resetPassword(email);
-      return result;
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      return { data, error };
     } finally {
       setLoading(false);
     }
@@ -125,8 +141,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const updatePassword = async (password: string) => {
     setLoading(true);
     try {
-      const result = await auth.updatePassword(password);
-      return result;
+      const { data, error } = await supabase.auth.updateUser({
+        password,
+      });
+      return { data, error };
     } finally {
       setLoading(false);
     }

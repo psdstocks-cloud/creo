@@ -205,7 +205,7 @@ export default function TestimonialsCarousel({
                 {/* Testimonial Text */}
                 <div className="flex-1 text-center lg:text-left rtl:lg:text-right">
                   <blockquote className="text-xl md:text-2xl text-white/90 leading-relaxed mb-6">
-                    "{t(currentTestimonial.contentKey)}"
+                    &ldquo;{t(currentTestimonial.contentKey)}&rdquo;
                   </blockquote>
                   
                   {/* Highlight */}
