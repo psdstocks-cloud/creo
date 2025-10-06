@@ -24,3 +24,8 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Custom utility classes */
+.glass-card {
+  @apply bg-glassWhite backdrop-blur-glass rounded-2xl border border-white/20 shadow-lg;
+}
