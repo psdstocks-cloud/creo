@@ -35,7 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={translations}>
+        <NextIntlClientProvider locale="en" messages={translations}>
           <ClientAuthProvider>{children}</ClientAuthProvider>
         </NextIntlClientProvider>
       </body>
