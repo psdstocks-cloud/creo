@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Stock Media Search Page
  * 
@@ -8,9 +10,8 @@
 import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
-// Dynamically import the StockMediaSearch component to avoid SSR issues
+// Dynamically import the StockMediaSearch component
 const StockMediaSearch = dynamic(() => import('../../components/StockMediaSearch'), {
-  ssr: false,
   loading: () => (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center">
       <div className="text-center">
