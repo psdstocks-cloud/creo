@@ -514,7 +514,6 @@ export type NehtwStockSitesResponse = NehtwBaseResponse<StockSitesResponse>;
 
 export {
   // Base types
-  type NehtwErrorResponse,
   
   // Stock interfaces
   type StockInfo,
