@@ -333,8 +333,9 @@ const OptimizedOrderManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(20);
+  // Pagination state (currently unused but kept for future implementation)
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [itemsPerPage] = useState(20);
 
   // Performance monitoring
   usePerformanceMonitor('OptimizedOrderManagement');
@@ -455,7 +456,7 @@ const OptimizedOrderManagement: React.FC = () => {
     }
 
     setFilteredOrders(filtered);
-    setCurrentPage(1);
+    // setCurrentPage(1); // Commented out since pagination is not implemented yet
   }, [orders, watchedFilters, debouncedSearch]);
 
   // Memoized handlers

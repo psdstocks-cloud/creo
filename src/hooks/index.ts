@@ -2,7 +2,7 @@
 
 // Simplified nehtw API hooks
 export {
-  useStockMediaSearch,
+  useStockMediaSearchSimple,
 } from './useStockMediaSearchSimple';
 
 export {
