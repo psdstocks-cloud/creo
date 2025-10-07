@@ -6,34 +6,15 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { StockSearchResponse, StockInfo } from '../types/nehtw';
 
 // ============================================================================
 // Types and Interfaces
 // ============================================================================
 
-interface StockMediaItem {
-  id: string;
-  title: string;
-  thumbnail: string;
-  cost: number;
-  filesize: string;
-  site: string;
-  tags: string[];
-  dimensions: {
-    width: number;
-    height: number;
-  };
-  license: string;
-  downloads?: number;
-  rating?: number;
-}
-
-interface SearchResults {
-  results: StockMediaItem[];
-  total: number;
-  page: number;
-  hasMore: boolean;
-}
+// Use the proper types from nehtw.ts
+type StockMediaItem = StockInfo;
+type SearchResults = StockSearchResponse;
 
 interface UseStockMediaSearchSimpleOptions {
   query?: string;
@@ -102,31 +83,14 @@ const searchStockMedia = async (options: {
       }
     }
     
-    const data = await response.json();
+    const data: StockSearchResponse = await response.json();
     
-    // Transform API response to our expected format
-    const results: StockMediaItem[] = (data.results || []).map((item: any) => ({
-      id: item.id || item.stock_id,
-      title: item.title || item.name,
-      thumbnail: item.thumbnail || item.preview_url,
-      cost: item.cost || item.price || 0,
-      filesize: item.filesize || item.size || 'Unknown',
-      site: item.site || item.source || 'unknown',
-      tags: item.tags || item.keywords || [],
-      dimensions: {
-        width: item.width || item.dimensions?.width || 0,
-        height: item.height || item.dimensions?.height || 0
-      },
-      license: item.license || 'Commercial',
-      downloads: item.downloads || 0,
-      rating: item.rating || 0
-    }));
-    
+    // Return the properly typed response
     return {
-      results,
-      total: data.total || data.count || results.length,
+      results: data.results || [],
+      total: data.total || 0,
       page: data.page || page,
-      hasMore: data.has_more || (data.page || page) < Math.ceil((data.total || data.count || 0) / limit)
+      hasMore: data.has_more || false
     };
     
   } catch (error) {
@@ -136,33 +100,129 @@ const searchStockMedia = async (options: {
     if (error instanceof TypeError && error.message.includes('fetch')) {
       console.warn('API unavailable, using fallback mock data');
       
-      // Return mock data as fallback
-      const mockResults: StockMediaItem[] = [
+      // Return mock data as fallback with proper StockInfo structure
+      const mockResults: StockInfo[] = [
         {
           id: `fallback-1-${query}-${page}`,
           title: `${query} - Beautiful landscape photography`,
+          description: `High-quality ${query} landscape photography perfect for commercial use`,
+          url: `https://example.com/fallback-1-${query}`,
           thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-          cost: Math.floor(Math.random() * 50) + 10,
-          filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-          site: site || 'shutterstock',
+          preview_url: `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 1000)}`,
+          type: 'image',
+          category: 'Nature',
+          subcategory: 'Landscape',
           tags: [query, 'landscape', 'nature', 'photography'],
+          keywords: [query, 'landscape', 'nature', 'photography', 'outdoor'],
+          size: Math.floor(Math.random() * 5) + 1,
           dimensions: { width: 1920, height: 1080 },
-          license: 'Commercial',
-          downloads: Math.floor(Math.random() * 1000),
-          rating: 4.5
+          format: 'JPEG',
+          resolution: '1920x1080',
+          quality: 'high',
+          license_type: 'royalty_free',
+          usage_rights: {
+            commercial: true,
+            editorial: true,
+            print: true,
+            web: true,
+            social_media: true,
+            unlimited: false
+          },
+          attribution_required: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          site: {
+            id: 'shutterstock',
+            name: 'Shutterstock',
+            url: 'https://shutterstock.com',
+            logo: 'https://shutterstock.com/logo.png'
+          },
+          contributor: {
+            id: 'contributor-1',
+            name: 'Professional Photographer',
+            profile_url: 'https://shutterstock.com/contributor/1',
+            avatar: 'https://picsum.photos/50/50?random=1'
+          },
+          pricing: {
+            credits: Math.floor(Math.random() * 50) + 10,
+            currency: 'EGP',
+            price: Math.floor(Math.random() * 50) + 10
+          },
+          statistics: {
+            downloads: Math.floor(Math.random() * 1000),
+            views: Math.floor(Math.random() * 5000),
+            likes: Math.floor(Math.random() * 500),
+            rating: 4.5
+          },
+          metadata: {
+            color_palette: ['#2E8B57', '#87CEEB', '#F0E68C'],
+            dominant_colors: ['#2E8B57', '#87CEEB'],
+            orientation: 'landscape',
+            aspect_ratio: '16:9',
+            file_size_mb: Math.floor(Math.random() * 5) + 1,
+            dpi: 300
+          }
         },
         {
           id: `fallback-2-${query}-${page}`,
           title: `${query} - Professional business image`,
+          description: `Professional ${query} business image suitable for corporate use`,
+          url: `https://example.com/fallback-2-${query}`,
           thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-          cost: Math.floor(Math.random() * 50) + 10,
-          filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-          site: site || 'adobestock',
+          preview_url: `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 1000)}`,
+          type: 'image',
+          category: 'Business',
+          subcategory: 'Office',
           tags: [query, 'business', 'professional', 'office'],
+          keywords: [query, 'business', 'professional', 'office', 'corporate'],
+          size: Math.floor(Math.random() * 5) + 1,
           dimensions: { width: 1920, height: 1080 },
-          license: 'Commercial',
-          downloads: Math.floor(Math.random() * 1000),
-          rating: 4.2
+          format: 'JPEG',
+          resolution: '1920x1080',
+          quality: 'high',
+          license_type: 'royalty_free',
+          usage_rights: {
+            commercial: true,
+            editorial: true,
+            print: true,
+            web: true,
+            social_media: true,
+            unlimited: false
+          },
+          attribution_required: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          site: {
+            id: 'adobestock',
+            name: 'Adobe Stock',
+            url: 'https://stock.adobe.com',
+            logo: 'https://stock.adobe.com/logo.png'
+          },
+          contributor: {
+            id: 'contributor-2',
+            name: 'Business Photographer',
+            profile_url: 'https://stock.adobe.com/contributor/2',
+            avatar: 'https://picsum.photos/50/50?random=2'
+          },
+          pricing: {
+            credits: Math.floor(Math.random() * 50) + 10,
+            currency: 'EGP',
+            price: Math.floor(Math.random() * 50) + 10
+          },
+          statistics: {
+            downloads: Math.floor(Math.random() * 1000),
+            views: Math.floor(Math.random() * 5000),
+            likes: Math.floor(Math.random() * 500),
+            rating: 4.2
+          },
+          metadata: {
+            color_palette: ['#4169E1', '#FFFFFF', '#000000'],
+            dominant_colors: ['#4169E1', '#FFFFFF'],
+            orientation: 'landscape',
+            aspect_ratio: '16:9',
+            file_size_mb: Math.floor(Math.random() * 5) + 1,
+            dpi: 300
+          }
         }
       ];
       

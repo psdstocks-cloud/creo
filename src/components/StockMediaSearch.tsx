@@ -269,19 +269,19 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ item, isOpen, onClose, onAd
                     <div className="space-y-2 text-gray-300">
                       <div className="flex justify-between">
                         <span>{t('modal.cost')}:</span>
-                        <span className="text-primaryOrange-400 font-semibold">{item.cost} EGP</span>
+                        <span className="text-primaryOrange-400 font-semibold">{item.pricing.price} {item.pricing.currency}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>{t('modal.filesize')}:</span>
-                        <span>{item.filesize}</span>
+                        <span>{item.metadata.file_size_mb}MB</span>
                       </div>
                       <div className="flex justify-between">
                         <span>{t('modal.site')}:</span>
-                        <span className="capitalize">{item.site}</span>
+                        <span className="capitalize">{item.site.name}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>{t('modal.license')}:</span>
-                        <span>{item.license}</span>
+                        <span>{item.license_type.replace('_', ' ')}</span>
                       </div>
                     </div>
                   </div>
@@ -641,13 +641,13 @@ const StockMediaSearch: React.FC = () => {
                       <h3 className="text-white font-medium line-clamp-2">{item.title}</h3>
                       <div className="flex items-center justify-between">
                         <span className="text-primaryOrange-400 font-semibold">
-                          {item.cost} EGP
+                          {item.pricing.price} {item.pricing.currency}
                         </span>
                         <span className="text-gray-400 text-sm capitalize">
-                          {item.site}
+                          {item.site.name}
                         </span>
                       </div>
-                      <div className="text-gray-400 text-sm">{item.filesize}</div>
+                      <div className="text-gray-400 text-sm">{item.metadata.file_size_mb}MB</div>
                     </div>
 
                     {/* Actions */}
