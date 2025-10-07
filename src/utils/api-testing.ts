@@ -218,7 +218,7 @@ export class ApiTester {
       }
 
       // Make the request
-      const response = await this.makeRequest(method, fullUrl, data, headers);
+      const response = await this.makeRequest();
       const responseTime = Date.now() - startTime;
 
       // Update metrics
