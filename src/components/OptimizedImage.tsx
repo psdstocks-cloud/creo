@@ -22,7 +22,7 @@ interface OptimizedImageProps {
   width?: number;
   height?: number;
   className?: string;
-  placeholder?: string;
+  placeholder?: 'blur' | 'empty';
   blurDataURL?: string;
   priority?: boolean;
   quality?: number;
