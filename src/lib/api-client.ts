@@ -124,6 +124,8 @@ class ApiClient {
 }
 
 // Create singleton instance for nehtw API
-const apiClient = new ApiClient('https://nehtw.com/api/me?apikey=A8K9bV5s2OX12E8cmS4I96mtmSNzv7');
+const nehtwApiKey = process.env.NEXT_PUBLIC_NEHTW_API_KEY || '';
+const nehtwBaseUrl = process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api/me';
+const apiClient = new ApiClient(`${nehtwBaseUrl}?apikey=${nehtwApiKey}`);
 
 export default apiClient;

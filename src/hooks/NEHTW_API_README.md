@@ -16,7 +16,7 @@ The centralized API client is configured to work with the nehtw API:
 
 ```typescript
 // src/lib/api-client.ts
-const apiClient = new ApiClient('https://nehtw.com/api/me?apikey=A8K9bV5s2OX12E8cmS4I96mtmSNzv7');
+const apiClient = new ApiClient(`${process.env.NEXT_PUBLIC_NEHTW_BASE_URL}?apikey=${process.env.NEXT_PUBLIC_NEHTW_API_KEY}`);
 ```
 
 ## Available Hooks
