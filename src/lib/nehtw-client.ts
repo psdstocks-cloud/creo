@@ -221,7 +221,7 @@ export class NehtwAPIClient {
     const responseData = error.response?.data as NehtwErrorResponse | undefined;
     const message = responseData?.message || 
                    responseData?.error || 
-                   (typeof error.response?.data === 'object' && error.response?.data !== null && 'message' in error.response.data ? (error.response.data as any).message : undefined) ||
+                   (typeof error.response?.data === 'object' && error.response?.data !== null && 'message' in error.response.data ? (error.response.data as { message: string }).message : undefined) ||
                    error.message || 
                    'Unknown error occurred';
     

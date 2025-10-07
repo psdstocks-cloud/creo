@@ -8,11 +8,9 @@
 import { 
   nehtwClient, 
   NehtwAPIClient,
-  NehtwAPIError,
   NehtwTimeoutError,
   NehtwNetworkError,
   NehtwAuthError,
-  NehtwSearchParams,
   NehtwOrderRequest
 } from './nehtw-client';
 
