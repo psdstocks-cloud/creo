@@ -137,7 +137,7 @@ export default function TestimonialsPlaceholderCarousel({
   };
 
   // Render star rating
-  const renderStars = (rating: number) => {
+  const renderStars = () => {
     return Array.from({ length: 5 }, (_, index) => (
       <motion.svg
         key={index}
@@ -282,7 +282,7 @@ export default function TestimonialsPlaceholderCarousel({
                     
                     {/* Star Rating */}
                     <div className="flex justify-center mt-2">
-                      {renderStars(testimonials[currentIndex].rating)}
+                      {renderStars()}
                     </div>
                   </div>
                 </motion.div>

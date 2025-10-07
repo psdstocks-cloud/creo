@@ -29,7 +29,7 @@ export default function FAQAccordionFriendly({
   items = [],
   allowMultiple = true,
   defaultOpenItems = [],
-  showCategories = false,
+  // showCategories = false,
   showSearch = true,
   showFilters = true,
   className = '',

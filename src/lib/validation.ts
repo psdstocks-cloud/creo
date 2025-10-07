@@ -91,9 +91,10 @@ export const getErrorMessage = (error: unknown, locale: 'en' | 'ar' = 'en'): str
     },
   };
 
-  const message = errorMessages[error.message] || errorMessages[error.code] || {
-    en: error.message || 'An error occurred',
-    ar: error.message || 'حدث خطأ',
+  const errorObj = error as { message?: string; code?: string };
+  const message = errorMessages[errorObj.message || ''] || errorMessages[errorObj.code || ''] || {
+    en: errorObj.message || 'An error occurred',
+    ar: errorObj.message || 'حدث خطأ',
   };
 
   return typeof message === 'string' ? message : message[locale];
@@ -101,7 +102,8 @@ export const getErrorMessage = (error: unknown, locale: 'en' | 'ar' = 'en'): str
 
 // Form field error mapping
 export const getFieldError = (errors: unknown, field: string, locale: 'en' | 'ar' = 'en'): string | undefined => {
-  const error = errors[field];
+  const errorsObj = errors as Record<string, unknown>;
+  const error = errorsObj[field];
   if (!error) return undefined;
 
   const errorMessages: Record<string, { en: string; ar: string }> = {
@@ -114,18 +116,19 @@ export const getFieldError = (errors: unknown, field: string, locale: 'en' | 'ar
       ar: 'يرجى إدخال عنوان بريد إلكتروني صحيح',
     },
     'min': {
-      en: `Minimum length is ${error.min} characters`,
-      ar: `الحد الأدنى للطول هو ${error.min} أحرف`,
+      en: `Minimum length is ${(error as { min?: number }).min || 0} characters`,
+      ar: `الحد الأدنى للطول هو ${(error as { min?: number }).min || 0} أحرف`,
     },
     'max': {
-      en: `Maximum length is ${error.max} characters`,
-      ar: `الحد الأقصى للطول هو ${error.max} أحرف`,
+      en: `Maximum length is ${(error as { max?: number }).max || 0} characters`,
+      ar: `الحد الأقصى للطول هو ${(error as { max?: number }).max || 0} أحرف`,
     },
   };
 
-  const message = errorMessages[error.type] || {
-    en: error.message || 'Invalid input',
-    ar: error.message || 'إدخال غير صحيح',
+  const errorObj = error as { type?: string; message?: string };
+  const message = errorMessages[errorObj.type || ''] || {
+    en: errorObj.message || 'Invalid input',
+    ar: errorObj.message || 'إدخال غير صحيح',
   };
 
   return typeof message === 'string' ? message : message[locale];

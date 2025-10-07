@@ -1,5 +1,8 @@
+'use client';
+
 import AuthTest from "../components/AuthTest";
-import WebhookTestExample from "../components/WebhookTestExample";
+import NehtwAPIExampleSimple from "../components/NehtwAPIExampleSimple";
+import MockPaymentComponent from "../components/MockPaymentComponent";
 
 export default function Home() {
   return (
@@ -16,7 +19,15 @@ export default function Home() {
         
                 <AuthTest />
 
-                <WebhookTestExample />
+                <NehtwAPIExampleSimple />
+
+                <div className="mt-8">
+                  <MockPaymentComponent 
+                    onPaymentSuccess={() => console.log('Payment successful!')}
+                    amount={25.99}
+                    description="Test Purchase"
+                  />
+                </div>
 
                 <div className="mt-12 text-center">
           <h2 className="text-2xl font-semibold text-white mb-4">

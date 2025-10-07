@@ -122,7 +122,7 @@ export function errorHandlingExample(): void {
       calculateTieredPricing(points);
       console.log(`❌ ${points} should have thrown an error`);
     } catch (error) {
-      console.log(`✅ ${points} correctly threw error: ${error.message}`);
+      console.log(`✅ ${points} correctly threw error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   });
   console.log();
