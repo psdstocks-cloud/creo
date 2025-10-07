@@ -5,7 +5,7 @@
  * including query optimization, component optimization, and bundle optimization.
  */
 
-import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
 // ============================================================================
@@ -107,19 +107,21 @@ export const deduplicateRequest = <T>(
 // Component Optimization
 // ============================================================================
 
-// Memoization helpers
+// Memoization helpers - these are utility functions, not React hooks
 export const createMemoizedCallback = <T extends (...args: unknown[]) => unknown>(
-  callback: T,
-  deps: React.DependencyList
+  callback: T
 ): T => {
-  return useCallback(callback, deps) as T;
+  // This is a utility function that returns a callback
+  // The actual useCallback should be called in React components
+  return callback as T;
 };
 
 export const createMemoizedValue = <T>(
-  factory: () => T,
-  deps: React.DependencyList
+  factory: () => T
 ): T => {
-  return useMemo(factory, deps);
+  // This is a utility function that returns a value
+  // The actual useMemo should be called in React components
+  return factory();
 };
 
 // Virtual scrolling utilities
@@ -244,14 +246,16 @@ export function createLazyComponent<T extends React.ComponentType<unknown>>(
 ) {
   const LazyComponent = React.lazy(importFn);
   
-  return (props: React.ComponentProps<T>) => {
-    const FallbackComponent = fallback || (() => <div>Loading...</div>);
-    return (
-      <React.Suspense fallback={<FallbackComponent />}>
-        <LazyComponent {...props} />
-      </React.Suspense>
+  const LazyWrapper = (props: React.ComponentProps<T>) => {
+    const FallbackComponent = fallback || (() => React.createElement('div', null, 'Loading...'));
+    return React.createElement(
+      React.Suspense,
+      { fallback: React.createElement(FallbackComponent) },
+      React.createElement(LazyComponent as React.ComponentType<React.ComponentProps<T>>, props)
     );
   };
+  LazyWrapper.displayName = 'LazyWrapper';
+  return LazyWrapper;
 }
 
 // Preload critical resources
@@ -315,7 +319,7 @@ export const useMemoryMonitor = () => {
   useEffect(() => {
     const updateMemoryInfo = () => {
       if ('memory' in performance) {
-        const memory = (performance as any).memory;
+        const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
         setMemoryInfo({
           usedJSHeapSize: memory.usedJSHeapSize,
           totalJSHeapSize: memory.totalJSHeapSize,
@@ -417,18 +421,20 @@ export const createOptimizedComponent = <P extends object>(
   return OptimizedComponent;
 };
 
-export const createOptimizedCallback = <T extends (...args: any[]) => any>(
-  callback: T,
-  deps: React.DependencyList
+export const createOptimizedCallback = <T extends (...args: unknown[]) => unknown>(
+  callback: T
 ): T => {
-  return useCallback(callback, deps) as T;
+  // This is a utility function that returns a callback
+  // The actual useCallback should be called in React components
+  return callback as T;
 };
 
 export const createOptimizedMemo = <T>(
-  factory: () => T,
-  deps: React.DependencyList
+  factory: () => T
 ): T => {
-  return useMemo(factory, deps);
+  // This is a utility function that returns a value
+  // The actual useMemo should be called in React components
+  return factory();
 };
 
 // Bundle size optimization
@@ -438,14 +444,16 @@ export function createCodeSplitComponent<P extends object>(
 ) {
   const LazyComponent = React.lazy(importFn);
   
-  return React.forwardRef<any, P>((props, ref) => {
-    const FallbackComponent = fallback || (() => <div>Loading...</div>);
-    return (
-      <React.Suspense fallback={<FallbackComponent />}>
-        <LazyComponent {...props} ref={ref} />
-      </React.Suspense>
+  const CodeSplitWrapper = React.forwardRef<unknown, P>((props, ref) => {
+    const FallbackComponent = fallback || (() => React.createElement('div', null, 'Loading...'));
+    return React.createElement(
+      React.Suspense,
+      { fallback: React.createElement(FallbackComponent) },
+      React.createElement(LazyComponent, { ...props, ref })
     );
   });
+  CodeSplitWrapper.displayName = 'CodeSplitWrapper';
+  return CodeSplitWrapper;
 }
 
 export default {

@@ -66,10 +66,7 @@ export const queryClient = new QueryClient({
       retryDelay: 1000,
       
       // Network mode
-      networkMode: 'online',
-      
-      // Notify on change
-      notifyOnChangeProps: ['data', 'error', 'isPending', 'isSuccess', 'isError']
+      networkMode: 'online'
     }
   }
 });
@@ -251,7 +248,9 @@ export const logQueryStats = () => {
 // Optimized Query Hooks
 // ============================================================================
 
-export const useOptimizedQuery = <T>(
+// Note: These are utility functions, not React hooks
+// The actual useQuery and useMutation should be called in React components
+export const createOptimizedQueryConfig = <T>(
   queryKey: unknown[],
   queryFn: () => Promise<T>,
   options?: {
@@ -263,15 +262,15 @@ export const useOptimizedQuery = <T>(
     retry?: boolean | number;
   }
 ) => {
-  return queryClient.useQuery({
+  return {
     queryKey,
     queryFn,
     ...DEFAULT_CACHE_CONFIG,
     ...options
-  });
+  };
 };
 
-export const useOptimizedMutation = <TData, TVariables>(
+export const createOptimizedMutationConfig = <TData, TVariables>(
   mutationFn: (variables: TVariables) => Promise<TData>,
   options?: {
     onSuccess?: (data: TData, variables: TVariables) => void;
@@ -279,10 +278,10 @@ export const useOptimizedMutation = <TData, TVariables>(
     onSettled?: (data: TData | undefined, error: Error | null, variables: TVariables) => void;
   }
 ) => {
-  return queryClient.useMutation({
+  return {
     mutationFn,
     ...options
-  });
+  };
 };
 
 // ============================================================================
@@ -302,7 +301,7 @@ export const restoreCache = () => {
     if (cachedData) {
       try {
         const queries = JSON.parse(cachedData);
-        queries.forEach((query: any) => {
+        queries.forEach((query: { queryKey: readonly unknown[]; state: { data: unknown } }) => {
           queryClient.setQueryData(query.queryKey, query.state.data);
         });
       } catch (error) {
@@ -322,7 +321,7 @@ if (process.env.NODE_ENV === 'development') {
   
   // Expose query client to window for debugging
   if (typeof window !== 'undefined') {
-    (window as any).queryClient = queryClient;
+    (window as { queryClient?: typeof queryClient }).queryClient = queryClient;
   }
 }
 

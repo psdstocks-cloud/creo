@@ -312,8 +312,6 @@ export default {
   LazyAPIErrorBoundary,
   LazyToastNotification,
   LazyErrorHandlingExample,
-  LazyDashboardPage,
-  LazyAdminDashboard,
   LazyMockPaymentComponent,
   LazyNehtwAPIExample,
   

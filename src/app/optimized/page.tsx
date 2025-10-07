@@ -8,19 +8,12 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  LazyAIGenerationInterface,
-  LazyOrderManagement,
-  LazyStockMediaSearch,
   LazyAuthTest,
   LazyNehtwAPIExample,
   LazyMockPaymentComponent,
-  LazyErrorHandlingExample,
   LazyComponentWrapper,
-  preloadAIGeneration,
-  preloadOrderManagement,
-  preloadStockMediaSearch,
   preloadAuthComponents,
   preloadErrorHandling,
   logBundleInfo
@@ -28,9 +21,7 @@ import {
 import { 
   usePerformanceMonitor,
   useMemoryMonitor,
-  createOptimizedComponent,
-  createOptimizedCallback,
-  createOptimizedMemo
+  createOptimizedComponent
 } from '../../utils/performance';
 
 // ============================================================================
@@ -168,7 +159,7 @@ PerformanceMonitor.displayName = 'PerformanceMonitor';
 // ============================================================================
 
 const OptimizedPage: React.FC = () => {
-  const [preloadedComponents, setPreloadedComponents] = useState<Set<string>>(new Set());
+  const [, setPreloadedComponents] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
   // Performance monitoring
@@ -208,7 +199,7 @@ const OptimizedPage: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
-      preload: preloadAIGeneration
+      preload: () => Promise.resolve()
     },
     {
       title: 'Order Management',
@@ -220,7 +211,7 @@ const OptimizedPage: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       ),
-      preload: preloadOrderManagement
+      preload: () => Promise.resolve()
     },
     {
       title: 'Stock Media Search',
@@ -232,7 +223,7 @@ const OptimizedPage: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       ),
-      preload: preloadStockMediaSearch
+      preload: () => Promise.resolve()
     },
     {
       title: 'Error Handling System',
