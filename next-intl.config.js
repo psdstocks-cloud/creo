@@ -2,5 +2,6 @@
 module.exports = {
   locales: ['en', 'ar'],
   defaultLocale: 'en',
-  // Optionally: localeDetection: false
+  // Optional: disable automatic locale detection
+  localeDetection: false
 };
