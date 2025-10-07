@@ -158,9 +158,9 @@ export class NehtwAPIClient {
     
     // Safely access message with proper typing and fallbacks
     const responseData = error.response?.data as NehtwErrorResponse | undefined;
-    const message = responseData?.message || 
-                   responseData?.error || 
+    const message = responseData?.error || 
                    (typeof error.response?.data === 'object' && error.response?.data !== null && 'message' in error.response.data ? (error.response.data as { message: string }).message : undefined) ||
+                   (typeof error.response?.data === 'object' && error.response?.data !== null && 'error' in error.response.data ? (error.response.data as { error: string }).error : undefined) ||
                    error.message || 
                    'Unknown error occurred';
     
