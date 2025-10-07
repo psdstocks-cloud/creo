@@ -692,5 +692,63 @@
       "previous": "السابق",
       "next": "التالي"
     }
+  },
+  "OrderManagement": {
+    "title": "إدارة الطلبات",
+    "subtitle": "تتبع وإدارة تحميلات الوسائط الخاصة بك",
+    "authRequired": "مطلوب تسجيل الدخول",
+    "authRequiredMessage": "يرجى تسجيل الدخول لعرض طلباتك",
+    "refresh": "تحديث",
+    "export": "تصدير CSV",
+    "status": {
+      "pending": "في الانتظار",
+      "processing": "قيد المعالجة",
+      "ready": "جاهز",
+      "error": "خطأ",
+      "cancelled": "ملغي"
+    },
+    "filters": {
+      "searchPlaceholder": "البحث في الطلبات...",
+      "allStatuses": "جميع الحالات",
+      "allSites": "جميع المواقع",
+      "pending": "في الانتظار",
+      "processing": "قيد المعالجة",
+      "ready": "جاهز",
+      "error": "خطأ",
+      "cancelled": "ملغي",
+      "dateRange": "نطاق التاريخ",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ النهاية"
+    },
+    "table": {
+      "media": "الوسائط",
+      "orderId": "رقم الطلب",
+      "status": "الحالة",
+      "progress": "التقدم",
+      "cost": "التكلفة",
+      "created": "تاريخ الإنشاء",
+      "actions": "الإجراءات",
+      "viewDetails": "عرض التفاصيل",
+      "download": "تحميل"
+    },
+    "modal": {
+      "title": "تفاصيل الطلب",
+      "close": "إغلاق",
+      "orderId": "رقم الطلب",
+      "site": "الموقع",
+      "cost": "التكلفة",
+      "created": "تاريخ الإنشاء",
+      "completed": "تاريخ الإكمال",
+      "progress": "التقدم",
+      "readyForDownload": "جاهز للتحميل",
+      "download": "تحميل",
+      "redownload": "إعادة تحميل",
+      "cancel": "إلغاء"
+    },
+    "empty": {
+      "title": "لم يتم العثور على طلبات",
+      "description": "لم تضع أي طلبات بعد أو لا توجد طلبات تطابق المرشحات الخاصة بك.",
+      "refresh": "تحديث الطلبات"
+    }
   }
 }

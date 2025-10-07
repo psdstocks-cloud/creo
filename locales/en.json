@@ -692,5 +692,63 @@
       "previous": "Previous",
       "next": "Next"
     }
+  },
+  "OrderManagement": {
+    "title": "Order Management",
+    "subtitle": "Track and manage your media downloads",
+    "authRequired": "Authentication Required",
+    "authRequiredMessage": "Please sign in to view your orders",
+    "refresh": "Refresh",
+    "export": "Export CSV",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "ready": "Ready",
+      "error": "Error",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "searchPlaceholder": "Search orders...",
+      "allStatuses": "All Statuses",
+      "allSites": "All Sites",
+      "pending": "Pending",
+      "processing": "Processing",
+      "ready": "Ready",
+      "error": "Error",
+      "cancelled": "Cancelled",
+      "dateRange": "Date Range",
+      "startDate": "Start Date",
+      "endDate": "End Date"
+    },
+    "table": {
+      "media": "Media",
+      "orderId": "Order ID",
+      "status": "Status",
+      "progress": "Progress",
+      "cost": "Cost",
+      "created": "Created",
+      "actions": "Actions",
+      "viewDetails": "View Details",
+      "download": "Download"
+    },
+    "modal": {
+      "title": "Order Details",
+      "close": "Close",
+      "orderId": "Order ID",
+      "site": "Site",
+      "cost": "Cost",
+      "created": "Created",
+      "completed": "Completed",
+      "progress": "Progress",
+      "readyForDownload": "Ready for Download",
+      "download": "Download",
+      "redownload": "Re-download",
+      "cancel": "Cancel"
+    },
+    "empty": {
+      "title": "No orders found",
+      "description": "You haven't placed any orders yet or no orders match your filters.",
+      "refresh": "Refresh Orders"
+    }
   }
 }
