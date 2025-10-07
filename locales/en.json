@@ -632,5 +632,65 @@
     "order1": "Stock Photo Order #1234",
     "order2": "AI Generation Order #5678",
     "order3": "Video Download Order #9012"
+  },
+  "StockMediaSearch": {
+    "title": "Stock Media Search",
+    "subtitle": "Find and download high-quality images, videos, and audio from multiple premium sources",
+    "search": {
+      "placeholder": "Search for images, videos, or audio...",
+      "label": "Search for media",
+      "siteLabel": "Select source",
+      "allSites": "All Sources"
+    },
+    "filters": {
+      "title": "Filters",
+      "site": "Source",
+      "minPrice": "Min Price (EGP)",
+      "maxPrice": "Max Price (EGP)",
+      "license": "License Type",
+      "sortBy": "Sort By",
+      "allSites": "All Sources",
+      "allLicenses": "All Licenses",
+      "commercial": "Commercial",
+      "editorial": "Editorial",
+      "free": "Free",
+      "relevance": "Relevance",
+      "price": "Price",
+      "newest": "Newest",
+      "popular": "Popular"
+    },
+    "results": {
+      "found": "Found {count} results",
+      "page": "Page {current} of {total}",
+      "preview": "Preview image",
+      "addToCart": "Add to Cart",
+      "download": "Download"
+    },
+    "empty": {
+      "title": "No results found",
+      "description": "Try adjusting your search terms or filters to find what you're looking for.",
+      "clearSearch": "Clear Search"
+    },
+    "error": {
+      "title": "Search failed",
+      "generic": "Something went wrong while searching. Please try again.",
+      "retry": "Try Again"
+    },
+    "modal": {
+      "close": "Close preview",
+      "details": "Details",
+      "cost": "Cost",
+      "filesize": "File Size",
+      "site": "Source",
+      "license": "License",
+      "tags": "Tags",
+      "addToCart": "Add to Cart",
+      "download": "Download",
+      "loginRequired": "Please sign in to add items to cart or download"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
   }
 }
