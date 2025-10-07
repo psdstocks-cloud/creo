@@ -283,7 +283,7 @@ export function validateEnvironmentOnStartup(): void {
 // Export Default Configuration
 // ============================================================================
 
-export default {
+const envValidation = {
   validate: validateEnvironmentVariables,
   getConfig: getEnvironmentConfig,
   require: requireEnvironmentVariables,
@@ -296,3 +296,5 @@ export default {
   printStatus: printEnvironmentStatus,
   validateOnStartup: validateEnvironmentOnStartup
 };
+
+export default envValidation;

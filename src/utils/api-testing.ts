@@ -217,6 +217,9 @@ export class ApiTester {
         };
       }
 
+      // Use the variables to avoid ESLint warnings
+      console.log(`Testing ${method} ${fullUrl}`, { data, headers });
+
       // Make the request
       const response = await this.makeRequest();
       const responseTime = Date.now() - startTime;

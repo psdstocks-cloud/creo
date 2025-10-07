@@ -14,7 +14,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime)
       retry: 3,
       refetchOnWindowFocus: false,
       refetchOnMount: true,
@@ -78,19 +78,19 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
 }
 
 // ============================================================================
-// Loading Component
+// Loading Component (for future use)
 // ============================================================================
 
-function LoadingFallback() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primaryOrange-500 mx-auto mb-4"></div>
-        <p className="text-white text-lg">Loading application...</p>
-      </div>
-    </div>
-  );
-}
+// function LoadingFallback() {
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center">
+//       <div className="text-center">
+//         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primaryOrange-500 mx-auto mb-4"></div>
+//         <p className="text-white text-lg">Loading application...</p>
+//       </div>
+//     </div>
+//   );
+// }
 
 // ============================================================================
 // ClientAuthProvider Component

@@ -4,7 +4,6 @@ import "./globals.css";
 import ClientAuthProvider from "../components/ClientAuthProvider";
 import { validateEnvironmentOnStartup } from "../utils/env-validation";
 import { NextIntlClientProvider } from 'next-intl';
-import { ReactNode } from 'react';
 import translations from '../../locales/en.json';
 
 const geistSans = Geist({
