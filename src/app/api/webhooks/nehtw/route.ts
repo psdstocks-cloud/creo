@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Get headers
-    const headersList = headers();
+    const headersList = await headers();
     const eventName = headersList.get('x-neh-event_name');
     const eventStatus = headersList.get('x-neh-status');
     const extraInfo = headersList.get('x-neh-extra');
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const body = await request.text();
 
     // 5. Validate webhook signature
-    const clientIP = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     if (!webhookHandler.validateSignature(Object.fromEntries(headersList.entries()), body)) {
       return NextResponse.json(
         { error: 'Invalid webhook signature' },
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 // Handle GET requests (for webhook verification)
 export async function GET() {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const eventName = headersList.get('x-neh-event_name');
     const eventStatus = headersList.get('x-neh-status');
     const extraInfo = headersList.get('x-neh-extra');

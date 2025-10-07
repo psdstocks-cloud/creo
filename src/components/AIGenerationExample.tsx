@@ -149,7 +149,7 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
     sortOrder: 'desc',
   }, {
     onSuccess: (data) => {
-      console.log('AI generation jobs loaded:', data.total);
+      console.log('AI generation jobs loaded:', data);
     },
     onError: (error) => {
       console.error('AI generation jobs fetch error:', error);
@@ -394,7 +394,7 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
             <input
               type="number"
               value={generationParams.seed || ''}
-              onChange={(e) => handleGenerationParamsChange('seed', e.target.value ? parseInt(e.target.value) : undefined)}
+              onChange={(e) => handleGenerationParamsChange('seed', e.target.value ? parseInt(e.target.value) : 0)}
               placeholder="Random"
               className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-primaryOrange-500"
             />
@@ -861,7 +861,7 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
               </button>
             </div>
             
-            {aiJobs.data.map((job) => (
+            {aiJobs.data.map((job: { id: string; status: string; prompt: string; createdAt: string; completedAt?: string; imageUrl?: string; progress?: number; result?: { imageUrl: string } }) => (
               <div key={job.id} className="glass-card p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-white font-medium">Job ID: {job.id}</span>
@@ -902,7 +902,7 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
                   
                   {job.result?.imageUrl && (
                     <button
-                      onClick={() => window.open(job.result.imageUrl, '_blank')}
+                      onClick={() => window.open(job.result?.imageUrl, '_blank')}
                       className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600"
                     >
                       View Image

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import {
   useStockMediaSearch,
-  useCreateOrder,
+  useCreateOrderMutation,
   useOrderStatus,
   useDownloadLink,
   useAIGenerate,
@@ -39,7 +39,7 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
   });
   
   // Create Order
-  const createOrderMutation = useCreateOrder();
+  const { mutate: createOrder, data: orderData, error: orderError, isLoading: isCreatingOrder } = useCreateOrderMutation();
   
   // Order Status
   const {
@@ -52,10 +52,7 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
   // Download Link
   const {
     data: downloadLink,
-  } = useDownloadLink({
-    taskId: orderTaskId || '',
-    responseType: 'original',
-  }, {
+  } = useDownloadLink(orderTaskId || '', {
     enabled: !!orderTaskId && orderStatus?.status === 'ready',
   });
   
@@ -92,7 +89,7 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
   
   const handleCreateOrder = async (mediaItem: { id: string; title: string; thumbnail: string; cost: number; source: string; ext: string }) => {
     try {
-      const result = await createOrderMutation.mutateAsync({
+      const result = await createOrder({
         siteId: 'default',
         stockId: mediaItem.id,
         quantity: 1,
@@ -175,7 +172,7 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
         
         {searchResults && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {searchResults.results.map((item) => (
+            {searchResults.results.map((item: any) => (
               <div key={item.id} className="glass-card p-4 rounded-lg">
                 <Image
                   src={item.thumbnail}
@@ -193,10 +190,10 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
                 </p>
                 <button
                   onClick={() => handleCreateOrder(item)}
-                  disabled={createOrderMutation.isPending}
+                  disabled={isCreatingOrder}
                   className="w-full px-4 py-2 bg-primaryOrange-500 hover:bg-primaryOrange-600 text-white rounded-lg font-medium disabled:opacity-50"
                 >
-                  {createOrderMutation.isPending ? 'Creating...' : 'Order'}
+                  {isCreatingOrder ? 'Creating...' : 'Order'}
                 </button>
               </div>
             ))}

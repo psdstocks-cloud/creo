@@ -87,7 +87,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
   
   // Download link with refresh
   const {
-    data: refreshDownloadLink,
+    data: refreshDownloadLinkData,
     isLoading: isRefreshLoading,
     isError: isRefreshError,
     error: refreshError,
@@ -132,7 +132,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
     setTaskId(e.target.value);
   };
   
-  const handleDownloadParamsChange = (key: string, value: string | number) => {
+  const handleDownloadParamsChange = (key: string, value: string | number | boolean) => {
     setDownloadParams(prev => ({
       ...prev,
       [key]: value,
@@ -525,7 +525,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
             </div>
           )}
           
-          {refreshDownloadLink && (
+          {refreshDownloadLinkData && (
             <div className="glass-card p-4 rounded-lg">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-white font-medium">Auto-Refresh Download Link</h4>
@@ -547,11 +547,11 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-white">File Name:</span>
-                  <span className="text-primaryOrange-200 ml-2">{refreshDownloadLink.fileName}</span>
+                  <span className="text-primaryOrange-200 ml-2">{refreshDownloadLinkData.fileName}</span>
                 </div>
                 <div>
                   <span className="text-white">File Size:</span>
-                  <span className="text-primaryOrange-200 ml-2">{formatFileSize(refreshDownloadLink.fileSize)}</span>
+                  <span className="text-primaryOrange-200 ml-2">{formatFileSize(refreshDownloadLinkData.fileSize)}</span>
                 </div>
                 <div>
                   <span className="text-white">Time Until Expiry:</span>
@@ -561,7 +561,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
                 </div>
                 <div>
                   <span className="text-white">Remaining Downloads:</span>
-                  <span className="text-primaryOrange-200 ml-2">{refreshDownloadLink.remainingDownloads}</span>
+                  <span className="text-primaryOrange-200 ml-2">{refreshDownloadLinkData.remainingDownloads}</span>
                 </div>
               </div>
             </div>
@@ -599,7 +599,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
               </button>
             </div>
             
-            {downloadLinks.data.map((link) => (
+            {downloadLinks.data.map((link: { id: string; fileName: string; fileSize: number; downloadUrl: string; expiresAt: string; maxDownloads: number; currentDownloads: number; status: string; remainingDownloads: number; orderId: string; taskId: string; contentType: string; createdAt: string; updatedAt: string }) => (
               <div key={link.id} className="glass-card p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-white font-medium">{link.fileName}</span>
@@ -787,7 +787,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
               <div className="flex justify-between">
                 <span className="text-white">Status:</span>
                 <span className="text-primaryOrange-200">
-                  {refreshDownloadLink ? 'Active' : 'Inactive'}
+                  {refreshDownloadLinkData ? 'Active' : 'Inactive'}
                 </span>
               </div>
               <div className="flex justify-between">

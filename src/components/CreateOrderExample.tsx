@@ -2,12 +2,31 @@
 
 import React, { useState } from 'react';
 import {
-  useCreateOrder,
-  useCreateBatchOrder,
-  useCreateOrderOptimistic,
-  CreateOrderRequest,
-  CreateOrderError,
+  useCreateOrderMutation,
 } from '../hooks/useCreateOrderMutation';
+
+// Define the CreateOrderRequest type locally
+interface CreateOrderRequest {
+  siteId: string;
+  stockId: string;
+  quantity: number;
+  paymentMethod?: string;
+  notes?: string;
+  priority?: string;
+  billingAddress?: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    phone: string;
+  };
+}
+
+interface CreateOrderError {
+  code: string;
+  message: string;
+}
 
 interface CreateOrderExampleProps {
   className?: string;
@@ -39,50 +58,10 @@ export default function CreateOrderExample({ className = '' }: CreateOrderExampl
   const [useOptimistic, setUseOptimistic] = useState(false);
   
   // Mutation hooks
-  const createOrderMutation = useCreateOrder({
-    onSuccess: (data) => {
-      console.log('Order created successfully:', data);
-      // Reset form
-      setFormData({
-        siteId: '',
-        stockId: '',
-        quantity: 1,
-        paymentMethod: 'credit_card',
-        notes: '',
-        priority: 'normal',
-      });
-      setBillingAddress({
-        street: '',
-        city: '',
-        state: '',
-        country: '',
-        postalCode: '',
-        phone: '',
-      });
-    },
-    onError: (error) => {
-      console.error('Order creation failed:', error);
-    },
-  });
+  const createOrderMutation = useCreateOrderMutation();
   
-  const batchOrderMutation = useCreateBatchOrder({
-    onSuccess: (data) => {
-      console.log('Batch orders created successfully:', data);
-      setSelectedItems([]);
-    },
-    onError: (error) => {
-      console.error('Batch order creation failed:', error);
-    },
-  });
-  
-  const optimisticOrderMutation = useCreateOrderOptimistic({
-    onSuccess: (data) => {
-      console.log('Optimistic order created successfully:', data);
-    },
-    onError: (error) => {
-      console.error('Optimistic order creation failed:', error);
-    },
-  });
+  const batchOrderMutation = useCreateOrderMutation();
+  const optimisticOrderMutation = useCreateOrderMutation();
   
   // Handlers
   const handleInputChange = (field: keyof CreateOrderRequest, value: string | number) => {
