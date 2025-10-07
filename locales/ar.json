@@ -750,5 +750,77 @@
       "description": "لم تضع أي طلبات بعد أو لا توجد طلبات تطابق المرشحات الخاصة بك.",
       "refresh": "تحديث الطلبات"
     }
+  },
+  "AIGenerationInterface": {
+    "title": "توليد الصور بالذكاء الاصطناعي",
+    "subtitle": "أنشئ صوراً مذهلة بالذكاء الاصطناعي",
+    "authRequired": "مطلوب تسجيل الدخول",
+    "authRequiredMessage": "يرجى تسجيل الدخول للوصول إلى ميزات التوليد بالذكاء الاصطناعي",
+    "credits": "نقاط",
+    "download": "تحميل",
+    "vary": "تغيير",
+    "upscale": "تكبير",
+    "status": {
+      "generating": "قيد التوليد",
+      "completed": "مكتمل",
+      "failed": "فشل"
+    },
+    "suggestions": {
+      "title": "اقتراحات النص"
+    },
+    "queue": {
+      "title": "طابور التوليد",
+      "items": "عناصر"
+    },
+    "costCalculator": {
+      "title": "حاسبة التكلفة",
+      "baseCost": "التكلفة الأساسية",
+      "quality": "الجودة",
+      "count": "العدد",
+      "total": "المجموع"
+    },
+    "generationForm": {
+      "title": "توليد الصور",
+      "prompt": "النص",
+      "promptPlaceholder": "اوصف الصورة التي تريد توليدها...",
+      "style": "النمط",
+      "styles": {
+        "realistic": "واقعي",
+        "artistic": "فني",
+        "abstract": "مجرد",
+        "minimalist": "بسيط"
+      },
+      "quality": "الجودة",
+      "qualities": {
+        "standard": "عادي",
+        "high": "عالي",
+        "premium": "متميز",
+        "ultra": "فائق"
+      },
+      "count": "العدد",
+      "generate": "توليد الصور",
+      "generating": "قيد التوليد..."
+    },
+    "results": {
+      "title": "الصور المولدة",
+      "emptyTitle": "لم يتم توليد صور بعد",
+      "emptyDescription": "أدخل نصاً واضغط توليد لإنشاء أول صورة بالذكاء الاصطناعي."
+    },
+    "history": {
+      "title": "تاريخ التوليد",
+      "empty": "لا يوجد تاريخ توليد بعد"
+    },
+    "shortcuts": {
+      "title": "اختصارات لوحة المفاتيح",
+      "generate": "توليد",
+      "suggestions": "اقتراحات",
+      "history": "التاريخ"
+    },
+    "viewResults": "عرض النتائج",
+    "removeJob": "إزالة المهمة",
+    "viewImage": "عرض الصورة",
+    "downloadImage": "تحميل الصورة",
+    "toggleFavorite": "تبديل المفضلة",
+    "shareImage": "مشاركة الصورة"
   }
 }

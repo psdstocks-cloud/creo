@@ -750,5 +750,77 @@
       "description": "You haven't placed any orders yet or no orders match your filters.",
       "refresh": "Refresh Orders"
     }
+  },
+  "AIGenerationInterface": {
+    "title": "AI Image Generation",
+    "subtitle": "Create stunning images with artificial intelligence",
+    "authRequired": "Authentication Required",
+    "authRequiredMessage": "Please sign in to access AI generation features",
+    "credits": "credits",
+    "download": "Download",
+    "vary": "Vary",
+    "upscale": "Upscale",
+    "status": {
+      "generating": "Generating",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "suggestions": {
+      "title": "Prompt Suggestions"
+    },
+    "queue": {
+      "title": "Generation Queue",
+      "items": "items"
+    },
+    "costCalculator": {
+      "title": "Cost Calculator",
+      "baseCost": "Base Cost",
+      "quality": "Quality",
+      "count": "Count",
+      "total": "Total"
+    },
+    "generationForm": {
+      "title": "Generate Images",
+      "prompt": "Prompt",
+      "promptPlaceholder": "Describe the image you want to generate...",
+      "style": "Style",
+      "styles": {
+        "realistic": "Realistic",
+        "artistic": "Artistic",
+        "abstract": "Abstract",
+        "minimalist": "Minimalist"
+      },
+      "quality": "Quality",
+      "qualities": {
+        "standard": "Standard",
+        "high": "High",
+        "premium": "Premium",
+        "ultra": "Ultra"
+      },
+      "count": "Count",
+      "generate": "Generate Images",
+      "generating": "Generating..."
+    },
+    "results": {
+      "title": "Generated Images",
+      "emptyTitle": "No images generated yet",
+      "emptyDescription": "Enter a prompt and click generate to create your first AI image."
+    },
+    "history": {
+      "title": "Generation History",
+      "empty": "No generation history yet"
+    },
+    "shortcuts": {
+      "title": "Keyboard Shortcuts",
+      "generate": "Generate",
+      "suggestions": "Suggestions",
+      "history": "History"
+    },
+    "viewResults": "View Results",
+    "removeJob": "Remove Job",
+    "viewImage": "View Image",
+    "downloadImage": "Download Image",
+    "toggleFavorite": "Toggle Favorite",
+    "shareImage": "Share Image"
   }
 }
