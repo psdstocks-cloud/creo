@@ -358,5 +358,56 @@
     "moneyBackGuaranteeAnswer": "Yes! We're so confident you'll love Creo that we offer a 30-day money-back guarantee. If you're not completely satisfied with your subscription within the first 30 days, just contact our support team and we'll refund your payment, no questions asked. We want you to feel confident trying our service!",
     "teamCollaborationQuestion": "Can my team collaborate on projects using Creo?",
     "teamCollaborationAnswer": "Absolutely! Our Professional plan includes team collaboration features that let you share downloads, manage team credits, and work together on projects. You can invite team members, set permissions, and even track who downloaded what. It's perfect for agencies, marketing teams, or any group that needs to work together on creative projects!"
+  },
+  "StockMediaSearch": {
+    "title": "Stock Media Search",
+    "subtitle": "Find the perfect images, videos, and vectors for your projects",
+    "searchInput": {
+      "label": "Search",
+      "placeholder": "Enter keywords, phrases, or concepts..."
+    },
+    "siteSelector": {
+      "label": "Site",
+      "allSites": "All Sites"
+    },
+    "typeSelector": {
+      "label": "Type",
+      "all": "All Types",
+      "images": "Images",
+      "videos": "Videos",
+      "vectors": "Vectors"
+    },
+    "sortBy": "Sort by",
+    "sortOptions": {
+      "relevance": "Relevance",
+      "newest": "Newest",
+      "popular": "Popular",
+      "price": "Price"
+    },
+    "resultsCount": "{count, plural, =0 {No results} =1 {1 result} other {# results}}",
+    "showingResults": "Showing search results",
+    "previewButton": "Preview",
+    "addToCart": "Add to Cart",
+    "downloadNow": "Download Now",
+    "credits": "credits",
+    "closeModal": "Close modal",
+    "details": "Details",
+    "type": "Type",
+    "size": "Size",
+    "dimensions": "Dimensions",
+    "license": "License",
+    "quality": "Quality",
+    "description": "Description",
+    "tags": "Tags",
+    "emptyState": {
+      "title": "No results found",
+      "description": "Try adjusting your search terms or filters to find what you're looking for.",
+      "retryButton": "Try Again"
+    },
+    "errorState": {
+      "title": "Search failed",
+      "description": "Something went wrong while searching. Please try again.",
+      "retryButton": "Retry Search"
+    }
   }
 }

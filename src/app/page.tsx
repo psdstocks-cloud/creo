@@ -62,6 +62,16 @@ export default function Home() {
                       <h3 className="text-lg font-semibold text-white mb-2">Webhook Test</h3>
                       <p className="text-sm text-gray-300">Test nehtw webhook integration with various events</p>
                     </div>
+                    <div className="glass-card p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-2">Stock Media Search</h3>
+                      <p className="text-sm text-gray-300">Comprehensive search component with glassmorphism design</p>
+                      <a 
+                        href="/stock-search" 
+                        className="inline-block mt-2 bg-primaryOrange-500 hover:bg-primaryOrange-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                      >
+                        View Component
+                      </a>
+                    </div>
           </div>
         </div>
       </div>
