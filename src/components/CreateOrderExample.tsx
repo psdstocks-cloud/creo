@@ -87,7 +87,7 @@ export default function CreateOrderExample({ className = '' }: CreateOrderExampl
   });
   
   // Handlers
-  const handleInputChange = (field: keyof CreateOrderRequest, value: any) => {
+  const handleInputChange = (field: keyof CreateOrderRequest, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,

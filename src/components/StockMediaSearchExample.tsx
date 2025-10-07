@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import {
   useStockMediaSearch,
   useStockMediaSearchInfinite,
@@ -120,7 +121,7 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
     }
   };
   
-  const handleFilterChange = (key: keyof StockMediaSearchParams, value: any) => {
+  const handleFilterChange = (key: keyof StockMediaSearchParams, value: string | number | boolean) => {
     setSearchParams(prev => ({
       ...prev,
       [key]: value,
@@ -317,9 +318,11 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
                 onClick={() => handleMediaSelect(item)}
               >
                 <div className="relative mb-3">
-                  <img
+                  <Image
                     src={item.thumbnail}
                     alt={item.title}
+                    width={300}
+                    height={128}
                     className="w-full h-32 object-cover rounded-lg"
                     loading="lazy"
                   />
@@ -366,9 +369,11 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
                 className="glass-card p-4 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                 onClick={() => handleMediaSelect(item)}
               >
-                <img
+                <Image
                   src={item.thumbnail}
                   alt={item.title}
+                  width={300}
+                  height={128}
                   className="w-full h-32 object-cover rounded-lg mb-3"
                   loading="lazy"
                 />
@@ -392,9 +397,11 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
           <div className="glass-card p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
-                <img
+                <Image
                   src={selectedMedia.thumbnail}
                   alt={selectedMedia.title}
+                  width={600}
+                  height={256}
                   className="w-full h-64 object-cover rounded-lg mb-4"
                 />
               </div>
@@ -458,9 +465,11 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
                 className="glass-card p-4 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                 onClick={() => handleMediaSelect(item)}
               >
-                <img
+                <Image
                   src={item.thumbnail}
                   alt={item.title}
+                  width={300}
+                  height={128}
                   className="w-full h-32 object-cover rounded-lg mb-3"
                   loading="lazy"
                 />

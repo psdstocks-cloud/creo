@@ -119,7 +119,7 @@ export default function OrderStatusPollingExample({ className = '' }: OrderStatu
     setMultipleTaskIds(ids);
   };
   
-  const handlePollingOptionsChange = (key: string, value: any) => {
+  const handlePollingOptionsChange = (key: string, value: boolean | number) => {
     setPollingOptions(prev => ({
       ...prev,
       [key]: value,

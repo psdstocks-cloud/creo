@@ -1,4 +1,5 @@
 import AuthTest from "../components/AuthTest";
+import WebhookTestExample from "../components/WebhookTestExample";
 
 export default function Home() {
   return (
@@ -13,9 +14,11 @@ export default function Home() {
           </p>
         </div>
         
-        <AuthTest />
-        
-        <div className="mt-12 text-center">
+                <AuthTest />
+
+                <WebhookTestExample />
+
+                <div className="mt-12 text-center">
           <h2 className="text-2xl font-semibold text-white mb-4">
             Available Components
           </h2>
@@ -40,10 +43,14 @@ export default function Home() {
               <h3 className="text-lg font-semibold text-white mb-2">Interactive Pricing</h3>
               <p className="text-sm text-gray-300">Interactive pricing slider with tiered calculations</p>
             </div>
-            <div className="glass-card p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">Testimonials</h3>
-              <p className="text-sm text-gray-300">Animated testimonials carousel with Framer Motion</p>
-            </div>
+                    <div className="glass-card p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-2">Testimonials</h3>
+                      <p className="text-sm text-gray-300">Animated testimonials carousel with Framer Motion</p>
+                    </div>
+                    <div className="glass-card p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-2">Webhook Test</h3>
+                      <p className="text-sm text-gray-300">Test nehtw webhook integration with various events</p>
+                    </div>
           </div>
         </div>
       </div>

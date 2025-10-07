@@ -362,7 +362,7 @@ export function useCreateBatchOrder(
         });
       });
       
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: (error, variables, context) => {
       console.error('Batch order creation failed:', error);
@@ -432,7 +432,7 @@ export function useCreateOrderOptimistic(
         },
       };
       
-      queryClient.setQueryData(['orders'], (old: any) => {
+      queryClient.setQueryData(['orders'], (old: unknown) => {
         if (!old) return [optimisticOrder];
         return [optimisticOrder, ...old];
       });
@@ -450,9 +450,9 @@ export function useCreateOrderOptimistic(
     },
     onSuccess: (data, variables, context) => {
       // Update the cache with real data
-      queryClient.setQueryData(['orders'], (old: any) => {
+      queryClient.setQueryData(['orders'], (old: unknown) => {
         if (!old) return [data];
-        return old.map((order: any) => 
+        return old.map((order: unknown) => 
           order.orderId.startsWith('temp-') ? data : order
         );
       });

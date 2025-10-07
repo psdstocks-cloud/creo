@@ -666,7 +666,7 @@ export function useDownloadFile(
         window.URL.revokeObjectURL(data.url);
       }, 1000);
       
-      options?.onSuccess?.(data as any);
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
       console.error('File download failed:', error);

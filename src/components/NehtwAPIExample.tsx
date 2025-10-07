@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import {
   useStockMediaSearch,
   useCreateOrder,
@@ -23,7 +24,7 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
   
   // State for different API operations
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMedia, setSelectedMedia] = useState<any>(null);
+  const [selectedMedia, setSelectedMedia] = useState<{ id: string; title: string; thumbnail: string; cost: number; source: string; ext: string } | null>(null);
   const [orderTaskId, setOrderTaskId] = useState<string | null>(null);
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiJobId, setAiJobId] = useState<string | null>(null);
@@ -93,7 +94,7 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
     }
   };
   
-  const handleCreateOrder = async (mediaItem: any) => {
+  const handleCreateOrder = async (mediaItem: { id: string; title: string; thumbnail: string; cost: number; source: string; ext: string }) => {
     try {
       const result = await createOrderMutation.mutateAsync({
         siteId: 'default',
@@ -180,9 +181,11 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {searchResults.results.map((item) => (
               <div key={item.id} className="glass-card p-4 rounded-lg">
-                <img
+                <Image
                   src={item.thumbnail}
                   alt={item.title}
+                  width={300}
+                  height={128}
                   className="w-full h-32 object-cover rounded-lg mb-2"
                 />
                 <h4 className="text-white font-medium mb-2">{item.title}</h4>
@@ -288,9 +291,11 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
                 )}
                 {aiStatus.status === 'completed' && aiStatus.result && (
                   <div className="mt-4">
-                    <img
+                    <Image
                       src={aiStatus.result.thumbnailUrl}
                       alt="Generated image"
+                      width={400}
+                      height={400}
                       className="w-full max-w-md h-auto rounded-lg mb-2"
                     />
                     <button
@@ -322,9 +327,11 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
                 </p>
                 {job.result && (
                   <div>
-                    <img
+                    <Image
                       src={job.result.thumbnailUrl}
                       alt="Generated image"
+                      width={300}
+                      height={128}
                       className="w-full h-32 object-cover rounded-lg mb-2"
                     />
                     <p className="text-primaryOrange-200 text-sm">

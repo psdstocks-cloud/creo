@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import {
   useCreateAIGenerationJob,
   useAIGenerationJob,
@@ -9,7 +10,6 @@ import {
   useAIGenerationJobs,
   useCancelAIGenerationJob,
   useAIGenerationJobWithProgress,
-  AIGenerationJob,
   AIGenerationRequest,
   AIGenerationError,
 } from '../hooks/useAIGeneration';
@@ -177,14 +177,14 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
   });
   
   // Handlers
-  const handleGenerationParamsChange = (key: string, value: any) => {
+  const handleGenerationParamsChange = (key: string, value: string | number | boolean | { width: number; height: number }) => {
     setGenerationParams(prev => ({
       ...prev,
       [key]: value,
     }));
   };
   
-  const handlePollingOptionsChange = (key: string, value: any) => {
+  const handlePollingOptionsChange = (key: string, value: boolean | number) => {
     setPollingOptions(prev => ({
       ...prev,
       [key]: value,
@@ -622,9 +622,11 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
                 {aiJob.result?.imageUrl && (
                   <div className="mt-4">
                     <h5 className="text-white font-medium mb-2">Generated Image</h5>
-                    <img
+                    <Image
                       src={aiJob.result.imageUrl}
                       alt="Generated image"
+                      width={1024}
+                      height={1024}
                       className="max-w-full h-auto rounded-lg"
                     />
                   </div>

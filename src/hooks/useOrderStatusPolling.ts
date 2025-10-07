@@ -317,7 +317,7 @@ export function useMultipleOrderStatusPolling(
   stopPolling: () => void;
   startPolling: () => void;
 }> {
-  const results: Record<string, any> = {};
+  const results: Record<string, unknown> = {};
   
   taskIds.forEach(taskId => {
     results[taskId] = useOrderStatusPolling(taskId, options);

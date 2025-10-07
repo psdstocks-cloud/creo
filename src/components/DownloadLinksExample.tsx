@@ -136,7 +136,7 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
     setTaskId(e.target.value);
   };
   
-  const handleDownloadParamsChange = (key: string, value: any) => {
+  const handleDownloadParamsChange = (key: string, value: string | number) => {
     setDownloadParams(prev => ({
       ...prev,
       [key]: value,
