@@ -15,8 +15,6 @@ import {
   AIGenerationRequest,
   AIGenerationResponse,
   AIGenerationJob,
-  AIGenerationResult,
-  AIGeneratedImage,
   AccountBalance,
   UserProfile,
 } from '../types/nehtw';
@@ -154,8 +152,22 @@ export function useCreateAIJob(
         { 
           job_id: data.job_id, 
           status: data.status,
-          percentage_complete: 0,
-          files: []
+          prompt: '',
+          progress: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          result: { 
+            images: [],
+            generation_time: 0,
+            model_used: '',
+            parameters: {
+              style: '',
+              size: '',
+              steps: 0,
+              guidance_scale: 0,
+              seed: 0
+            }
+          }
         } as AIGenerationJob
       );
       
@@ -441,8 +453,8 @@ export interface UseAIGenerationResult {
   // Job creation
   createJob: CreateAIJobResult;
   
-  // Job status (only available if jobId is provided)
-  jobStatus: AIJobStatusResult | null;
+  // Job status (always available, but only enabled when jobId is provided)
+  jobStatus: AIJobStatusResult;
   
   // AI actions
   performAction: AIActionResult;
@@ -474,8 +486,22 @@ export function useAIGeneration(
           onJobComplete({
             job_id: data.job_id,
             status: data.status,
-            percentage_complete: 0,
-            files: []
+            prompt: '',
+            progress: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            result: { 
+            images: [],
+            generation_time: 0,
+            model_used: '',
+            parameters: {
+              style: '',
+              size: '',
+              steps: 0,
+              guidance_scale: 0,
+              seed: 0
+            }
+          }
           });
         }, 100);
       }
@@ -483,10 +509,10 @@ export function useAIGeneration(
     onError: onJobError,
   });
 
-  const jobStatus = jobId ? useAIJobStatus(jobId, {
+  const jobStatus = useAIJobStatus(jobId || '', {
     enabled: Boolean(jobId),
     refetchInterval: 2000,
-  }) : null;
+  });
 
   const performAction = useAIActions({
     onError: onJobError,
@@ -502,11 +528,11 @@ export function useAIGeneration(
   });
 
   // Combined state
-  const isJobActive = jobStatus?.data?.status === 'processing' || 
-                     jobStatus?.data?.status === 'pending';
-  const isJobCompleted = jobStatus?.data?.status === 'completed';
-  const isJobFailed = jobStatus?.data?.status === 'failed' || 
-                     jobStatus?.data?.status === 'cancelled';
+  const isJobActive = jobStatus.data?.status === 'processing' || 
+                     jobStatus.data?.status === 'pending';
+  const isJobCompleted = jobStatus.data?.status === 'completed';
+  const isJobFailed = jobStatus.data?.status === 'failed' || 
+                     jobStatus.data?.status === 'cancelled';
 
   return {
     createJob,
@@ -521,33 +547,5 @@ export function useAIGeneration(
 }
 
 // ============================================================================
-// Export all hooks and types
+// All hooks and types are already exported individually above
 // ============================================================================
-
-export {
-  // Query keys
-  aiGenerationKeys,
-  
-  // Individual hooks
-  useCreateAIJob,
-  useAIJobStatus,
-  useAIActions,
-  useAccountBalance,
-  useUserProfile,
-  useAIGeneration,
-  
-  // Types
-  type CreateAIJobOptions,
-  type CreateAIJobResult,
-  type AIJobStatusOptions,
-  type AIJobStatusResult,
-  type AIActionOptions,
-  type AIActionResult,
-  type AIActionRequest,
-  type AccountBalanceOptions,
-  type AccountBalanceResult,
-  type UserProfileOptions,
-  type UserProfileResult,
-  type UseAIGenerationOptions,
-  type UseAIGenerationResult,
-};

@@ -108,26 +108,26 @@ export function BasicAIGenerationExample() {
                 </span>
               </div>
               
-              {jobStatus.data.percentage_complete !== undefined && (
+              {jobStatus.data.progress !== undefined && (
                 <div>
                   <span className="text-gray-400">Progress:</span>
                   <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
                     <div
                       className="bg-primaryOrange-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${jobStatus.data.percentage_complete}%` }}
+                      style={{ width: `${jobStatus.data.progress}%` }}
                     ></div>
                   </div>
                   <span className="text-sm text-gray-300">
-                    {jobStatus.data.percentage_complete}%
+                    {jobStatus.data.progress}%
                   </span>
                 </div>
               )}
 
-              {jobStatus.data.status === 'completed' && jobStatus.data.files && (
+              {jobStatus.data.status === 'completed' && jobStatus.data.result?.images && (
                 <div className="space-y-2">
                   <h4 className="text-lg font-semibold text-white">Generated Images</h4>
                   <div className="grid grid-cols-1 gap-4">
-                    {jobStatus.data.files.map((file, index) => (
+                    {jobStatus.data.result.images.map((file, index) => (
                       <div key={index} className="space-y-2">
                         <Image
                           src={file.thumbnail_url}
@@ -455,22 +455,21 @@ export function CompleteAIWorkflowExample() {
         </div>
 
         {/* Job Status */}
-        {aiGeneration.jobStatus && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">Job Status</h3>
-            
-            {aiGeneration.jobStatus.isLoading && (
-              <div className="text-gray-300">Loading job status...</div>
-            )}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-white">Job Status</h3>
+          
+          {aiGeneration.jobStatus.isLoading && (
+            <div className="text-gray-300">Loading job status...</div>
+          )}
 
-            {aiGeneration.jobStatus.isError && (
-              <div className="text-red-500">
-                <p>Error: {aiGeneration.jobStatus.error?.message}</p>
-              </div>
-            )}
+          {aiGeneration.jobStatus.isError && (
+            <div className="text-red-500">
+              <p>Error: {aiGeneration.jobStatus.error?.message}</p>
+            </div>
+          )}
 
-            {aiGeneration.jobStatus.data && (
-              <div className="space-y-4">
+          {aiGeneration.jobStatus.data && (
+            <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <span className="text-gray-400">Status:</span>
                   <span className={`px-2 py-1 rounded text-sm ${
@@ -486,27 +485,27 @@ export function CompleteAIWorkflowExample() {
                   )}
                 </div>
 
-                {aiGeneration.jobStatus.data.percentage_complete !== undefined && (
+                {aiGeneration.jobStatus.data.progress !== undefined && (
                   <div>
                     <span className="text-gray-400">Progress:</span>
                     <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
                       <div
                         className="bg-primaryOrange-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${aiGeneration.jobStatus.data.percentage_complete}%` }}
+                        style={{ width: `${aiGeneration.jobStatus.data.progress}%` }}
                       ></div>
                     </div>
                     <span className="text-sm text-gray-300">
-                      {aiGeneration.jobStatus.data.percentage_complete}%
+                      {aiGeneration.jobStatus.data.progress}%
                     </span>
                   </div>
                 )}
 
                 {/* Generated Images */}
-                {aiGeneration.isJobCompleted && aiGeneration.jobStatus.data.files && (
+                {aiGeneration.isJobCompleted && aiGeneration.jobStatus.data.result?.images && (
                   <div className="space-y-4">
                     <h4 className="text-lg font-semibold text-white">Generated Images</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {aiGeneration.jobStatus.data.files.map((file, index) => (
+                      {aiGeneration.jobStatus.data.result.images.map((file, index) => (
                         <div key={index} className="space-y-2">
                           <Image
                             src={file.thumbnail_url}
@@ -552,7 +551,7 @@ export function CompleteAIWorkflowExample() {
               </div>
             )}
           </div>
-        )}
+        </div>
 
         {/* Account Info */}
         <div className="space-y-4">
@@ -574,17 +573,9 @@ export function CompleteAIWorkflowExample() {
           )}
         </div>
       </div>
-    </div>
   );
 }
 
 // ============================================================================
-// Export all examples
+// All examples are already exported with 'export function' declarations above
 // ============================================================================
-
-export {
-  BasicAIGenerationExample,
-  AIActionsExample,
-  AIAccountDashboardExample,
-  CompleteAIWorkflowExample,
-};
