@@ -539,5 +539,56 @@
       "suggestions": "اقتراحات",
       "history": "التاريخ"
     }
+  },
+  "APIErrorBoundary": {
+    "title": "حدث خطأ",
+    "retry": "حاول مرة أخرى",
+    "retrying": "جاري المحاولة...",
+    "dismiss": "إغلاق",
+    "retryCount": "محاولة {count}",
+    "contactSupport": "تحتاج مساعدة؟",
+    "getHelp": "اتصل بالدعم",
+    "errorDetails": "تفاصيل الخطأ"
+  },
+  "ToastNotification": {
+    "success": {
+      "orderCompleted": "تم الطلب",
+      "orderCompletedMessage": "تم معالجة طلبك بنجاح.",
+      "downloadReady": "التحميل جاهز",
+      "downloadReadyMessage": "ملفك جاهز للتحميل.",
+      "generationComplete": "اكتمل التوليد",
+      "generationCompleteMessage": "تم توليد صورتك بالذكاء الاصطناعي بنجاح."
+    },
+    "error": {
+      "orderFailed": "فشل الطلب",
+      "orderFailedMessage": "لم يتم معالجة طلبك. يرجى المحاولة مرة أخرى.",
+      "generationFailed": "فشل التوليد",
+      "generationFailedMessage": "فشل في توليد الصورة بالذكاء الاصطناعي. يرجى المحاولة مرة أخرى.",
+      "downloadFailed": "فشل التحميل",
+      "downloadFailedMessage": "تعذر تحميل الملف. يرجى المحاولة مرة أخرى."
+    },
+    "warning": {
+      "lowCredits": "نقاط قليلة",
+      "lowCreditsMessage": "نقاطك قليلة. فكر في شراء المزيد.",
+      "sessionExpiring": "انتهاء الجلسة",
+      "sessionExpiringMessage": "ستنتهي جلستك قريباً. يرجى حفظ عملك."
+    },
+    "info": {
+      "orderProcessing": "معالجة الطلب",
+      "orderProcessingMessage": "جاري معالجة طلبك. قد يستغرق هذا بضع دقائق.",
+      "generationStarted": "بدء التوليد",
+      "generationStartedMessage": "بدأ توليد الصورة بالذكاء الاصطناعي. ستتم إشعارك عند اكتمالها."
+    },
+    "progress": {
+      "orderProgress": "تقدم الطلب",
+      "generationProgress": "تقدم التوليد",
+      "uploadProgress": "تقدم الرفع"
+    }
+  },
+  "ErrorHandlingExample": {
+    "mainTitle": "نظام معالجة الأخطاء",
+    "mainSubtitle": "معالجة شاملة للأخطاء مع آليات إعادة المحاولة وتغذية راجعة للمستخدم",
+    "title": "محاكاة الأخطاء",
+    "description": "اختبر أنواع مختلفة من الأخطاء وشاهد كيف يتم التعامل معها من قبل النظام."
   }
 }

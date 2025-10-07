@@ -539,5 +539,56 @@
       "suggestions": "Suggestions",
       "history": "History"
     }
+  },
+  "APIErrorBoundary": {
+    "title": "Something went wrong",
+    "retry": "Try Again",
+    "retrying": "Retrying...",
+    "dismiss": "Dismiss",
+    "retryCount": "Retry attempt {count}",
+    "contactSupport": "Need help?",
+    "getHelp": "Contact Support",
+    "errorDetails": "Error Details"
+  },
+  "ToastNotification": {
+    "success": {
+      "orderCompleted": "Order Completed",
+      "orderCompletedMessage": "Your order has been successfully processed.",
+      "downloadReady": "Download Ready",
+      "downloadReadyMessage": "Your file is ready for download.",
+      "generationComplete": "Generation Complete",
+      "generationCompleteMessage": "Your AI image has been generated successfully."
+    },
+    "error": {
+      "orderFailed": "Order Failed",
+      "orderFailedMessage": "Your order could not be processed. Please try again.",
+      "generationFailed": "Generation Failed",
+      "generationFailedMessage": "AI image generation failed. Please try again.",
+      "downloadFailed": "Download Failed",
+      "downloadFailedMessage": "Unable to download file. Please try again."
+    },
+    "warning": {
+      "lowCredits": "Low Credits",
+      "lowCreditsMessage": "You're running low on credits. Consider purchasing more.",
+      "sessionExpiring": "Session Expiring",
+      "sessionExpiringMessage": "Your session will expire soon. Please save your work."
+    },
+    "info": {
+      "orderProcessing": "Order Processing",
+      "orderProcessingMessage": "Your order is being processed. This may take a few minutes.",
+      "generationStarted": "Generation Started",
+      "generationStartedMessage": "AI image generation has started. You'll be notified when complete."
+    },
+    "progress": {
+      "orderProgress": "Order Progress",
+      "generationProgress": "Generation Progress",
+      "uploadProgress": "Upload Progress"
+    }
+  },
+  "ErrorHandlingExample": {
+    "mainTitle": "Error Handling System",
+    "mainSubtitle": "Comprehensive error handling with retry mechanisms and user feedback",
+    "title": "Error Simulation",
+    "description": "Test different types of errors and see how they are handled by the system."
   }
 }

@@ -92,6 +92,16 @@ export default function Home() {
                         View Component
                       </a>
                     </div>
+                    <div className="glass-card p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-2">Error Handling System</h3>
+                      <p className="text-sm text-gray-300">Comprehensive error handling with retry mechanisms and user feedback</p>
+                      <a 
+                        href="/error-handling" 
+                        className="inline-block mt-2 bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-600 hover:to-yellow-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                      >
+                        View Component
+                      </a>
+                    </div>
           </div>
         </div>
       </div>
