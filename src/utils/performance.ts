@@ -240,22 +240,14 @@ export const useThrottledScroll = (
 // ============================================================================
 
 // Dynamic imports with loading states
+// Note: This function is simplified to avoid TypeScript complexity
+// Use React.lazy directly in components for better type safety
 export function createLazyComponent<T extends React.ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   fallback?: React.ComponentType
 ) {
-  const LazyComponent = React.lazy(importFn);
-  
-  const LazyWrapper = (props: React.ComponentProps<T>) => {
-    const FallbackComponent = fallback || (() => React.createElement('div', null, 'Loading...'));
-    return React.createElement(
-      React.Suspense,
-      { fallback: React.createElement(FallbackComponent) },
-      React.createElement(LazyComponent as React.ComponentType<React.ComponentProps<T>>, props)
-    );
-  };
-  LazyWrapper.displayName = 'LazyWrapper';
-  return LazyWrapper;
+  // Return a simple wrapper that uses React.lazy directly
+  return React.lazy(importFn);
 }
 
 // Preload critical resources
@@ -320,11 +312,13 @@ export const useMemoryMonitor = () => {
     const updateMemoryInfo = () => {
       if ('memory' in performance) {
         const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
-        setMemoryInfo({
-          usedJSHeapSize: memory.usedJSHeapSize,
-          totalJSHeapSize: memory.totalJSHeapSize,
-          jsHeapSizeLimit: memory.jsHeapSizeLimit
-        });
+        if (memory) {
+          setMemoryInfo({
+            usedJSHeapSize: memory.usedJSHeapSize,
+            totalJSHeapSize: memory.totalJSHeapSize,
+            jsHeapSizeLimit: memory.jsHeapSizeLimit
+          });
+        }
       }
     };
 
