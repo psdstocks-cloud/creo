@@ -22,7 +22,7 @@ import {
   FunnelIcon,
   DocumentArrowDownIcon,
   TrashIcon,
-  RefreshIcon,
+  ArrowPathIcon,
   CalendarIcon,
   TagIcon
 } from '@heroicons/react/24/outline';
@@ -87,7 +87,7 @@ const OrderStatusBadge: React.FC<{ status: Order['status'] }> = ({ status }) => 
     processing: {
       color: 'bg-primaryOrange-500',
       textColor: 'text-white',
-      icon: RefreshIcon,
+      icon: ArrowPathIcon,
       label: t('status.processing')
     },
     ready: {
@@ -295,7 +295,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                     onClick={() => onRedownload(order)}
                     className="flex items-center space-x-2 bg-deepPurple-500 hover:bg-deepPurple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                   >
-                    <RefreshIcon className="w-4 h-4" />
+                    <ArrowPathIcon className="w-4 h-4" />
                     <span>{t('modal.redownload')}</span>
                   </button>
                 )}
@@ -728,7 +728,7 @@ const OrderManagement: React.FC = () => {
               onClick={handleRefresh}
               className="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              <RefreshIcon className="w-4 h-4" />
+              <ArrowPathIcon className="w-4 h-4" />
               <span>{t('refresh')}</span>
             </button>
             <button
