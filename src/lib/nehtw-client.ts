@@ -323,7 +323,7 @@ export class NehtwAPIClient {
 
   async getAIJobStatus(jobId: string): Promise<{
     job_id: string;
-    status: 'pending' | 'processing' | 'completed' | 'failed';
+    status: string;
     progress?: number;
     result?: { images: string[] };
     error?: string;
