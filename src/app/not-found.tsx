@@ -16,9 +16,9 @@ export default function NotFound() {
             </svg>
           </div>
           <h1 className="text-4xl font-bold text-white mb-2">404</h1>
-          <h2 className="text-xl font-semibold text-white mb-4">Page Not Found</h2>
+          <h2 className="text-xl font-semibold text-white mb-4">{t('title')}</h2>
           <p className="text-gray-300 mb-6">
-            The page you're looking for doesn't exist or has been moved.
+            {t('message')}
           </p>
         </div>
         
@@ -27,14 +27,14 @@ export default function NotFound() {
             href="/"
             className="inline-block w-full bg-primaryOrange-500 hover:bg-primaryOrange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
-            Go Home
+            {t('goHome')}
           </Link>
           
           <Link
             href="/stock-search"
             className="inline-block w-full bg-deepPurple-500 hover:bg-deepPurple-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
-            Search Stock Media
+            {t('searchStock')}
           </Link>
         </div>
       </div>
