@@ -52,7 +52,7 @@ interface UseStockMediaSearchSimpleReturn {
 }
 
 // ============================================================================
-// Mock API Function
+// API Function with Fallback
 // ============================================================================
 
 const searchStockMedia = async (options: {
@@ -63,92 +63,120 @@ const searchStockMedia = async (options: {
 }): Promise<SearchResults> => {
   const { query, site, page, limit } = options;
   
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+  // Get API configuration from environment variables
+  const baseUrl = process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api';
+  const apiKey = process.env.NEXT_PUBLIC_NEHTW_API_KEY;
   
-  // Mock data based on query
-  const mockResults: StockMediaItem[] = [
-    {
-      id: `1-${query}-${page}`,
-      title: `${query} - Beautiful landscape photography`,
-      thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-      cost: Math.floor(Math.random() * 50) + 10,
-      filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-      site: site || 'shutterstock',
-      tags: [query, 'landscape', 'nature', 'photography'],
-      dimensions: { width: 1920, height: 1080 },
-      license: 'Commercial',
-      downloads: Math.floor(Math.random() * 1000),
-      rating: 4.5
-    },
-    {
-      id: `2-${query}-${page}`,
-      title: `${query} - Professional business image`,
-      thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-      cost: Math.floor(Math.random() * 50) + 10,
-      filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-      site: site || 'adobestock',
-      tags: [query, 'business', 'professional', 'office'],
-      dimensions: { width: 1920, height: 1080 },
-      license: 'Commercial',
-      downloads: Math.floor(Math.random() * 1000),
-      rating: 4.2
-    },
-    {
-      id: `3-${query}-${page}`,
-      title: `${query} - Creative abstract design`,
-      thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-      cost: Math.floor(Math.random() * 50) + 10,
-      filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-      site: site || 'freepik',
-      tags: [query, 'abstract', 'creative', 'design'],
-      dimensions: { width: 1920, height: 1080 },
-      license: 'Free',
-      downloads: Math.floor(Math.random() * 1000),
-      rating: 4.0
-    },
-    {
-      id: `4-${query}-${page}`,
-      title: `${query} - Modern technology concept`,
-      thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-      cost: Math.floor(Math.random() * 50) + 10,
-      filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-      site: site || 'unsplash',
-      tags: [query, 'technology', 'modern', 'digital'],
-      dimensions: { width: 1920, height: 1080 },
-      license: 'Commercial',
-      downloads: Math.floor(Math.random() * 1000),
-      rating: 4.7
-    },
-    {
-      id: `5-${query}-${page}`,
-      title: `${query} - Lifestyle and people`,
-      thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
-      cost: Math.floor(Math.random() * 50) + 10,
-      filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
-      site: site || 'pexels',
-      tags: [query, 'lifestyle', 'people', 'social'],
-      dimensions: { width: 1920, height: 1080 },
-      license: 'Commercial',
-      downloads: Math.floor(Math.random() * 1000),
-      rating: 4.3
+  if (!apiKey) {
+    throw new Error('API key not configured. Please set NEXT_PUBLIC_NEHTW_API_KEY environment variable.');
+  }
+  
+  // Build search URL with query parameters
+  const searchParams = new URLSearchParams({
+    query: query,
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(site && { site })
+  });
+  
+  const searchUrl = `${baseUrl}/stocksearch?${searchParams.toString()}`;
+  
+  try {
+    const response = await fetch(searchUrl, {
+      method: 'GET',
+      headers: {
+        'X-Api-Key': apiKey,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('No results found for your search query.');
+      } else if (response.status === 401) {
+        throw new Error('Invalid API key. Please check your configuration.');
+      } else if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      } else {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
     }
-  ];
-
-  // Simulate pagination
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  const paginatedResults = mockResults.slice(0, limit);
-  
-  // Simulate total count
-  const total = Math.floor(Math.random() * 200) + 50;
-  
-  return {
-    results: paginatedResults,
-    total,
-    page,
-    hasMore: endIndex < total
-  };
+    
+    const data = await response.json();
+    
+    // Transform API response to our expected format
+    const results: StockMediaItem[] = (data.results || []).map((item: any) => ({
+      id: item.id || item.stock_id,
+      title: item.title || item.name,
+      thumbnail: item.thumbnail || item.preview_url,
+      cost: item.cost || item.price || 0,
+      filesize: item.filesize || item.size || 'Unknown',
+      site: item.site || item.source || 'unknown',
+      tags: item.tags || item.keywords || [],
+      dimensions: {
+        width: item.width || item.dimensions?.width || 0,
+        height: item.height || item.dimensions?.height || 0
+      },
+      license: item.license || 'Commercial',
+      downloads: item.downloads || 0,
+      rating: item.rating || 0
+    }));
+    
+    return {
+      results,
+      total: data.total || data.count || results.length,
+      page: data.page || page,
+      hasMore: data.has_more || (data.page || page) < Math.ceil((data.total || data.count || 0) / limit)
+    };
+    
+  } catch (error) {
+    console.error('Stock media search error:', error);
+    
+    // If it's a network error or API is down, provide fallback mock data
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      console.warn('API unavailable, using fallback mock data');
+      
+      // Return mock data as fallback
+      const mockResults: StockMediaItem[] = [
+        {
+          id: `fallback-1-${query}-${page}`,
+          title: `${query} - Beautiful landscape photography`,
+          thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
+          cost: Math.floor(Math.random() * 50) + 10,
+          filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
+          site: site || 'shutterstock',
+          tags: [query, 'landscape', 'nature', 'photography'],
+          dimensions: { width: 1920, height: 1080 },
+          license: 'Commercial',
+          downloads: Math.floor(Math.random() * 1000),
+          rating: 4.5
+        },
+        {
+          id: `fallback-2-${query}-${page}`,
+          title: `${query} - Professional business image`,
+          thumbnail: `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`,
+          cost: Math.floor(Math.random() * 50) + 10,
+          filesize: `${Math.floor(Math.random() * 5) + 1}MB`,
+          site: site || 'adobestock',
+          tags: [query, 'business', 'professional', 'office'],
+          dimensions: { width: 1920, height: 1080 },
+          license: 'Commercial',
+          downloads: Math.floor(Math.random() * 1000),
+          rating: 4.2
+        }
+      ];
+      
+      return {
+        results: mockResults,
+        total: 2,
+        page,
+        hasMore: false
+      };
+    }
+    
+    // Re-throw other errors
+    throw error;
+  }
 };
 
 // ============================================================================
