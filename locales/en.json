@@ -476,5 +476,68 @@
       "description": "Something went wrong while loading your orders. Please try again.",
       "retryButton": "Retry"
     }
+  },
+  "AIGenerationInterface": {
+    "title": "AI Image Generation",
+    "subtitle": "Create stunning images with artificial intelligence",
+    "credits": "credits",
+    "download": "Download",
+    "vary": "Vary",
+    "upscale": "Upscale",
+    "status": {
+      "generating": "Generating",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "suggestions": {
+      "title": "Prompt Suggestions"
+    },
+    "queue": {
+      "title": "Generation Queue",
+      "items": "items"
+    },
+    "costCalculator": {
+      "title": "Cost Calculator",
+      "baseCost": "Base Cost",
+      "quality": "Quality",
+      "count": "Count",
+      "total": "Total"
+    },
+    "generationForm": {
+      "title": "Generate Images",
+      "prompt": "Prompt",
+      "promptPlaceholder": "Describe the image you want to generate...",
+      "style": "Style",
+      "styles": {
+        "realistic": "Realistic",
+        "artistic": "Artistic",
+        "abstract": "Abstract",
+        "minimalist": "Minimalist"
+      },
+      "quality": "Quality",
+      "qualities": {
+        "standard": "Standard",
+        "high": "High",
+        "premium": "Premium",
+        "ultra": "Ultra"
+      },
+      "count": "Count",
+      "generate": "Generate Images",
+      "generating": "Generating..."
+    },
+    "results": {
+      "title": "Generated Images",
+      "emptyTitle": "No images generated yet",
+      "emptyDescription": "Enter a prompt and click generate to create your first AI image."
+    },
+    "history": {
+      "title": "Generation History"
+    },
+    "shortcuts": {
+      "title": "Keyboard Shortcuts",
+      "generate": "Generate",
+      "suggestions": "Suggestions",
+      "history": "History"
+    }
   }
 }

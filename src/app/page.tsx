@@ -82,6 +82,16 @@ export default function Home() {
                         View Component
                       </a>
                     </div>
+                    <div className="glass-card p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-2">AI Generation Interface</h3>
+                      <p className="text-sm text-gray-300">Advanced AI image generation with real-time progress and queue management</p>
+                      <a 
+                        href="/ai-generation" 
+                        className="inline-block mt-2 bg-gradient-to-r from-primaryOrange-500 to-deepPurple-500 hover:from-primaryOrange-600 hover:to-deepPurple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                      >
+                        View Component
+                      </a>
+                    </div>
           </div>
         </div>
       </div>
