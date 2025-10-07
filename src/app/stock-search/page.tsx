@@ -9,7 +9,6 @@
 
 import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { useTranslations } from 'next-intl';
 
 // Dynamically import the StockMediaSearch component to avoid SSR issues
 const StockMediaSearch = dynamic(() => import('../../components/StockMediaSearch'), {

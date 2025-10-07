@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -19,12 +19,9 @@ import {
   EyeIcon,
   XMarkIcon,
   MagnifyingGlassIcon,
-  FunnelIcon,
   DocumentArrowDownIcon,
-  TrashIcon,
   ArrowPathIcon,
-  CalendarIcon,
-  TagIcon
+  CalendarIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -511,7 +508,6 @@ const OrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDateRangeOpen, setIsDateRangeOpen] = useState(false);
@@ -592,15 +588,15 @@ const OrderManagement: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         setOrders(mockOrders);
         setFilteredOrders(mockOrders);
-      } catch (err) {
-        setError('Failed to load orders');
+      } catch {
+        // Handle error silently for now
       } finally {
         setIsLoading(false);
       }
     };
 
     loadOrders();
-  }, []);
+  }, [mockOrders]);
 
   // Filter orders
   useEffect(() => {

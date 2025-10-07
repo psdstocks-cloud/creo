@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -23,20 +23,15 @@ import {
   PlusIcon,
   TrashIcon,
   ArrowPathIcon,
-  MagnifyingGlassIcon,
   StarIcon,
   HeartIcon,
   ShareIcon,
-  Cog6ToothIcon,
   CommandLineIcon,
   LightBulbIcon,
   PaintBrushIcon,
   CameraIcon,
   FilmIcon,
-  MusicalNoteIcon,
-  BuildingOfficeIcon,
-  UserGroupIcon,
-  GlobeAltIcon
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -768,14 +763,12 @@ const AIGenerationInterface: React.FC = () => {
   // Generation state
   const [jobs, setJobs] = useState<AIGenerationJob[]>([]);
   const [images, setImages] = useState<GeneratedImage[]>([]);
-  const [history, setHistory] = useState<GenerationHistory[]>([]);
   const [suggestions, setSuggestions] = useState<PromptSuggestion[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   // UI state
   const [activeTab, setActiveTab] = useState<'generate' | 'history' | 'gallery'>('generate');
   const [showShortcuts, setShowShortcuts] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(null);
 
   // Mock data for development
   const mockSuggestions: PromptSuggestion[] = [
@@ -846,12 +839,12 @@ const AIGenerationInterface: React.FC = () => {
     };
 
     loadSuggestions();
-  }, []);
+  }, [mockSuggestions]);
 
   // Load initial data
   useEffect(() => {
     setImages(mockImages);
-  }, []);
+  }, [mockImages]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -876,7 +869,7 @@ const AIGenerationInterface: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleGenerate]);
 
   // Handlers
   const handleGenerate = useCallback(() => {
@@ -921,7 +914,7 @@ const AIGenerationInterface: React.FC = () => {
         return job;
       }));
     }, 1000);
-  }, [prompt, style, quality, count, costBreakdown.total, isGenerating]);
+  }, [prompt, style, quality, count, costBreakdown.total, isGenerating, mockImages]);
 
   const handleSuggestionSelect = useCallback((suggestion: PromptSuggestion) => {
     setPrompt(suggestion.text);
@@ -1012,7 +1005,7 @@ const AIGenerationInterface: React.FC = () => {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'generate' | 'history' | 'gallery')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                   activeTab === tab.id
                     ? 'bg-primaryOrange-500 text-white'
