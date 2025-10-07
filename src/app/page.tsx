@@ -72,6 +72,16 @@ export default function Home() {
                         View Component
                       </a>
                     </div>
+                    <div className="glass-card p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-2">Order Management</h3>
+                      <p className="text-sm text-gray-300">Complete order management with real-time updates and downloads</p>
+                      <a 
+                        href="/orders" 
+                        className="inline-block mt-2 bg-deepPurple-500 hover:bg-deepPurple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                      >
+                        View Component
+                      </a>
+                    </div>
           </div>
         </div>
       </div>

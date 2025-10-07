@@ -409,5 +409,72 @@
       "description": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.",
       "retryButton": "إعادة البحث"
     }
+  },
+  "OrderManagement": {
+    "title": "إدارة الطلبات",
+    "subtitle": "إدارة طلبات الوسائط المخزنة والتحميلات",
+    "export": "تصدير CSV",
+    "refresh": "تحديث",
+    "resultsCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} other {# طلبات}}",
+    "showingResults": "عرض {start}-{end} من {total} طلب",
+    "progress": "التقدم",
+    "credits": "النقاط",
+    "price": "السعر",
+    "download": "تحميل",
+    "cancel": "إلغاء",
+    "closeModal": "إغلاق النافذة",
+    "downloadNow": "تحميل الآن",
+    "cancelOrder": "إلغاء الطلب",
+    "status": {
+      "pending": "في الانتظار",
+      "processing": "قيد المعالجة",
+      "completed": "مكتمل",
+      "failed": "فشل",
+      "cancelled": "ملغي"
+    },
+    "filters": {
+      "search": "البحث",
+      "searchPlaceholder": "البحث في الطلبات...",
+      "status": "الحالة",
+      "allStatuses": "جميع الحالات",
+      "type": "النوع",
+      "allTypes": "جميع الأنواع",
+      "images": "الصور",
+      "videos": "الفيديوهات",
+      "vectors": "المتجهات",
+      "dateRange": "نطاق التاريخ",
+      "allDates": "جميع التواريخ",
+      "today": "اليوم",
+      "thisWeek": "هذا الأسبوع",
+      "thisMonth": "هذا الشهر",
+      "thisYear": "هذا العام"
+    },
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "orderDetails": {
+      "title": "تفاصيل الطلب",
+      "status": "الحالة",
+      "progress": "التقدم",
+      "credits": "النقاط",
+      "price": "السعر",
+      "createdAt": "تاريخ الإنشاء",
+      "completedAt": "تاريخ الإكمال",
+      "downloadInfo": "معلومات التحميل",
+      "fileName": "اسم الملف",
+      "fileSize": "حجم الملف",
+      "error": "خطأ"
+    },
+    "emptyState": {
+      "title": "لا توجد طلبات",
+      "description": "لم تضع أي طلبات بعد. ابدأ بالبحث عن الوسائط المخزنة.",
+      "refreshButton": "تحديث"
+    },
+    "errorState": {
+      "title": "فشل في تحميل الطلبات",
+      "description": "حدث خطأ أثناء تحميل طلباتك. يرجى المحاولة مرة أخرى.",
+      "retryButton": "إعادة المحاولة"
+    }
   }
 }
