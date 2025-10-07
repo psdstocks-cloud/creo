@@ -77,16 +77,16 @@ interface PromptSuggestion {
   isPopular: boolean;
 }
 
-interface GenerationHistory {
-  id: string;
-  prompt: string;
-  style: string;
-  quality: string;
-  count: number;
-  createdAt: string;
-  images: GeneratedImage[];
-  isFavorite: boolean;
-}
+// interface GenerationHistory {
+//   id: string;
+//   prompt: string;
+//   style: string;
+//   quality: string;
+//   count: number;
+//   createdAt: string;
+//   images: GeneratedImage[];
+//   isFavorite: boolean;
+// }
 
 interface StyleOption {
   id: string;
@@ -771,7 +771,7 @@ const AIGenerationInterface: React.FC = () => {
   const [showShortcuts, setShowShortcuts] = useState(false);
 
   // Mock data for development
-  const mockSuggestions: PromptSuggestion[] = [
+  const mockSuggestions = useMemo(() => [
     {
       id: '1',
       text: 'A futuristic cityscape at sunset with flying cars',
@@ -793,9 +793,9 @@ const AIGenerationInterface: React.FC = () => {
       style: 'realistic',
       isPopular: true
     }
-  ];
+  ], []);
 
-  const mockImages: GeneratedImage[] = [
+  const mockImages = useMemo(() => [
     {
       id: '1',
       url: 'https://picsum.photos/1024/1024?random=1',
@@ -824,52 +824,7 @@ const AIGenerationInterface: React.FC = () => {
       fileSize: '4.2 MB',
       dimensions: '2048x2048'
     }
-  ];
-
-  // Load suggestions
-  useEffect(() => {
-    const loadSuggestions = async () => {
-      setIsLoadingSuggestions(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setSuggestions(mockSuggestions);
-      } finally {
-        setIsLoadingSuggestions(false);
-      }
-    };
-
-    loadSuggestions();
-  }, [mockSuggestions]);
-
-  // Load initial data
-  useEffect(() => {
-    setImages(mockImages);
-  }, [mockImages]);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
-          case 'Enter':
-            e.preventDefault();
-            handleGenerate();
-            break;
-          case 's':
-            e.preventDefault();
-            // Toggle suggestions
-            break;
-          case 'h':
-            e.preventDefault();
-            setActiveTab('history');
-            break;
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleGenerate]);
+  ], []);
 
   // Handlers
   const handleGenerate = useCallback(() => {
@@ -915,6 +870,51 @@ const AIGenerationInterface: React.FC = () => {
       }));
     }, 1000);
   }, [prompt, style, quality, count, costBreakdown.total, isGenerating, mockImages]);
+
+  // Load suggestions
+  useEffect(() => {
+    const loadSuggestions = async () => {
+      setIsLoadingSuggestions(true);
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setSuggestions(mockSuggestions);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    };
+
+    loadSuggestions();
+  }, [mockSuggestions]);
+
+  // Load initial data
+  useEffect(() => {
+    setImages(mockImages);
+  }, [mockImages]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'Enter':
+            e.preventDefault();
+            handleGenerate();
+            break;
+          case 's':
+            e.preventDefault();
+            // Toggle suggestions
+            break;
+          case 'h':
+            e.preventDefault();
+            setActiveTab('history');
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleGenerate]);
 
   const handleSuggestionSelect = useCallback((suggestion: PromptSuggestion) => {
     setPrompt(suggestion.text);

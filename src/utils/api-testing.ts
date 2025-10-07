@@ -340,12 +340,7 @@ export class ApiTester {
   }
 
   // Private methods
-  private async makeRequest(
-    _method: string,
-    _url: string,
-    _data?: unknown,
-    _headers?: Record<string, string>
-  ): Promise<AxiosResponse> {
+  private async makeRequest(): Promise<AxiosResponse> {
     // This would be replaced with actual HTTP client implementation
     // For now, we'll simulate the request
     return new Promise((resolve, reject) => {

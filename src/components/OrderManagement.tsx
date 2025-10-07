@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -519,7 +519,7 @@ const OrderManagement: React.FC = () => {
   });
 
   // Mock data for development
-  const mockOrders: Order[] = [
+  const mockOrders = useMemo(() => [
     {
       id: '1',
       taskId: 'task_123456',
@@ -577,7 +577,7 @@ const OrderManagement: React.FC = () => {
       updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       errorMessage: 'Download failed due to network error'
     }
-  ];
+  ], []);
 
   // Load orders
   useEffect(() => {
