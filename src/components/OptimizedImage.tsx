@@ -123,7 +123,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   width = 300,
   height = 200,
   className = '',
-  placeholder: _placeholder,
+  placeholder,
   blurDataURL,
   priority = false,
   quality = 75,
@@ -257,7 +257,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
             priority={priority}
             loading={loading}
             decoding={decoding}
-            placeholder={defaultBlurDataURL ? 'blur' : 'empty'}
+            placeholder={placeholder || (defaultBlurDataURL ? 'blur' : 'empty')}
             blurDataURL={defaultBlurDataURL}
             onLoad={handleLoad}
             onError={handleError}

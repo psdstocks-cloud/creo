@@ -949,7 +949,8 @@ const AIGenerationInterface: React.FC = () => {
   }, []);
 
   const handleViewImage = useCallback((image: GeneratedImage) => {
-    setSelectedImage(image);
+    // Handle image viewing - could open in modal or new tab
+    console.log('Viewing image:', image.id);
   }, []);
 
   const handleRemoveJob = useCallback((jobId: string) => {
