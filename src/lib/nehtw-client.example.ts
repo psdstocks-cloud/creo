@@ -123,7 +123,8 @@ export async function generateAIImage(prompt: string) {
   try {
     console.log(`🎨 Generating AI image: "${prompt}"`);
     
-    const job = await nehtwClient.generateAI(prompt, {
+    const job = await nehtwClient.generateAI({
+      prompt,
       style: 'photorealistic',
       size: '1024x1024',
       count: 1
