@@ -155,7 +155,7 @@ export async function waitForAIGeneration(jobId: string, maxAttempts: number = 6
         console.log(`🖼️ Generated ${status.result.images.length} images`);
         return status;
       } else if (status.status === 'failed') {
-        throw new Error(`AI generation failed: ${status.error}`);
+        throw new Error(`AI generation failed: ${status.error_message || 'Unknown error'}`);
       }
       
       // Wait 5 seconds before next check (AI generation takes longer)
