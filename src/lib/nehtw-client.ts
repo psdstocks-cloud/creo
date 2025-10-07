@@ -188,7 +188,7 @@ export class NehtwAPIClient {
         }
         return response;
       },
-      (error: AxiosError) => {
+      (error: AxiosError<unknown>) => {
         if (this.isDebugMode) {
           console.error('❌ [NehtwAPI] Response Error:', {
             status: error.response?.status,
@@ -197,7 +197,7 @@ export class NehtwAPIClient {
             data: error.response?.data,
           });
         }
-        return Promise.reject(this.handleError(error));
+        return Promise.reject(this.handleError(error as AxiosError<NehtwErrorResponse>));
       }
     );
   }
@@ -217,13 +217,15 @@ export class NehtwAPIClient {
 
     const statusCode = error.response?.status || 500;
     
-    // Safely access message with proper typing
-    const message = error.response?.data?.message || 
-                   error.response?.data?.error || 
+    // Safely access message with proper typing and fallbacks
+    const responseData = error.response?.data as NehtwErrorResponse | undefined;
+    const message = responseData?.message || 
+                   responseData?.error || 
+                   (typeof error.response?.data === 'object' && error.response?.data !== null && 'message' in error.response.data ? (error.response.data as any).message : undefined) ||
                    error.message || 
                    'Unknown error occurred';
     
-    const code = error.response?.data?.code || 'UNKNOWN_ERROR';
+    const code = responseData?.code || 'UNKNOWN_ERROR';
     const details = error.response?.data;
 
     return new NehtwAPIError(message, statusCode, code, details);
