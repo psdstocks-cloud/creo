@@ -1,3 +1,7 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Remove or empty experimental config to fix 'turbo' errors
@@ -5,4 +9,4 @@ const nextConfig = {
   // Other config options if any
 };
 
-module.exports = nextConfig;
+export default withNextIntl(nextConfig);
