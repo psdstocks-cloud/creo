@@ -10,9 +10,9 @@ import {
   NehtwAPIClient,
   NehtwTimeoutError,
   NehtwNetworkError,
-  NehtwAuthError,
-  NehtwOrderRequest
+  NehtwAuthError
 } from './nehtw-client';
+import { OrderRequest } from '../types/nehtw';
 
 // Example 1: Basic Search
 export async function searchStockMedia(query: string) {
@@ -40,7 +40,7 @@ export async function createStockOrder(siteId: string, stockId: string) {
   try {
     console.log(`📦 Creating order for stock ID: ${stockId}`);
     
-    const orderData: NehtwOrderRequest = {
+    const orderData: OrderRequest = {
       site_id: siteId,
       stock_id: stockId,
       user_id: 'user-123', // Optional

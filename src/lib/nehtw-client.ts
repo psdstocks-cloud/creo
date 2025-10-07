@@ -14,7 +14,6 @@ import {
   AccountBalance,
   UserProfile,
   StockSitesResponse,
-  NehtwAPIError as NehtwAPIErrorType,
 } from '../types/nehtw';
 
 // Custom Error Classes
