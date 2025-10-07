@@ -266,7 +266,7 @@ class APIErrorBoundary extends Component<APIErrorBoundaryProps, APIErrorBoundary
         retryCount: this.state.retryCount + 1,
         isRetrying: false
       });
-    } catch (error) {
+    } catch {
       this.setState({ isRetrying: false });
     }
   };

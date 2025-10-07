@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -17,8 +17,8 @@ import {
   useVirtualScroll,
   useOptimizedPolling,
   createOptimizedComponent,
-  createOptimizedCallback,
-  createOptimizedMemo,
+  // createOptimizedCallback,
+  // createOptimizedMemo,
   usePerformanceMonitor
 } from '../utils/performance';
 
@@ -333,7 +333,7 @@ const OptimizedOrderManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage] = useState(1);
   const [itemsPerPage] = useState(20);
 
   // Performance monitoring

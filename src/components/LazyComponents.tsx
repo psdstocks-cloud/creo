@@ -8,7 +8,7 @@
 'use client';
 
 import React from 'react';
-import { createCodeSplitComponent, createLazyComponent } from '../utils/performance';
+import { createCodeSplitComponent } from '../utils/performance';
 
 // ============================================================================
 // Lazy Loading Fallbacks
@@ -299,7 +299,7 @@ export const logBundleInfo = () => {
   }
 };
 
-export default {
+const LazyComponents = {
   // Lazy Components
   LazyAIGenerationInterface,
   LazyOrderManagement,
@@ -330,3 +330,5 @@ export default {
   getBundleInfo,
   logBundleInfo
 };
+
+export default LazyComponents;

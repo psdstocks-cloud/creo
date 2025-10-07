@@ -8,8 +8,8 @@
 import { QueryClient } from '@tanstack/react-query';
 import { 
   DEFAULT_CACHE_CONFIG, 
-  CRITICAL_CACHE_CONFIG, 
-  BACKGROUND_CACHE_CONFIG 
+  CRITICAL_CACHE_CONFIG
+  // BACKGROUND_CACHE_CONFIG 
 } from '../utils/performance';
 
 // ============================================================================

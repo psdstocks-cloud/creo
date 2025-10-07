@@ -7,7 +7,7 @@
 
 'use client';
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -17,8 +17,8 @@ import {
   useLazyImage, 
   useVirtualScroll,
   createOptimizedComponent,
-  createOptimizedCallback,
-  createOptimizedMemo,
+  // createOptimizedCallback,
+  // createOptimizedMemo,
   usePerformanceMonitor
 } from '../utils/performance';
 
@@ -420,7 +420,7 @@ const OptimizedStockMediaSearch: React.FC = () => {
     if (debouncedQuery) {
       performSearch({ ...searchParams, query: debouncedQuery });
     }
-  }, [debouncedQuery, searchParams.site, searchParams.type, searchParams.sortBy, performSearch]);
+  }, [debouncedQuery, searchParams, performSearch]);
 
   // Memoized handlers
   const handleFiltersChange = useCallback((filters: SearchParams) => {

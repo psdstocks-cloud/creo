@@ -10,7 +10,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useLazyImage } from '../utils/performance';
+// import { useLazyImage } from '../utils/performance';
 
 // ============================================================================
 // Types and Interfaces
@@ -123,7 +123,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   width = 300,
   height = 200,
   className = '',
-  placeholder,
+  placeholder: _placeholder,
   blurDataURL,
   priority = false,
   quality = 75,

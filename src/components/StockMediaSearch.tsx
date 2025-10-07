@@ -7,14 +7,14 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { 
   MagnifyingGlassIcon, 
   PhotoIcon,
   ShoppingCartIcon,
-  HeartIcon,
   EyeIcon,
   ArrowDownTrayIcon,
   XMarkIcon,
@@ -189,7 +189,7 @@ const SearchFilters: React.FC<{
               </label>
               <select
                 value={filters.sortBy}
-                onChange={(e) => onFiltersChange({ ...filters, sortBy: e.target.value as any })}
+                onChange={(e) => onFiltersChange({ ...filters, sortBy: e.target.value as 'relevance' | 'price' | 'newest' | 'popular' })}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-primaryOrange-500 focus:border-transparent"
               >
                 {sortOptions.map((option) => (
@@ -250,9 +250,11 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ item, isOpen, onClose, onAd
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Image */}
                 <div className="relative">
-                  <img
+                  <Image
                     src={item.thumbnail}
                     alt={item.title}
+                    width={400}
+                    height={300}
                     className="w-full h-64 lg:h-96 object-cover rounded-lg"
                   />
                   <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
@@ -615,11 +617,12 @@ const StockMediaSearch: React.FC = () => {
                   >
                     {/* Image */}
                     <div className="relative mb-4">
-                      <img
+                      <Image
                         src={item.thumbnail}
                         alt={item.title}
+                        width={300}
+                        height={200}
                         className="w-full h-48 object-cover rounded-lg"
-                        loading="lazy"
                       />
                       <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
                         {item.dimensions.width} × {item.dimensions.height}

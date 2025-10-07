@@ -244,7 +244,7 @@ export const useThrottledScroll = (
 // Use React.lazy directly in components for better type safety
 export function createLazyComponent<T extends React.ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
-  fallback?: React.ComponentType
+  _fallback?: React.ComponentType
 ) {
   // Return a simple wrapper that uses React.lazy directly
   return React.lazy(importFn);
@@ -450,7 +450,7 @@ export function createCodeSplitComponent<P extends object>(
   return CodeSplitWrapper;
 }
 
-export default {
+const PerformanceUtils = {
   // Query optimization
   DEFAULT_CACHE_CONFIG,
   CRITICAL_CACHE_CONFIG,
@@ -490,3 +490,5 @@ export default {
   createOptimizedMemo,
   createCodeSplitComponent
 };
+
+export default PerformanceUtils;
