@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Disable secrets scanning for expected public environment variables
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_NEHTW_API_KEY,NEXT_PUBLIC_NEHTW_BASE_URL"
+
+# Optional: Completely disable secrets scanning if needed
+# SECRETS_SCAN_ENABLED = false
