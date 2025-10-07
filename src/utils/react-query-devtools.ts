@@ -312,7 +312,6 @@ export interface EnhancedDevToolsProps {
 
 // Simplified component without complex JSX
 export const EnhancedReactQueryDevtools: React.FC<EnhancedDevToolsProps> = ({
-  queryClient: _queryClient,
   initialIsOpen = false
 }) => {
   // For now, just return the standard React Query DevTools

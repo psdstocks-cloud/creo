@@ -243,8 +243,7 @@ export const useThrottledScroll = (
 // Note: This function is simplified to avoid TypeScript complexity
 // Use React.lazy directly in components for better type safety
 export function createLazyComponent<T extends React.ComponentType<unknown>>(
-  importFn: () => Promise<{ default: T }>,
-  _fallback?: React.ComponentType
+  importFn: () => Promise<{ default: T }>
 ) {
   // Return a simple wrapper that uses React.lazy directly
   return React.lazy(importFn);
