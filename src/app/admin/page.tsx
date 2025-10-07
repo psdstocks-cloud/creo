@@ -1,3 +1,7 @@
+'use client';
+
+import React from 'react';
+
 const AdminDashboard = () => {
   return (
     <div className="admin-dashboard p-6 bg-gray-100 min-h-screen">

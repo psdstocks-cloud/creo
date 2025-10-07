@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useStockSites } from '../hooks/useStockMediaIntegration';
+// import { useStockSites } from '../hooks/useStockMediaIntegration';
 
 // ============================================================================
 // Types and Interfaces
@@ -389,7 +389,8 @@ const StockMediaSearch: React.FC = () => {
   const watchedSort = watch('sort');
 
   // Get available stock sites (for future use)
-  useStockSites();
+  // Note: This hook is disabled during SSR to prevent build errors
+  // const { data: stockSites } = useStockSites();
 
   const performSearch = useCallback(async () => {
     if (!watchedQuery.trim()) return;
