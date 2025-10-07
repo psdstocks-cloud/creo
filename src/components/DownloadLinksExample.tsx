@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useState } from 'react';
 import {
   useDownloadLink,
   useGenerateDownloadLink,
@@ -19,7 +18,6 @@ interface DownloadLinksExampleProps {
 }
 
 export default function DownloadLinksExample({ className = '' }: DownloadLinksExampleProps) {
-  const t = useTranslations('DownloadLinks');
   
   // State
   const [orderId, setOrderId] = useState('');
@@ -116,8 +114,6 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
   const {
     mutate: downloadFile,
     isLoading: isDownloading,
-    isError: isDownloadError,
-    error: downloadError,
   } = useDownloadFile({
     onSuccess: (data) => {
       console.log('File downloaded:', data);
@@ -212,31 +208,6 @@ export default function DownloadLinksExample({ className = '' }: DownloadLinksEx
     }
   };
   
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'text-green-400';
-      case 'expired':
-        return 'text-red-400';
-      case 'expiring':
-        return 'text-yellow-400';
-      default:
-        return 'text-white';
-    }
-  };
-  
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active':
-        return '✅';
-      case 'expired':
-        return '❌';
-      case 'expiring':
-        return '⚠️';
-      default:
-        return '❓';
-    }
-  };
   
   return (
     <div className={`glass-card p-6 max-w-6xl mx-auto ${className}`}>

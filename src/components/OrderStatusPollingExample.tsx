@@ -1,13 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useState } from 'react';
 import {
   useOrderStatusPolling,
   useOrderStatusWithProgress,
   useOrderStatusPollingWithIntervals,
   useMultipleOrderStatusPolling,
-  OrderStatus,
   OrderStatusError,
 } from '../hooks/useOrderStatusPolling';
 
@@ -16,7 +14,6 @@ interface OrderStatusPollingExampleProps {
 }
 
 export default function OrderStatusPollingExample({ className = '' }: OrderStatusPollingExampleProps) {
-  const t = useTranslations('OrderStatusPolling');
   
   // State
   const [taskId, setTaskId] = useState('');
@@ -59,13 +56,8 @@ export default function OrderStatusPollingExample({ className = '' }: OrderStatu
   // Order status with progress tracking
   const {
     data: progressStatus,
-    isLoading: isProgressLoading,
-    isError: isProgressError,
-    error: progressError,
     isPolling: isProgressPolling,
     pollingTime: progressPollingTime,
-    stopPolling: stopProgressPolling,
-    startPolling: startProgressPolling,
     progress,
     estimatedTimeRemaining,
     isComplete,
@@ -81,13 +73,8 @@ export default function OrderStatusPollingExample({ className = '' }: OrderStatu
   // Order status with custom intervals
   const {
     data: intervalStatus,
-    isLoading: isIntervalLoading,
-    isError: isIntervalError,
-    error: intervalError,
     isPolling: isIntervalPolling,
     pollingTime: intervalPollingTime,
-    stopPolling: stopIntervalPolling,
-    startPolling: startIntervalPolling,
   } = useOrderStatusPollingWithIntervals(taskId, {
     initial: 1000,
     processing: 2000,

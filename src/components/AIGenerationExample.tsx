@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import {
   useCreateAIGenerationJob,
@@ -19,7 +18,6 @@ interface AIGenerationExampleProps {
 }
 
 export default function AIGenerationExample({ className = '' }: AIGenerationExampleProps) {
-  const t = useTranslations('AIGeneration');
   
   // State
   const [selectedJobId, setSelectedJobId] = useState('');
@@ -121,12 +119,9 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
     error: progressError,
     isPolling: isProgressPolling,
     pollingTime: progressPollingTime,
-    stopPolling: stopProgressPolling,
-    startPolling: startProgressPolling,
     progress: progressProgress,
     estimatedTimeRemaining: progressEstimatedTimeRemaining,
     isComplete: isProgressComplete,
-    isError: isProgressCompleteError,
     isProcessing: isProgressProcessing,
     isPending: isProgressPending,
     isFailed: isProgressFailed,
@@ -165,8 +160,6 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
   const {
     mutate: cancelJob,
     isLoading: isCancelling,
-    isError: isCancelError,
-    error: cancelError,
   } = useCancelAIGenerationJob({
     onSuccess: (data) => {
       console.log('AI generation job cancelled:', data);
@@ -210,14 +203,6 @@ export default function AIGenerationExample({ className = '' }: AIGenerationExam
     setSelectedJobId(jobId);
   };
   
-  // Utility functions
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
   
   const formatTimeUntilCompletion = (timeUntilCompletion: number) => {
     if (timeUntilCompletion <= 0) return 'Completed';

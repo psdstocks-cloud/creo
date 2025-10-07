@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
 import {
   useCreateOrder,
   useCreateBatchOrder,
@@ -15,7 +14,6 @@ interface CreateOrderExampleProps {
 }
 
 export default function CreateOrderExample({ className = '' }: CreateOrderExampleProps) {
-  const t = useTranslations('CreateOrder');
   
   // Form state
   const [formData, setFormData] = useState<CreateOrderRequest>({
@@ -115,7 +113,7 @@ export default function CreateOrderExample({ className = '' }: CreateOrderExampl
       } else {
         await createOrderMutation.mutateAsync(orderData);
       }
-    } catch (error) {
+    } catch {
       // Error is handled by the mutation's onError callback
     }
   };
@@ -134,7 +132,7 @@ export default function CreateOrderExample({ className = '' }: CreateOrderExampl
     
     try {
       await batchOrderMutation.mutateAsync(batchOrders);
-    } catch (error) {
+    } catch {
       // Error is handled by the mutation's onError callback
     }
   };

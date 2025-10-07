@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
 
 interface PricingRollbackInfoProps {
@@ -19,18 +19,7 @@ export default function PricingRollbackInfo({
   cardClassName = ''
 }: PricingRollbackInfoProps) {
   const t = useTranslations('PricingRollback');
-  const [isRTL, setIsRTL] = useState(false);
 
-  // Detect RTL layout
-  useEffect(() => {
-    const checkRTL = () => {
-      setIsRTL(document.documentElement.dir === 'rtl');
-    };
-    
-    checkRTL();
-    window.addEventListener('resize', checkRTL);
-    return () => window.removeEventListener('resize', checkRTL);
-  }, []);
 
   // Timeline data
   const timelineSteps = [
@@ -186,7 +175,7 @@ export default function PricingRollbackInfo({
                   {t('timelineTitle')}
                 </h4>
                 <div className="space-y-4">
-                  {timelineSteps.map((step, index) => (
+                  {timelineSteps.map((step) => (
                     <div key={step.id} className="flex items-start space-x-4 rtl:space-x-reverse">
                       <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                         step.status === 'completed' 

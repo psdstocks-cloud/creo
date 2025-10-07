@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
 
 interface WebhookTestExampleProps {
   className?: string;
 }
 
 export default function WebhookTestExample({ className = '' }: WebhookTestExampleProps) {
-  const t = useTranslations('WebhookTest');
   
   // State
   const [testEvent, setTestEvent] = useState({

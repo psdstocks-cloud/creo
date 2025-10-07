@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import {
   useStockMediaSearch,
@@ -20,7 +19,6 @@ interface StockMediaSearchExampleProps {
 }
 
 export default function StockMediaSearchExample({ className = '' }: StockMediaSearchExampleProps) {
-  const t = useTranslations('StockMediaSearch');
   
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +61,6 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
   // Trending media
   const {
     data: trendingMedia,
-    isLoading: isTrendingLoading,
   } = useTrendingStockMedia({
     limit: 12,
     type: 'image',
@@ -72,7 +69,6 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
   // Related media
   const {
     data: relatedMedia,
-    isLoading: isRelatedLoading,
   } = useRelatedStockMedia(selectedMedia?.id || '', {
     limit: 8,
     enabled: !!selectedMedia?.id,
@@ -81,7 +77,6 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
   // Search suggestions
   const {
     data: suggestions,
-    isLoading: isSuggestionsLoading,
   } = useSearchSuggestions(searchQuery, {
     limit: 8,
     enabled: searchQuery.trim().length >= 2,
@@ -90,13 +85,11 @@ export default function StockMediaSearchExample({ className = '' }: StockMediaSe
   // Search filters
   const {
     data: filters,
-    isLoading: isFiltersLoading,
   } = useSearchFilters();
   
   // Search analytics
   const {
     data: analytics,
-    isLoading: isAnalyticsLoading,
   } = useSearchAnalytics(searchParams, {
     enabled: !!searchParams.query,
   });

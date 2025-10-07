@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import {
   useStockMediaSearch,
@@ -20,11 +19,10 @@ interface NehtwAPIExampleProps {
 }
 
 export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps) {
-  const t = useTranslations('NehtwAPI');
   
   // State for different API operations
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMedia, setSelectedMedia] = useState<{ id: string; title: string; thumbnail: string; cost: number; source: string; ext: string } | null>(null);
+  const [selectedMedia] = useState<{ id: string; title: string; thumbnail: string; cost: number; source: string; ext: string } | null>(null);
   const [orderTaskId, setOrderTaskId] = useState<string | null>(null);
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiJobId, setAiJobId] = useState<string | null>(null);
@@ -54,7 +52,6 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
   // Download Link
   const {
     data: downloadLink,
-    isLoading: isDownloadLinkLoading,
   } = useDownloadLink({
     taskId: orderTaskId || '',
     responseType: 'original',
@@ -76,7 +73,6 @@ export default function NehtwAPIExample({ className = '' }: NehtwAPIExampleProps
   // AI Generation History
   const {
     data: aiHistory,
-    isLoading: isAiHistoryLoading,
   } = useAIGenerationHistory({
     page: 1,
     limit: 10,

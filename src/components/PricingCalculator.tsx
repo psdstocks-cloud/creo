@@ -1,13 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
 import {
   calculateTieredPricing,
-  formatPricingResult,
-  formatTierBreakdown,
   getPricingTier,
-  comparePricing,
   PricingCalculationResult
 } from '../utils/pricing';
 
@@ -24,7 +20,6 @@ export default function PricingCalculator({
   onPointsChange,
   onCostChange
 }: PricingCalculatorProps) {
-  const t = useTranslations('PricingCalculator');
   const [points, setPoints] = useState(initialPoints);
   const [result, setResult] = useState<PricingCalculationResult | null>(null);
   const [error, setError] = useState<string | null>(null);

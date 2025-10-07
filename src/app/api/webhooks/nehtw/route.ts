@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Handle GET requests (for webhook verification)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const headersList = headers();
     const eventName = headersList.get('x-neh-event_name');
