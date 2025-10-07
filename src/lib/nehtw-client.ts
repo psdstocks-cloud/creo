@@ -1,12 +1,21 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-
-// Define proper error response interfaces
-interface NehtwErrorResponse {
-  message?: string;
-  error?: string;
-  code?: string;
-  details?: unknown;
-}
+import {
+  NehtwBaseResponse,
+  NehtwErrorResponse,
+  StockSearchParams,
+  StockSearchResponse,
+  OrderRequest,
+  OrderResponse,
+  OrderStatus,
+  DownloadLink,
+  AIGenerationRequest,
+  AIGenerationResponse,
+  AIGenerationJob,
+  AccountBalance,
+  UserProfile,
+  StockSitesResponse,
+  NehtwAPIError as NehtwAPIErrorType,
+} from '../types/nehtw';
 
 // Custom Error Classes
 export class NehtwAPIError extends Error {
@@ -42,76 +51,7 @@ export class NehtwAuthError extends NehtwAPIError {
   }
 }
 
-// API Response Interfaces
-export interface NehtwAPIResponse<T = unknown> {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: string;
-  timestamp: string;
-}
-
-export interface NehtwSearchParams {
-  query: string;
-  page?: number;
-  limit?: number;
-  type?: 'image' | 'video' | 'audio' | 'all';
-  category?: string;
-  sort?: 'relevance' | 'newest' | 'oldest' | 'popular';
-}
-
-export interface NehtwSearchResult {
-  id: string;
-  title: string;
-  description: string;
-  url: string;
-  thumbnail: string;
-  type: 'image' | 'video' | 'audio';
-  category: string;
-  tags: string[];
-  size: number;
-  dimensions?: {
-    width: number;
-    height: number;
-  };
-  duration?: number; // for video/audio
-  created_at: string;
-  updated_at: string;
-}
-
-export interface NehtwSearchResponse {
-  results: NehtwSearchResult[];
-  total: number;
-  page: number;
-  limit: number;
-  has_more: boolean;
-}
-
-export interface NehtwOrderRequest {
-  site_id: string;
-  stock_id: string;
-  user_id?: string;
-  metadata?: Record<string, unknown>;
-}
-
-export interface NehtwOrderResponse {
-  order_id: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  site_id: string;
-  stock_id: string;
-  created_at: string;
-  updated_at: string;
-  download_url?: string;
-  expires_at?: string;
-}
-
-export interface NehtwDownloadLink {
-  url: string;
-  filename: string;
-  size: number;
-  expires_at: string;
-  status: 'active' | 'expired' | 'used';
-}
+// Legacy interfaces - now using comprehensive types from ../types/nehtw
 
 // Retry Configuration
 interface RetryConfig {
@@ -263,8 +203,8 @@ export class NehtwAPIClient {
   }
 
   // Public API Methods
-  async search(params: NehtwSearchParams): Promise<NehtwSearchResponse> {
-    const requestFn = () => this.client.get<NehtwAPIResponse<NehtwSearchResponse>>('/search', {
+  async search(params: StockSearchParams): Promise<StockSearchResponse> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<StockSearchResponse>>('/search', {
       params: {
         q: params.query,
         page: params.page || 1,
@@ -279,62 +219,43 @@ export class NehtwAPIClient {
     return response.data.data;
   }
 
-  async createOrder(orderData: NehtwOrderRequest): Promise<NehtwOrderResponse> {
-    const requestFn = () => this.client.post<NehtwAPIResponse<NehtwOrderResponse>>('/orders', orderData);
+  async createOrder(orderData: OrderRequest): Promise<OrderResponse> {
+    const requestFn = () => this.client.post<NehtwBaseResponse<OrderResponse>>('/orders', orderData);
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
   }
 
-  async getOrderStatus(orderId: string): Promise<NehtwOrderResponse> {
-    const requestFn = () => this.client.get<NehtwAPIResponse<NehtwOrderResponse>>(`/orders/${orderId}`);
+  async getOrderStatus(orderId: string): Promise<OrderStatus> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<OrderStatus>>(`/orders/${orderId}`);
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
   }
 
-  async getDownloadLink(orderId: string): Promise<NehtwDownloadLink> {
-    const requestFn = () => this.client.get<NehtwAPIResponse<NehtwDownloadLink>>(`/orders/${orderId}/download`);
+  async getDownloadLink(orderId: string): Promise<DownloadLink> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<DownloadLink>>(`/orders/${orderId}/download`);
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
   }
 
-  async getCredits(): Promise<{ balance: number; currency: string }> {
-    const requestFn = () => this.client.get<NehtwAPIResponse<{ balance: number; currency: string }>>('/credits');
+  async getCredits(): Promise<AccountBalance> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<AccountBalance>>('/credits');
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
   }
 
-  async generateAI(prompt: string, options?: {
-    style?: string;
-    size?: string;
-    count?: number;
-  }): Promise<{ job_id: string; status: string; estimated_time?: number }> {
-    const requestFn = () => this.client.post<NehtwAPIResponse<{ job_id: string; status: string; estimated_time?: number }>>('/ai/generate', {
-      prompt,
-      ...options,
-    });
+  async generateAI(request: AIGenerationRequest): Promise<AIGenerationResponse> {
+    const requestFn = () => this.client.post<NehtwBaseResponse<AIGenerationResponse>>('/ai/generate', request);
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
   }
 
-  async getAIJobStatus(jobId: string): Promise<{
-    job_id: string;
-    status: string;
-    progress?: number;
-    result?: { images: string[] };
-    error?: string;
-  }> {
-    const requestFn = () => this.client.get<NehtwAPIResponse<{
-      job_id: string;
-      status: string;
-      progress?: number;
-      result?: { images: string[] };
-      error?: string;
-    }>>(`/ai/jobs/${jobId}`);
+  async getAIJobStatus(jobId: string): Promise<AIGenerationJob> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<AIGenerationJob>>(`/ai/jobs/${jobId}`);
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
@@ -353,9 +274,24 @@ export class NehtwAPIClient {
     this.client.defaults.headers['X-Api-Key'] = apiKey;
   }
 
+  // Additional API Methods
+  async getUserProfile(): Promise<UserProfile> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<UserProfile>>('/me');
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async getStockSites(): Promise<StockSitesResponse> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<StockSitesResponse>>('/stocksites');
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
   // Health check method
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
-    const requestFn = () => this.client.get<NehtwAPIResponse<{ status: string; timestamp: string }>>('/health');
+    const requestFn = () => this.client.get<NehtwBaseResponse<{ status: string; timestamp: string }>>('/health');
     
     const response = await this.retryRequest(requestFn);
     return response.data.data;
