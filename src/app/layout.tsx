@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientAuthProvider from "../components/ClientAuthProvider";
+import { validateEnvironmentOnStartup } from "../utils/env-validation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Validate environment variables on startup
+  validateEnvironmentOnStartup();
+
   return (
     <html lang="en">
       <body
