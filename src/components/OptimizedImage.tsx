@@ -123,7 +123,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   width = 300,
   height = 200,
   className = '',
-  placeholder: _placeholder,
+  placeholder,
   blurDataURL,
   priority = false,
   quality = 75,
