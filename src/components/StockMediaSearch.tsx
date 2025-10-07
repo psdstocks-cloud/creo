@@ -1,11 +1,11 @@
+'use client';
+
 /**
  * StockMediaSearch Component
  * 
  * Comprehensive stock media search interface with debounced search,
  * site selection, results grid, preview modal, and cart functionality.
  */
-
-'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';

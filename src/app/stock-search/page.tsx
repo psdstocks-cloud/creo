@@ -5,8 +5,6 @@
  * with all features including search, filters, preview, and cart functionality.
  */
 
-'use client';
-
 import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -23,7 +21,7 @@ const StockMediaSearch = dynamic(() => import('../../components/StockMediaSearch
   )
 });
 
-const StockSearchPage: React.FC = () => {
+export default function StockSearchPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center">
@@ -36,6 +34,4 @@ const StockSearchPage: React.FC = () => {
       <StockMediaSearch />
     </Suspense>
   );
-};
-
-export default StockSearchPage;
+}
