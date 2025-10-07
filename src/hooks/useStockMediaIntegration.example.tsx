@@ -5,7 +5,8 @@
  * with proper error handling, loading states, and user interactions.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
 import {
   useStockInfo,
   useCreateOrder,
@@ -116,9 +117,11 @@ export function StockInfoExample() {
       ) : stockInfo ? (
         <div className="space-y-4">
           <div className="flex items-center space-x-4">
-            <img
+            <Image
               src={stockInfo.thumbnail}
               alt={stockInfo.title}
+              width={96}
+              height={96}
               className="w-24 h-24 object-cover rounded"
             />
             <div>
@@ -456,9 +459,11 @@ export function AIGenerationExample() {
                   <div className="grid grid-cols-1 gap-4">
                     {jobStatus.result.images.map((image, index) => (
                       <div key={index} className="space-y-2">
-                        <img
+                        <Image
                           src={image.thumbnail_url}
                           alt={`Generated image ${index + 1}`}
+                          width={400}
+                          height={192}
                           className="w-full h-48 object-cover rounded"
                         />
                         <div className="text-sm text-gray-300">
@@ -642,8 +647,6 @@ export function AccountDashboardExample() {
 
 export function CompleteWorkflowExample() {
   const [step, setStep] = useState<'search' | 'order' | 'download'>('search');
-  const [selectedStock, setSelectedStock] = useState<any>(null);
-  const [orderId, setOrderId] = useState<string>('');
 
   // This would be a simplified version of the complete workflow
   return (
@@ -706,13 +709,5 @@ export function CompleteWorkflowExample() {
 }
 
 // ============================================================================
-// Export all examples
+// All examples are already exported with 'export function' declarations above
 // ============================================================================
-
-export {
-  StockInfoExample,
-  OrderTrackingExample,
-  AIGenerationExample,
-  AccountDashboardExample,
-  CompleteWorkflowExample,
-};

@@ -46,7 +46,7 @@ export const stockMediaKeys = {
 export interface UseStockInfoOptions {
   enabled?: boolean;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   refetchOnWindowFocus?: boolean;
   retry?: boolean | number;
   retryDelay?: number;
@@ -679,45 +679,5 @@ export function useStockSites(
 }
 
 // ============================================================================
-// Export all hooks and types
+// All hooks and types are already exported individually above
 // ============================================================================
-
-export {
-  // Query keys
-  stockMediaKeys,
-  
-  // Stock media hooks
-  useStockInfo,
-  useCreateOrder,
-  useOrderStatus,
-  useDownloadLink,
-  
-  // AI generation hooks
-  useAIGeneration,
-  useAIJobStatus,
-  
-  // Account hooks
-  useAccountBalance,
-  useUserProfile,
-  useStockSites,
-  
-  // Types
-  type UseStockInfoOptions,
-  type UseStockInfoResult,
-  type UseCreateOrderOptions,
-  type UseCreateOrderResult,
-  type UseOrderStatusOptions,
-  type UseOrderStatusResult,
-  type UseDownloadLinkOptions,
-  type UseDownloadLinkResult,
-  type UseAIGenerationOptions,
-  type UseAIGenerationResult,
-  type UseAIJobStatusOptions,
-  type UseAIJobStatusResult,
-  type UseAccountBalanceOptions,
-  type UseAccountBalanceResult,
-  type UseUserProfileOptions,
-  type UseUserProfileResult,
-  type UseStockSitesOptions,
-  type UseStockSitesResult,
-};
