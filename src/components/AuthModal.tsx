@@ -103,6 +103,15 @@ export default function AuthModal({
     setLoading(true);
     setError(null);
 
+    if (!supabase) {
+      setError({
+        message: 'Authentication service not available',
+        code: 'service_unavailable',
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data: result, error } = await supabase.auth.signUp({
         email: data.email,
@@ -138,6 +147,15 @@ export default function AuthModal({
     setLoading(true);
     setError(null);
 
+    if (!supabase) {
+      setError({
+        message: 'Authentication service not available',
+        code: 'service_unavailable',
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data: result, error } = await supabase.auth.signInWithPassword({
         email: data.email,
@@ -168,6 +186,15 @@ export default function AuthModal({
     setLoading(true);
     setError(null);
 
+    if (!supabase) {
+      setError({
+        message: 'Authentication service not available',
+        code: 'service_unavailable',
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
@@ -196,6 +223,15 @@ export default function AuthModal({
     setLoading(true);
     setError(null);
 
+    if (!supabase) {
+      setError({
+        message: 'Authentication service not available',
+        code: 'service_unavailable',
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.updateUser({
         password: data.password,
@@ -223,6 +259,15 @@ export default function AuthModal({
   const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'github' | 'twitter') => {
     setLoading(true);
     setError(null);
+
+    if (!supabase) {
+      setError({
+        message: 'Authentication service not available',
+        code: 'service_unavailable',
+      });
+      setLoading(false);
+      return;
+    }
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({

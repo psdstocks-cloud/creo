@@ -27,9 +27,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabase!.auth.getSession();
       if (error) {
         console.error('Error getting session:', error);
       } else {
@@ -42,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getInitialSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase!.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user || null);
       setLoading(false);
@@ -73,6 +78,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase not initialized') };
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -86,6 +94,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const signUp = async (email: string, password: string, metadata?: Record<string, unknown>) => {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase not initialized') };
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -102,6 +113,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const signOut = async () => {
+    if (!supabase) {
+      return { error: new Error('Supabase not initialized') };
+    }
     setLoading(true);
     try {
       const { error } = await supabase.auth.signOut();
@@ -112,6 +126,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const signInWithProvider = async (provider: 'google' | 'facebook' | 'github' | 'twitter') => {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase not initialized') };
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -127,6 +144,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const resetPassword = async (email: string) => {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase not initialized') };
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -139,6 +159,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const updatePassword = async (password: string) => {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase not initialized') };
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.updateUser({

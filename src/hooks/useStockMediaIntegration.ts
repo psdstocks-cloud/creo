@@ -78,7 +78,7 @@ export function useStockInfo(
   const {
     enabled = true,
     staleTime = 5 * 60 * 1000, // 5 minutes
-    cacheTime = 10 * 60 * 1000, // 10 minutes
+    gcTime = 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus = false,
     retry = 3,
     retryDelay = 1000,
@@ -109,7 +109,7 @@ export function useStockInfo(
     },
     enabled: enabled && Boolean(site && id),
     staleTime,
-    cacheTime,
+    gcTime,
     refetchOnWindowFocus,
     retry,
     retryDelay,
@@ -213,7 +213,7 @@ export interface UseOrderStatusOptions {
   enabled?: boolean;
   refetchInterval?: number | false;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   retry?: boolean | number;
   retryDelay?: number;
 }
@@ -242,7 +242,7 @@ export function useOrderStatus(
     enabled = true,
     refetchInterval = 2000, // 2 seconds
     staleTime = 0, // Always fresh for status
-    cacheTime = 5 * 60 * 1000, // 5 minutes
+    gcTime = 5 * 60 * 1000, // 5 minutes
     retry = 3,
     retryDelay = 1000,
   } = options;
@@ -253,15 +253,15 @@ export function useOrderStatus(
       return await nehtwClient.getOrderStatus(taskId);
     },
     enabled: enabled && Boolean(taskId),
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Stop polling when order is completed or failed
-      if (data?.status === 'completed' || data?.status === 'failed' || data?.status === 'cancelled') {
+      if (query.state.data?.status === 'completed' || query.state.data?.status === 'failed' || query.state.data?.status === 'cancelled') {
         return false;
       }
       return refetchInterval;
     },
     staleTime,
-    cacheTime,
+    gcTime,
     retry,
     retryDelay,
   });
@@ -287,7 +287,7 @@ export function useOrderStatus(
 export interface UseDownloadLinkOptions {
   enabled?: boolean;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   retry?: boolean | number;
   retryDelay?: number;
 }
@@ -316,7 +316,7 @@ export function useDownloadLink(
   const {
     enabled = true,
     staleTime = 5 * 60 * 1000, // 5 minutes
-    cacheTime = 10 * 60 * 1000, // 10 minutes
+    gcTime = 10 * 60 * 1000, // 10 minutes
     retry = 3,
     retryDelay = 1000,
   } = options;
@@ -328,7 +328,7 @@ export function useDownloadLink(
     },
     enabled: enabled && Boolean(taskId),
     staleTime,
-    cacheTime,
+    gcTime,
     retry,
     retryDelay,
   });
@@ -430,7 +430,7 @@ export interface UseAIJobStatusOptions {
   enabled?: boolean;
   refetchInterval?: number | false;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   retry?: boolean | number;
   retryDelay?: number;
 }
@@ -459,7 +459,7 @@ export function useAIJobStatus(
     enabled = true,
     refetchInterval = 5000, // 5 seconds (AI jobs take longer)
     staleTime = 0, // Always fresh for status
-    cacheTime = 10 * 60 * 1000, // 10 minutes
+    gcTime = 10 * 60 * 1000, // 10 minutes
     retry = 3,
     retryDelay = 1000,
   } = options;
@@ -470,15 +470,15 @@ export function useAIJobStatus(
       return await nehtwClient.getAIJobStatus(jobId);
     },
     enabled: enabled && Boolean(jobId),
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Stop polling when job is completed or failed
-      if (data?.status === 'completed' || data?.status === 'failed' || data?.status === 'cancelled') {
+      if (query.state.data?.status === 'completed' || query.state.data?.status === 'failed' || query.state.data?.status === 'cancelled') {
         return false;
       }
       return refetchInterval;
     },
     staleTime,
-    cacheTime,
+    gcTime,
     retry,
     retryDelay,
   });
@@ -504,7 +504,7 @@ export function useAIJobStatus(
 export interface UseAccountBalanceOptions {
   enabled?: boolean;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   refetchOnWindowFocus?: boolean;
   retry?: boolean | number;
   retryDelay?: number;
@@ -530,7 +530,7 @@ export function useAccountBalance(
   const {
     enabled = true,
     staleTime = 2 * 60 * 1000, // 2 minutes
-    cacheTime = 5 * 60 * 1000, // 5 minutes
+    gcTime = 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus = true,
     retry = 3,
     retryDelay = 1000,
@@ -543,7 +543,7 @@ export function useAccountBalance(
     },
     enabled,
     staleTime,
-    cacheTime,
+    gcTime,
     refetchOnWindowFocus,
     retry,
     retryDelay,
@@ -563,7 +563,7 @@ export function useAccountBalance(
 export interface UseUserProfileOptions {
   enabled?: boolean;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   refetchOnWindowFocus?: boolean;
   retry?: boolean | number;
   retryDelay?: number;
@@ -589,7 +589,7 @@ export function useUserProfile(
   const {
     enabled = true,
     staleTime = 5 * 60 * 1000, // 5 minutes
-    cacheTime = 10 * 60 * 1000, // 10 minutes
+    gcTime = 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus = false,
     retry = 3,
     retryDelay = 1000,
@@ -602,7 +602,7 @@ export function useUserProfile(
     },
     enabled,
     staleTime,
-    cacheTime,
+    gcTime,
     refetchOnWindowFocus,
     retry,
     retryDelay,
@@ -622,7 +622,7 @@ export function useUserProfile(
 export interface UseStockSitesOptions {
   enabled?: boolean;
   staleTime?: number;
-  cacheTime?: number;
+  gcTime?: number;
   refetchOnWindowFocus?: boolean;
   retry?: boolean | number;
   retryDelay?: number;
@@ -648,7 +648,7 @@ export function useStockSites(
   const {
     enabled = true,
     staleTime = 10 * 60 * 1000, // 10 minutes
-    cacheTime = 30 * 60 * 1000, // 30 minutes
+    gcTime = 30 * 60 * 1000, // 30 minutes
     refetchOnWindowFocus = false,
     retry = 3,
     retryDelay = 1000,
@@ -661,7 +661,7 @@ export function useStockSites(
     },
     enabled,
     staleTime,
-    cacheTime,
+    gcTime,
     refetchOnWindowFocus,
     retry,
     retryDelay,
