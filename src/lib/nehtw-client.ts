@@ -1,4 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+
+// Define proper error response interfaces
+interface NehtwErrorResponse {
+  message?: string;
+  error?: string;
+  code?: string;
+  details?: unknown;
+}
 
 // Custom Error Classes
 export class NehtwAPIError extends Error {
@@ -194,7 +202,7 @@ export class NehtwAPIClient {
     );
   }
 
-  private handleError(error: AxiosError): NehtwAPIError {
+  private handleError(error: AxiosError<NehtwErrorResponse>): NehtwAPIError {
     if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
       return new NehtwTimeoutError('Request timed out');
     }
@@ -208,7 +216,13 @@ export class NehtwAPIClient {
     }
 
     const statusCode = error.response?.status || 500;
-    const message = error.response?.data?.message || error.message || 'Unknown error occurred';
+    
+    // Safely access message with proper typing
+    const message = error.response?.data?.message || 
+                   error.response?.data?.error || 
+                   error.message || 
+                   'Unknown error occurred';
+    
     const code = error.response?.data?.code || 'UNKNOWN_ERROR';
     const details = error.response?.data;
 
