@@ -1,570 +1,445 @@
-/**
- * API Testing Utilities
- * 
- * Comprehensive testing suite for API endpoints including mock responses,
- * validation, rate limiting compliance, and error scenario testing.
- */
-
-import { AxiosResponse } from 'axios';
+import { nehtwClient, NehtwAPIError } from '@/lib/nehtw-api-client';
 
 // ============================================================================
-// Types and Interfaces
+// API Testing Utilities for Development and Debugging
 // ============================================================================
 
-export interface MockApiResponse<T = unknown> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: Record<string, string>;
-  config?: Record<string, unknown>;
-  delay?: number;
+export interface TestResult {
+  success: boolean;
+  endpoint: string;
+  duration: number;
+  data?: unknown;
+  error?: string;
+  timestamp: string;
 }
 
-export interface ApiTestConfig {
-  baseUrl: string;
-  timeout: number;
-  retries: number;
-  rateLimit: {
-    requests: number;
-    window: number; // in milliseconds
+export interface TestSuite {
+  name: string;
+  tests: TestResult[];
+  totalDuration: number;
+  successCount: number;
+  failureCount: number;
+}
+
+// ============================================================================
+// Individual Test Functions
+// ============================================================================
+
+/**
+ * Test stock sites endpoint
+ */
+export async function testStockSites(): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log('🧪 Testing stock sites endpoint...');
+    const data = await nehtwClient.getStockSites();
+    const duration = Date.now() - startTime;
+    
+    console.log('✅ Stock sites test passed:', { duration, siteCount: Object.keys(data).length });
+    
+    return {
+      success: true,
+      endpoint: 'GET /api/stocksites',
+      duration,
+      data,
+      timestamp
+    };
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error('❌ Stock sites test failed:', errorMessage);
+    
+    return {
+      success: false,
+      endpoint: 'GET /api/stocksites',
+      duration,
+      error: errorMessage,
+      timestamp
+    };
+  }
+}
+
+/**
+ * Test stock info endpoint with sample data
+ */
+export async function testStockInfo(site: string = 'shutterstock', id: string = '12345'): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log(`🧪 Testing stock info endpoint for ${site}/${id}...`);
+    const data = await nehtwClient.getStockInfo(site, id);
+    const duration = Date.now() - startTime;
+    
+    console.log('✅ Stock info test passed:', { duration, title: data.data?.title });
+    
+    return {
+      success: true,
+      endpoint: `GET /api/stockinfo/${site}/${id}`,
+      duration,
+      data,
+      timestamp
+    };
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error('❌ Stock info test failed:', errorMessage);
+    
+    return {
+      success: false,
+      endpoint: `GET /api/stockinfo/${site}/${id}`,
+      duration,
+      error: errorMessage,
+      timestamp
+    };
+  }
+}
+
+/**
+ * Test user balance endpoint
+ */
+export async function testUserBalance(): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log('🧪 Testing user balance endpoint...');
+    const data = await nehtwClient.getUserBalance();
+    const duration = Date.now() - startTime;
+    
+    console.log('✅ User balance test passed:', { duration, balance: data.balance });
+    
+    return {
+      success: true,
+      endpoint: 'GET /api/me',
+      duration,
+      data,
+      timestamp
+    };
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error('❌ User balance test failed:', errorMessage);
+    
+    return {
+      success: false,
+      endpoint: 'GET /api/me',
+      duration,
+      error: errorMessage,
+      timestamp
+    };
+  }
+}
+
+/**
+ * Test rate limiting by making multiple rapid requests
+ */
+export async function testRateLimit(): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log('🧪 Testing rate limiting with rapid requests...');
+    
+    const requests: Promise<void>[] = [];
+    const requestTimes: number[] = [];
+    
+    // Make 3 rapid requests to test rate limiting
+    for (let i = 0; i < 3; i++) {
+      const requestStart = Date.now();
+      requests.push(
+        nehtwClient.getStockSites().then(() => {
+          requestTimes.push(Date.now() - requestStart);
+        })
+      );
+    }
+    
+    await Promise.all(requests);
+    const duration = Date.now() - startTime;
+    
+    console.log('✅ Rate limit test passed:', { 
+      duration, 
+      requestTimes,
+      averageTime: requestTimes.reduce((a, b) => a + b, 0) / requestTimes.length
+    });
+    
+    return {
+      success: true,
+      endpoint: 'Rate Limit Test (3 rapid requests)',
+      duration,
+      data: { requestTimes, averageTime: requestTimes.reduce((a, b) => a + b, 0) / requestTimes.length },
+      timestamp
+    };
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error('❌ Rate limit test failed:', errorMessage);
+    
+    return {
+      success: false,
+      endpoint: 'Rate Limit Test',
+      duration,
+      error: errorMessage,
+      timestamp
+    };
+  }
+}
+
+/**
+ * Test AI generation endpoint
+ */
+export async function testAIGeneration(prompt: string = 'A beautiful sunset over mountains'): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log('🧪 Testing AI generation endpoint...');
+    const data = await nehtwClient.createAIJob(prompt);
+    const duration = Date.now() - startTime;
+    
+    console.log('✅ AI generation test passed:', { duration, jobId: data.job_id });
+    
+    return {
+      success: true,
+      endpoint: 'POST /api/aig/create',
+      duration,
+      data,
+      timestamp
+    };
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error('❌ AI generation test failed:', errorMessage);
+    
+    return {
+      success: false,
+      endpoint: 'POST /api/aig/create',
+      duration,
+      error: errorMessage,
+      timestamp
+    };
+  }
+}
+
+/**
+ * Test health check endpoint
+ */
+export async function testHealthCheck(): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log('🧪 Testing health check endpoint...');
+    const data = await nehtwClient.healthCheck();
+    const duration = Date.now() - startTime;
+    
+    console.log('✅ Health check test passed:', { duration, status: data.status });
+    
+    return {
+      success: true,
+      endpoint: 'GET /api/health',
+      duration,
+      data,
+      timestamp
+    };
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error('❌ Health check test failed:', errorMessage);
+    
+    return {
+      success: false,
+      endpoint: 'GET /api/health',
+      duration,
+      error: errorMessage,
+      timestamp
+    };
+  }
+}
+
+// ============================================================================
+// Test Suite Functions
+// ============================================================================
+
+/**
+ * Run all basic API tests
+ */
+export async function runBasicTests(): Promise<TestSuite> {
+  const startTime = Date.now();
+  const tests: TestResult[] = [];
+  
+  console.log('🚀 Starting basic API tests...');
+  
+  // Run tests in sequence to respect rate limiting
+  tests.push(await testHealthCheck());
+  tests.push(await testStockSites());
+  tests.push(await testUserBalance());
+  tests.push(await testStockInfo());
+  
+  const totalDuration = Date.now() - startTime;
+  const successCount = tests.filter(t => t.success).length;
+  const failureCount = tests.filter(t => !t.success).length;
+  
+  console.log(`🏁 Basic tests completed: ${successCount} passed, ${failureCount} failed in ${totalDuration}ms`);
+  
+  return {
+    name: 'Basic API Tests',
+    tests,
+    totalDuration,
+    successCount,
+    failureCount
   };
 }
 
-export interface ApiTestResult {
-  endpoint: string;
-  method: string;
-  status: 'success' | 'error' | 'timeout' | 'rate_limited';
-  responseTime: number;
-  statusCode?: number;
-  error?: string;
-  timestamp: Date;
+/**
+ * Run comprehensive test suite
+ */
+export async function runComprehensiveTests(): Promise<TestSuite> {
+  const startTime = Date.now();
+  const tests: TestResult[] = [];
+  
+  console.log('🚀 Starting comprehensive API tests...');
+  
+  // Run all tests in sequence
+  tests.push(await testHealthCheck());
+  tests.push(await testStockSites());
+  tests.push(await testUserBalance());
+  tests.push(await testStockInfo());
+  tests.push(await testRateLimit());
+  tests.push(await testAIGeneration());
+  
+  const totalDuration = Date.now() - startTime;
+  const successCount = tests.filter(t => t.success).length;
+  const failureCount = tests.filter(t => !t.success).length;
+  
+  console.log(`🏁 Comprehensive tests completed: ${successCount} passed, ${failureCount} failed in ${totalDuration}ms`);
+  
+  return {
+    name: 'Comprehensive API Tests',
+    tests,
+    totalDuration,
+    successCount,
+    failureCount
+  };
 }
 
-export interface RateLimitInfo {
-  remaining: number;
-  reset: number;
-  limit: number;
-}
-
-export interface ApiMetrics {
-  totalRequests: number;
-  successfulRequests: number;
-  failedRequests: number;
-  averageResponseTime: number;
-  rateLimitHits: number;
-  errorRate: number;
-}
-
-// ============================================================================
-// Mock API Responses
-// ============================================================================
-
-export class MockApiServer {
-  private responses: Map<string, MockApiResponse> = new Map();
-  private delays: Map<string, number> = new Map();
-
-  /**
-   * Register a mock response for an endpoint
-   */
-  registerMock<T>(
-    method: string,
-    endpoint: string,
-    response: MockApiResponse<T>,
-    delay: number = 0
-  ): void {
-    const key = `${method.toUpperCase()}:${endpoint}`;
-    this.responses.set(key, response);
-    this.delays.set(key, delay);
-  }
-
-  /**
-   * Get mock response for an endpoint
-   */
-  getMock(method: string, endpoint: string): MockApiResponse | null {
-    const key = `${method.toUpperCase()}:${endpoint}`;
-    return this.responses.get(key) || null;
-  }
-
-  /**
-   * Get delay for an endpoint
-   */
-  getDelay(method: string, endpoint: string): number {
-    const key = `${method.toUpperCase()}:${endpoint}`;
-    return this.delays.get(key) || 0;
-  }
-
-  /**
-   * Clear all mocks
-   */
-  clearMocks(): void {
-    this.responses.clear();
-    this.delays.clear();
-  }
-
-  /**
-   * Setup common mock responses for development
-   */
-  setupDevelopmentMocks(): void {
-    // Stock media search mock
-    this.registerMock('GET', '/api/stockinfo/shutterstock/12345', {
-      data: {
-        id: '12345',
-        title: 'Beautiful Landscape',
-        thumbnail: 'https://example.com/thumb.jpg',
-        cost: 15.99,
-        filesize: '2.5MB',
-        site: 'shutterstock'
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'application/json' }
-    });
-
-    // Order creation mock
-    this.registerMock('GET', '/api/stockorder/shutterstock/12345', {
-      data: {
-        task_id: 'task_12345',
-        status: 'processing',
-        estimated_time: '2-3 minutes'
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'application/json' }
-    });
-
-    // Order status mock
-    this.registerMock('GET', '/api/order/task_12345/status', {
-      data: {
-        task_id: 'task_12345',
-        status: 'ready',
-        progress: 100,
-        download_url: 'https://example.com/download/file.zip'
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'application/json' }
-    });
-
-    // AI generation mock
-    this.registerMock('POST', '/api/aig/create', {
-      data: {
-        job_id: 'job_67890',
-        status: 'generating',
-        estimated_time: '30-60 seconds'
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'application/json' }
-    });
-
-    // Account balance mock
-    this.registerMock('GET', '/api/me', {
-      data: {
-        username: 'testuser',
-        balance: 1250,
-        credits_used: 150,
-        credits_remaining: 1100
-      },
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'application/json' }
-    });
-  }
-}
-
-// ============================================================================
-// API Endpoint Testing
-// ============================================================================
-
-export class ApiTester {
-  private config: ApiTestConfig;
-  private metrics: ApiMetrics;
-  private rateLimitTracker: Map<string, RateLimitInfo> = new Map();
-
-  constructor(config: ApiTestConfig) {
-    this.config = config;
-    this.metrics = {
-      totalRequests: 0,
-      successfulRequests: 0,
-      failedRequests: 0,
-      averageResponseTime: 0,
-      rateLimitHits: 0,
-      errorRate: 0
-    };
-  }
-
-  /**
-   * Test a single API endpoint
-   */
-  async testEndpoint(
-    method: string,
-    endpoint: string,
-    data?: unknown,
-    headers?: Record<string, string>
-  ): Promise<ApiTestResult> {
-    const startTime = Date.now();
-    const fullUrl = `${this.config.baseUrl}${endpoint}`;
-
-    try {
-      // Check rate limiting
-      if (this.isRateLimited(endpoint)) {
-        return {
-          endpoint,
-          method,
-          status: 'rate_limited',
-          responseTime: Date.now() - startTime,
-          timestamp: new Date()
-        };
-      }
-
-      // Use the variables to avoid ESLint warnings
-      console.log(`Testing ${method} ${fullUrl}`, { data, headers });
-
-      // Make the request
-      const response = await this.makeRequest();
-      const responseTime = Date.now() - startTime;
-
-      // Update metrics
-      this.updateMetrics(true, responseTime);
-      this.updateRateLimitInfo(endpoint, response.headers as Record<string, string>);
-
-      return {
-        endpoint,
-        method,
-        status: 'success',
-        responseTime,
-        statusCode: response.status,
-        timestamp: new Date()
-      };
-    } catch (error) {
-      const responseTime = Date.now() - startTime;
-      this.updateMetrics(false, responseTime);
-
-      return {
-        endpoint,
-        method,
-        status: 'error',
-        responseTime,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date()
-      };
-    }
-  }
-
-  /**
-   * Test multiple endpoints concurrently
-   */
-  async testEndpoints(
-    tests: Array<{
-      method: string;
-      endpoint: string;
-      data?: unknown;
-      headers?: Record<string, string>;
-    }>
-  ): Promise<ApiTestResult[]> {
-    const promises = tests.map(test =>
-      this.testEndpoint(test.method, test.endpoint, test.data, test.headers)
-    );
-
-    return Promise.all(promises);
-  }
-
-  /**
-   * Validate API response structure
-   */
-  validateResponse<T>(
-    response: AxiosResponse<T>,
-    expectedStructure: Record<string, unknown>
-  ): { isValid: boolean; errors: string[] } {
-    const errors: string[] = [];
-
-    try {
-      const data = response.data as Record<string, unknown>;
-      
-      for (const [key, expectedType] of Object.entries(expectedStructure)) {
-        if (!(key in data)) {
-          errors.push(`Missing required field: ${key}`);
-          continue;
-        }
-
-        const actualType = typeof data[key];
-        const expectedTypeStr = typeof expectedType;
-        
-        if (actualType !== expectedTypeStr) {
-          errors.push(`Field ${key} has type ${actualType}, expected ${expectedTypeStr}`);
-        }
-      }
-
-      return {
-        isValid: errors.length === 0,
-        errors
-      };
-    } catch (error) {
-      return {
-        isValid: false,
-        errors: [`Response validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
-      };
-    }
-  }
-
-  /**
-   * Test error scenarios
-   */
-  async testErrorScenarios(endpoint: string): Promise<ApiTestResult[]> {
-    const errorTests = [
-      { method: 'GET', endpoint: `${endpoint}?invalid=param` },
-      { method: 'POST', endpoint, data: { invalid: 'data' } },
-      { method: 'GET', endpoint: `${endpoint}/nonexistent` },
-      { method: 'DELETE', endpoint: `${endpoint}/protected` }
-    ];
-
-    return this.testEndpoints(errorTests);
-  }
-
-  /**
-   * Get current metrics
-   */
-  getMetrics(): ApiMetrics {
-    return { ...this.metrics };
-  }
-
-  /**
-   * Reset metrics
-   */
-  resetMetrics(): void {
-    this.metrics = {
-      totalRequests: 0,
-      successfulRequests: 0,
-      failedRequests: 0,
-      averageResponseTime: 0,
-      rateLimitHits: 0,
-      errorRate: 0
-    };
-  }
-
-  // Private methods
-  private async makeRequest(): Promise<AxiosResponse> {
-    // This would be replaced with actual HTTP client implementation
-    // For now, we'll simulate the request
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (Math.random() > 0.1) { // 90% success rate for testing
-          resolve({
-            data: { success: true },
-            status: 200,
-            statusText: 'OK',
-            headers: {},
-            config: {}
-          } as AxiosResponse);
-        } else {
-          reject(new Error('Simulated network error'));
-        }
-      }, Math.random() * 1000); // Random delay 0-1s
-    });
-  }
-
-  private isRateLimited(endpoint: string): boolean {
-    const rateLimitInfo = this.rateLimitTracker.get(endpoint);
-    if (!rateLimitInfo) return false;
-
-    const now = Date.now();
-    if (now > rateLimitInfo.reset) {
-      this.rateLimitTracker.delete(endpoint);
-      return false;
-    }
-
-    return rateLimitInfo.remaining <= 0;
-  }
-
-  private updateRateLimitInfo(endpoint: string, headers: Record<string, string>): void {
-    const remaining = parseInt(headers['x-ratelimit-remaining'] || '100');
-    const reset = parseInt(headers['x-ratelimit-reset'] || '0');
-    const limit = parseInt(headers['x-ratelimit-limit'] || '100');
-
-    this.rateLimitTracker.set(endpoint, {
-      remaining,
-      reset: reset * 1000, // Convert to milliseconds
-      limit
-    });
-  }
-
-  private updateMetrics(success: boolean, responseTime: number): void {
-    this.metrics.totalRequests++;
+/**
+ * Test specific endpoint with custom parameters
+ */
+export async function testCustomEndpoint(
+  endpoint: string,
+  params: Record<string, unknown> = {}
+): Promise<TestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
+  
+  try {
+    console.log(`🧪 Testing custom endpoint: ${endpoint}`, params);
     
-    if (success) {
-      this.metrics.successfulRequests++;
-    } else {
-      this.metrics.failedRequests++;
+    let data;
+    switch (endpoint) {
+      case 'stocksites':
+        data = await nehtwClient.getStockSites();
+        break;
+      case 'stockinfo':
+        data = await nehtwClient.getStockInfo(params.site as string, params.id as string, params.url as string);
+        break;
+      case 'userbalance':
+        data = await nehtwClient.getUserBalance();
+        break;
+      case 'aigeneration':
+        data = await nehtwClient.createAIJob(params.prompt as string);
+        break;
+      default:
+        throw new Error(`Unknown endpoint: ${endpoint}`);
     }
-
-    // Update average response time
-    this.metrics.averageResponseTime = 
-      (this.metrics.averageResponseTime * (this.metrics.totalRequests - 1) + responseTime) / 
-      this.metrics.totalRequests;
-
-    // Update error rate
-    this.metrics.errorRate = this.metrics.failedRequests / this.metrics.totalRequests;
-  }
-}
-
-// ============================================================================
-// Error Scenario Testing
-// ============================================================================
-
-export class ErrorScenarioTester {
-  /**
-   * Test network timeout scenarios
-   */
-  async testTimeoutScenarios(endpoint: string): Promise<ApiTestResult[]> {
-    const timeoutTests = [
-      { method: 'GET', endpoint: `${endpoint}?timeout=5000` },
-      { method: 'POST', endpoint, data: { large: 'data'.repeat(1000) } }
-    ];
-
-    const tester = new ApiTester({
-      baseUrl: 'https://api.example.com',
-      timeout: 1000, // 1 second timeout
-      retries: 0,
-      rateLimit: { requests: 100, window: 60000 }
-    });
-
-    return tester.testEndpoints(timeoutTests);
-  }
-
-  /**
-   * Test rate limiting scenarios
-   */
-  async testRateLimitScenarios(endpoint: string): Promise<ApiTestResult[]> {
-    const rateLimitTests = Array.from({ length: 10 }, (_, i) => ({
-      method: 'GET',
-      endpoint: `${endpoint}?test=${i}`
-    }));
-
-    const tester = new ApiTester({
-      baseUrl: 'https://api.example.com',
-      timeout: 5000,
-      retries: 0,
-      rateLimit: { requests: 5, window: 60000 } // 5 requests per minute
-    });
-
-    return tester.testEndpoints(rateLimitTests);
-  }
-
-  /**
-   * Test authentication scenarios
-   */
-  async testAuthScenarios(endpoint: string): Promise<ApiTestResult[]> {
-    const authTests = [
-      { method: 'GET', endpoint, headers: { 'Authorization': '' } },
-      { method: 'GET', endpoint, headers: { 'Authorization': 'Bearer invalid' } },
-      { method: 'GET', endpoint, headers: { 'Authorization': 'Bearer expired' } }
-    ];
-
-    const tester = new ApiTester({
-      baseUrl: 'https://api.example.com',
-      timeout: 5000,
-      retries: 0,
-      rateLimit: { requests: 100, window: 60000 }
-    });
-
-    return tester.testEndpoints(authTests);
-  }
-}
-
-// ============================================================================
-// Development Utilities
-// ============================================================================
-
-export class ApiTestingDevTools {
-  private mockServer: MockApiServer;
-  private tester: ApiTester;
-
-  constructor(config: ApiTestConfig) {
-    this.mockServer = new MockApiServer();
-    this.tester = new ApiTester(config);
-  }
-
-  /**
-   * Setup development environment
-   */
-  setupDevelopment(): void {
-    this.mockServer.setupDevelopmentMocks();
-    console.log('🚀 API Testing DevTools initialized');
-    console.log('📝 Mock responses registered');
-    console.log('🔧 Development environment ready');
-  }
-
-  /**
-   * Run comprehensive API tests
-   */
-  async runComprehensiveTests(): Promise<{
-    results: ApiTestResult[];
-    metrics: ApiMetrics;
-    summary: {
-      total: number;
-      passed: number;
-      failed: number;
-      successRate: number;
+    
+    const duration = Date.now() - startTime;
+    console.log(`✅ Custom endpoint test passed: ${endpoint}`, { duration });
+    
+    return {
+      success: true,
+      endpoint: endpoint,
+      duration,
+      data,
+      timestamp
     };
-  }> {
-    console.log('🧪 Running comprehensive API tests...');
-
-    const testEndpoints = [
-      { method: 'GET', endpoint: '/api/stockinfo/shutterstock/12345' },
-      { method: 'GET', endpoint: '/api/stockorder/shutterstock/12345' },
-      { method: 'GET', endpoint: '/api/order/task_12345/status' },
-      { method: 'POST', endpoint: '/api/aig/create', data: { prompt: 'test' } },
-      { method: 'GET', endpoint: '/api/me' }
-    ];
-
-    const results = await this.tester.testEndpoints(testEndpoints);
-    const metrics = this.tester.getMetrics();
-
-    const summary = {
-      total: results.length,
-      passed: results.filter(r => r.status === 'success').length,
-      failed: results.filter(r => r.status === 'error').length,
-      successRate: results.filter(r => r.status === 'success').length / results.length
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    const errorMessage = error instanceof NehtwAPIError ? error.message : 'Unknown error';
+    
+    console.error(`❌ Custom endpoint test failed: ${endpoint}`, errorMessage);
+    
+    return {
+      success: false,
+      endpoint: endpoint,
+      duration,
+      error: errorMessage,
+      timestamp
     };
-
-    console.log('✅ API tests completed');
-    console.log(`📊 Results: ${summary.passed}/${summary.total} passed (${(summary.successRate * 100).toFixed(1)}%)`);
-    console.log(`⏱️ Average response time: ${metrics.averageResponseTime.toFixed(2)}ms`);
-    console.log(`❌ Error rate: ${(metrics.errorRate * 100).toFixed(1)}%`);
-
-    return { results, metrics, summary };
-  }
-
-  /**
-   * Get mock server instance
-   */
-  getMockServer(): MockApiServer {
-    return this.mockServer;
-  }
-
-  /**
-   * Get tester instance
-   */
-  getTester(): ApiTester {
-    return this.tester;
   }
 }
 
 // ============================================================================
-// Export utilities
+// Logging and Monitoring Utilities
 // ============================================================================
 
-export const createApiTester = (config: ApiTestConfig) => new ApiTester(config);
-export const createMockServer = () => new MockApiServer();
-export const createDevTools = (config: ApiTestConfig) => new ApiTestingDevTools(config);
+/**
+ * Log test results to console with formatting
+ */
+export function logTestResults(suite: TestSuite): void {
+  console.log('\n' + '='.repeat(60));
+  console.log(`📊 ${suite.name} Results`);
+  console.log('='.repeat(60));
+  console.log(`⏱️  Total Duration: ${suite.totalDuration}ms`);
+  console.log(`✅ Passed: ${suite.successCount}`);
+  console.log(`❌ Failed: ${suite.failureCount}`);
+  console.log(`📈 Success Rate: ${((suite.successCount / suite.tests.length) * 100).toFixed(1)}%`);
+  console.log('\n📋 Individual Test Results:');
+  
+  suite.tests.forEach((test, index) => {
+    const status = test.success ? '✅' : '❌';
+    const duration = `${test.duration}ms`;
+    console.log(`${status} ${index + 1}. ${test.endpoint} (${duration})`);
+    if (!test.success && test.error) {
+      console.log(`   Error: ${test.error}`);
+    }
+  });
+  
+  console.log('='.repeat(60) + '\n');
+}
 
-// Default configuration
-export const defaultApiTestConfig: ApiTestConfig = {
-  baseUrl: process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api',
-  timeout: 30000,
-  retries: 3,
-  rateLimit: {
-    requests: 100,
-    window: 60000 // 1 minute
+/**
+ * Export test results to JSON
+ */
+export function exportTestResults(suite: TestSuite): string {
+  return JSON.stringify(suite, null, 2);
+}
+
+/**
+ * Check if API is properly configured
+ */
+export function checkAPIConfiguration(): { configured: boolean; issues: string[] } {
+  const issues: string[] = [];
+  
+  if (!process.env.NEXT_PUBLIC_NEHTW_API_KEY) {
+    issues.push('NEXT_PUBLIC_NEHTW_API_KEY is not set');
   }
-};
+  
+  if (!process.env.NEXT_PUBLIC_NEHTW_BASE_URL) {
+    issues.push('NEXT_PUBLIC_NEHTW_BASE_URL is not set');
+  }
+  
+  return {
+    configured: issues.length === 0,
+    issues
+  };
+}

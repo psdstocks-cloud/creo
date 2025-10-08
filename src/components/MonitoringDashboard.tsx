@@ -25,7 +25,7 @@ import {
   PerformanceAnalytics,
   UserFeedback
 } from '../utils/error-logging';
-import { createApiTester, ApiTestResult, ApiMetrics } from '../utils/api-testing';
+// import { createApiTester, ApiTestResult, ApiMetrics } from '../utils/api-testing';
 // import { useQueryClient } from '@tanstack/react-query';
 
 // ============================================================================
@@ -50,8 +50,19 @@ interface MonitoringData {
 }
 
 interface ApiTestData {
-  results: ApiTestResult[];
-  metrics: ApiMetrics;
+  results: Array<{
+    success: boolean;
+    endpoint: string;
+    duration: number;
+    data?: unknown;
+    error?: string;
+    timestamp: string;
+  }>;
+  metrics: {
+    averageResponseTime: number;
+    totalRequests: number;
+    errorRate: number;
+  };
   summary: {
     total: number;
     passed: number;
@@ -73,12 +84,12 @@ const MonitoringDashboard: React.FC = () => {
 
   // const queryClient = useQueryClient();
   const monitoringDashboard = createMonitoringDashboard();
-  const apiTester = createApiTester({
-    baseUrl: process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api',
-    timeout: 30000,
-    retries: 3,
-    rateLimit: { requests: 100, window: 60000 }
-  });
+  // const apiTester = createApiTester({
+  //   baseUrl: process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api',
+  //   timeout: 30000,
+  //   retries: 3,
+  //   rateLimit: { requests: 100, window: 60000 }
+  // });
 
   // Load monitoring data
   useEffect(() => {
@@ -91,21 +102,21 @@ const MonitoringDashboard: React.FC = () => {
         setMonitoringData(data);
 
         // Run API tests
-        const testResults = await apiTester.testEndpoints([
-          { method: 'GET', endpoint: '/api/me' },
-          { method: 'GET', endpoint: '/api/stockinfo/shutterstock/12345' },
-          { method: 'GET', endpoint: '/api/stockorder/shutterstock/12345' }
-        ]);
+        // const testResults = await apiTester.testEndpoints([
+        //   { method: 'GET', endpoint: '/api/me' },
+        //   { method: 'GET', endpoint: '/api/stockinfo/shutterstock/12345' },
+        //   { method: 'GET', endpoint: '/api/stockorder/shutterstock/12345' }
+        // ]);
 
-        const metrics = apiTester.getMetrics();
-        const summary = {
-          total: testResults.length,
-          passed: testResults.filter(r => r.status === 'success').length,
-          failed: testResults.filter(r => r.status === 'error').length,
-          successRate: testResults.filter(r => r.status === 'success').length / testResults.length
-        };
+        // const metrics = apiTester.getMetrics();
+        // const summary = {
+        //   total: testResults.length,
+        //   passed: testResults.filter(r => r.status === 'success').length,
+        //   failed: testResults.filter(r => r.status === 'error').length,
+        //   successRate: testResults.filter(r => r.status === 'success').length / testResults.length
+        // };
 
-        setApiTestData({ results: testResults, metrics, summary });
+        // setApiTestData({ results: testResults, metrics, summary });
       } catch (error) {
         console.error('Failed to load monitoring data:', error);
       } finally {
@@ -120,7 +131,7 @@ const MonitoringDashboard: React.FC = () => {
       const interval = setInterval(loadData, 30000);
       return () => clearInterval(interval);
     }
-  }, [autoRefresh, monitoringDashboard, apiTester]);
+  }, [autoRefresh, monitoringDashboard]);
 
   const getHealthColor = (health: string) => {
     switch (health) {
@@ -447,7 +458,7 @@ const ApiTab: React.FC<{ data: ApiTestData }> = ({ data }) => {
             {(data.metrics.errorRate * 100).toFixed(1)}%
           </div>
           <div className="text-sm text-gray-400">
-            {data.metrics.failedRequests} failed requests
+            {Math.round(data.metrics.errorRate * data.metrics.totalRequests)} failed requests
           </div>
         </div>
       </div>
@@ -460,20 +471,18 @@ const ApiTab: React.FC<{ data: ApiTestData }> = ({ data }) => {
             <div key={index} className="flex justify-between items-center p-3 bg-gray-800 rounded-lg">
               <div>
                 <div className="text-white font-medium">
-                  {result.method} {result.endpoint}
+                  {result.endpoint}
                 </div>
                 <div className="text-sm text-gray-400">
-                  {result.responseTime.toFixed(2)}ms
+                  {result.duration}ms
                 </div>
               </div>
               <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                result.status === 'success' 
+                result.success 
                   ? 'bg-green-500/20 text-green-400'
-                  : result.status === 'error'
-                  ? 'bg-red-500/20 text-red-400'
-                  : 'bg-yellow-500/20 text-yellow-400'
+                  : 'bg-red-500/20 text-red-400'
               }`}>
-                {result.status}
+                {result.success ? 'Success' : 'Failed'}
               </div>
             </div>
           ))}

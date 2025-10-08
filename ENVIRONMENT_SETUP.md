@@ -10,10 +10,13 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-### **NEHTW API Configuration**
+### **NEHTW API Configuration (Enhanced for Day 1)**
 ```env
 NEXT_PUBLIC_NEHTW_API_KEY=your_nehtw_api_key
 NEXT_PUBLIC_NEHTW_BASE_URL=https://nehtw.com/api
+NEXT_PUBLIC_NEHTW_TIMEOUT=30000
+NEXT_PUBLIC_NEHTW_RETRIES=3
+NEXT_PUBLIC_NEHTW_RATE_LIMIT=2000
 ```
 
 ### **Virtual Payment System (Development)**
