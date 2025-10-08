@@ -60,6 +60,12 @@ export function Navbar() {
                   >
                     Orders
                   </Link>
+                  <Link
+                    href="/billing"
+                    className="text-gray-700 hover:text-primaryOrange transition-colors"
+                  >
+                    Billing
+                  </Link>
                 </>
               )}
             </div>
