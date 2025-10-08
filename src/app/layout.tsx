@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientAuthProvider from "../components/ClientAuthProvider";
 import { validateEnvironmentOnStartup } from "../utils/env-validation";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+// Temporarily disable next-intl to test basic deployment
+// import { NextIntlClientProvider } from 'next-intl';
+// import { getMessages } from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,17 +30,18 @@ export default async function RootLayout({
   // Validate environment variables on startup
   validateEnvironmentOnStartup();
 
-  // Get messages for the default locale
-  const messages = await getMessages();
+  // Temporarily disable next-intl
+  // const messages = await getMessages();
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
+        {/* Temporarily disable NextIntlClientProvider */}
+        {/* <NextIntlClientProvider messages={messages}> */}
           <ClientAuthProvider>{children}</ClientAuthProvider>
-        </NextIntlClientProvider>
+        {/* </NextIntlClientProvider> */}
       </body>
     </html>
   );
