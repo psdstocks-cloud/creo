@@ -9,9 +9,28 @@ interface AuthContextType {
   session: Session | null
   loading: boolean
   signOut: () => Promise<void>
+  isAdmin: boolean
+  userRole: string | null
+  hasPermission: (permission: string) => boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+// Demo admin accounts for testing
+const DEMO_ADMIN_ACCOUNTS = {
+  'admin@creo.demo': {
+    role: 'super_admin',
+    permissions: ['all_access', 'user_management', 'system_settings', 'analytics', 'content_management']
+  },
+  'content@creo.demo': {
+    role: 'content_manager',
+    permissions: ['content_management', 'order_processing', 'analytics']
+  },
+  'support@creo.demo': {
+    role: 'support_admin',
+    permissions: ['user_support', 'order_management', 'basic_analytics']
+  }
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -28,6 +47,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
+    // Check for demo user first
+    const checkDemoUser = () => {
+      if (typeof window !== 'undefined') {
+        const demoUser = localStorage.getItem('demo_user')
+        const demoSession = localStorage.getItem('demo_session')
+        
+        if (demoUser && demoSession) {
+          try {
+            const user = JSON.parse(demoUser)
+            const session = JSON.parse(demoSession)
+            setUser(user)
+            setSession(session)
+            setLoading(false)
+            return true
+          } catch (error) {
+            console.warn('Invalid demo user data:', error)
+            localStorage.removeItem('demo_user')
+            localStorage.removeItem('demo_session')
+          }
+        }
+      }
+      return false
+    }
+
+    // If demo user found, use it
+    if (checkDemoUser()) {
+      return
+    }
+
+    // Otherwise, use Supabase
     if (!supabase) {
       setLoading(false)
       return
@@ -54,13 +103,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signOut = async () => {
+    // Clear demo user data
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('demo_user')
+      localStorage.removeItem('demo_session')
+    }
+    
+    // Also sign out from Supabase if available
     if (supabase) {
       await supabase.auth.signOut()
     }
+    
+    // Clear local state
+    setUser(null)
+    setSession(null)
+  }
+
+  // Admin role and permission logic
+  const userRole = useMemo(() => {
+    if (!user?.email) return null
+    const demoAccount = DEMO_ADMIN_ACCOUNTS[user.email as keyof typeof DEMO_ADMIN_ACCOUNTS]
+    return demoAccount?.role || 'user'
+  }, [user])
+
+  const isAdmin = useMemo(() => {
+    return userRole === 'super_admin' || userRole === 'content_manager' || userRole === 'support_admin'
+  }, [userRole])
+
+  const hasPermission = (permission: string): boolean => {
+    if (!user?.email) return false
+    const demoAccount = DEMO_ADMIN_ACCOUNTS[user.email as keyof typeof DEMO_ADMIN_ACCOUNTS]
+    if (!demoAccount) return false
+    
+    // Super admin has all permissions
+    if (demoAccount.role === 'super_admin') return true
+    
+    return demoAccount.permissions.includes(permission)
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      loading, 
+      signOut, 
+      isAdmin, 
+      userRole, 
+      hasPermission 
+    }}>
       {children}
     </AuthContext.Provider>
   )
