@@ -4,6 +4,8 @@ import { useState, useCallback } from 'react'
 import { useStockSites, useStockInfo, useCreateOrder, useOrderStatus, useDownloadLink } from '@/hooks/useStockMedia'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { MagnifyingGlassIcon, PhotoIcon, CloudArrowDownIcon } from '@heroicons/react/24/outline'
+// import { LoadingState, LoadingCard } from '@/components/ui/LoadingState'
+import { useToastHelpers } from '@/components/ui/Toast'
 import Image from 'next/image'
 
 // Force dynamic rendering
@@ -18,6 +20,7 @@ interface SearchParams {
 
 export default function StockSearchPage() {
   const { user } = useAuth()
+  const { success, error: showError } = useToastHelpers()
   const [searchParams, setSearchParams] = useState<SearchParams>({
     site: '',
     query: '',
@@ -61,11 +64,12 @@ export default function StockSearchPage() {
       })
       
       setActiveOrders(prev => [...prev, taskId])
+      success('Order Created', 'Your download order has been created successfully.')
     } catch (error) {
       console.error('Failed to create order:', error)
-      alert('Failed to create order. Please try again.')
+      showError('Order Failed', 'Failed to create order. Please try again.')
     }
-  }, [stockInfo, searchParams, createOrderMutation])
+  }, [stockInfo, searchParams, createOrderMutation, success, showError])
 
   if (!user) {
     return (

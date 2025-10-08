@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useUserBalance } from '@/hooks/useStockMedia'
-import { PaymentModal } from '@/components/payments/PaymentModal'
+import { VirtualPaymentModal } from '@/components/payments/VirtualPaymentModal'
 import { CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline'
 
 // Force dynamic rendering
@@ -152,9 +152,9 @@ export default function BillingPage() {
           </div>
         </div>
 
-        {/* Payment Modal */}
+        {/* Virtual Payment Modal */}
         {selectedPackage && (
-          <PaymentModal
+          <VirtualPaymentModal
             isOpen={showPaymentModal}
             onClose={() => {
               setShowPaymentModal(false)

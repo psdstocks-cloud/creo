@@ -23,19 +23,21 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <nav className="bg-glass-white backdrop-blur-glass border-b border-white/20 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link href="/" className="flex-shrink-0">
-                <span className="text-2xl font-bold text-primaryOrange">Creo</span>
+                <span className="text-2xl font-bold bg-gradient-brand bg-clip-text text-transparent font-display">
+                  Creo
+                </span>
               </Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
               <Link
                 href="/stock-search"
-                className="text-gray-700 hover:text-primaryOrange transition-colors"
+                className="text-white/80 hover:text-white transition-colors font-medium"
               >
                 Stock Search
               </Link>
@@ -44,25 +46,25 @@ export function Navbar() {
                 <>
                   <Link
                     href="/dashboard"
-                    className="text-gray-700 hover:text-primaryOrange transition-colors"
+                    className="text-white/80 hover:text-white transition-colors font-medium"
                   >
                     Dashboard
                   </Link>
                   <Link
                     href="/ai-generation"
-                    className="text-gray-700 hover:text-primaryOrange transition-colors"
+                    className="text-white/80 hover:text-white transition-colors font-medium"
                   >
                     AI Generation
                   </Link>
                   <Link
                     href="/orders"
-                    className="text-gray-700 hover:text-primaryOrange transition-colors"
+                    className="text-white/80 hover:text-white transition-colors font-medium"
                   >
                     Orders
                   </Link>
                   <Link
                     href="/billing"
-                    className="text-gray-700 hover:text-primaryOrange transition-colors"
+                    className="text-white/80 hover:text-white transition-colors font-medium"
                   >
                     Billing
                   </Link>
@@ -73,12 +75,12 @@ export function Navbar() {
             <div className="flex items-center space-x-4">
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-white/80">
                     {user.email}
                   </span>
                   <button
                     onClick={signOut}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                    className="bg-glass-white backdrop-blur-glass border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-glass-white-strong transition-all duration-300"
                   >
                     Sign Out
                   </button>
@@ -86,7 +88,7 @@ export function Navbar() {
               ) : (
                 <button
                   onClick={() => setShowAuthModal(true)}
-                  className="bg-primaryOrange text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
+                  className="bg-gradient-brand text-white px-4 py-2 rounded-lg hover:shadow-glow-orange-strong transition-all duration-300 font-medium"
                 >
                   Sign In
                 </button>
