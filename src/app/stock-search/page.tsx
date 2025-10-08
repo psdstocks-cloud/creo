@@ -1,72 +1,291 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Link from 'next/link';
+import { useState, useCallback } from 'react'
+import { useStockSites, useStockInfo, useCreateOrder, useOrderStatus, useDownloadLink } from '@/hooks/useStockMedia'
+import { useAuth } from '@/components/auth/AuthProvider'
+import { MagnifyingGlassIcon, PhotoIcon, CloudArrowDownIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+interface SearchParams {
+  site: string
+  query: string
+  id: string
+  url?: string
+}
+
 export default function StockSearchPage() {
+  const { user } = useAuth()
+  const [searchParams, setSearchParams] = useState<SearchParams>({
+    site: '',
+    query: '',
+    id: '',
+    url: ''
+  })
+  const [activeOrders, setActiveOrders] = useState<string[]>([])
+
+  // API Hooks
+  const { data: stockSites, isLoading: sitesLoading } = useStockSites()
+  const { data: stockInfo, isLoading: infoLoading, error: infoError } = useStockInfo(
+    searchParams.site, 
+    searchParams.id, 
+    searchParams.url,
+  )
+  
+  const createOrderMutation = useCreateOrder()
+  const downloadLinkMutation = useDownloadLink()
+
+  // Handle search form submission
+  const handleSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!searchParams.site || !searchParams.id) {
+      alert('Please select a site and enter an ID')
+      return
+    }
+
+    // Search is automatic via the useStockInfo hook when params change
+  }, [searchParams])
+
+  // Handle order creation
+  const handleCreateOrder = useCallback(async () => {
+    if (!stockInfo) return
+
+    try {
+      const taskId = await createOrderMutation.mutateAsync({
+        site: searchParams.site,
+        id: searchParams.id,
+        url: searchParams.url
+      })
+      
+      setActiveOrders(prev => [...prev, taskId])
+    } catch (error) {
+      console.error('Failed to create order:', error)
+      alert('Failed to create order. Please try again.')
+    }
+  }, [stockInfo, searchParams, createOrderMutation])
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-2 text-sm font-semibold text-gray-900">Authentication Required</h3>
+          <p className="mt-1 text-sm text-gray-500">Please sign in to search stock media.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Stock Media Search
-          </h1>
-          <p className="text-primaryOrange-200 text-lg">
-            Search for stock media assets (simplified version)
+          <h1 className="text-3xl font-bold text-gray-900">Stock Media Search</h1>
+          <p className="mt-2 text-lg text-gray-600">
+            Search and download stock media from multiple sources
+          </p>
+        </div>
+
+        {/* Search Form */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <form onSubmit={handleSearch} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Site Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Stock Site
+                </label>
+                <select
+                  value={searchParams.site}
+                  onChange={(e) => setSearchParams(prev => ({ ...prev, site: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={sitesLoading}
+                >
+                  <option value="">Select a site...</option>
+                  {stockSites && Object.entries(stockSites).map(([site, config]) => (
+                    <option key={site} value={site} disabled={!config.active}>
+                      {site} {config.active ? `($${config.price})` : '(Inactive)'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Media ID */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Media ID
+                </label>
+                <input
+                  type="text"
+                  value={searchParams.id}
+                  onChange={(e) => setSearchParams(prev => ({ ...prev, id: e.target.value }))}
+                  placeholder="Enter media ID..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+
+              {/* Optional URL */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Original URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  value={searchParams.url}
+                  onChange={(e) => setSearchParams(prev => ({ ...prev, url: e.target.value }))}
+                  placeholder="https://..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                disabled={!searchParams.site || !searchParams.id || infoLoading}
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+              >
+                <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
+                {infoLoading ? 'Searching...' : 'Search Media'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Search Results */}
+        {infoError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-800">
+              Error: {infoError.message}
+            </p>
+          </div>
+        )}
+
+        {stockInfo && (
+          <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
+            <div className="md:flex">
+              {/* Media Preview */}
+              <div className="md:w-1/3 p-6">
+                <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden">
+                  <Image
+                    src={stockInfo.image}
+                    alt={stockInfo.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              </div>
+
+              {/* Media Details */}
+              <div className="md:w-2/3 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{stockInfo.title}</h2>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">Source:</span>
+                    <p className="text-lg text-gray-900">{stockInfo.source}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">Cost:</span>
+                    <p className="text-lg text-gray-900">${stockInfo.cost}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">Author:</span>
+                    <p className="text-lg text-gray-900">{stockInfo.author || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">File Size:</span>
+                    <p className="text-lg text-gray-900">{stockInfo.sizeInBytes || 'N/A'}</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleCreateOrder}
+                  disabled={createOrderMutation.isPending}
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                >
+                  <CloudArrowDownIcon className="h-5 w-5 mr-2" />
+                  {createOrderMutation.isPending ? 'Creating Order...' : 'Order & Download'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Active Orders */}
+        {activeOrders.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Orders</h3>
+            <div className="space-y-4">
+              {activeOrders.map((taskId) => (
+                <OrderStatusCard 
+                  key={taskId} 
+                  taskId={taskId} 
+                  downloadLinkMutation={downloadLinkMutation}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Order Status Card Component
+function OrderStatusCard({ 
+  taskId, 
+  downloadLinkMutation 
+}: { 
+  taskId: string
+  downloadLinkMutation: ReturnType<typeof useDownloadLink>
+}) {
+  const { data: orderStatus } = useOrderStatus(taskId)
+
+  const handleDownload = useCallback(async () => {
+    try {
+      const result = await downloadLinkMutation.mutateAsync({ taskId })
+      if (result.downloadLink) {
+        window.open(result.downloadLink, '_blank')
+      }
+    } catch (error) {
+      console.error('Failed to get download link:', error)
+      alert('Failed to get download link. Please try again.')
+    }
+  }, [taskId, downloadLinkMutation])
+
+  if (!orderStatus) return null
+
+  return (
+    <div className="border border-gray-200 rounded-lg p-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="font-medium text-gray-900">Order: {taskId}</p>
+          <p className="text-sm text-gray-500">
+            Status: <span className={`font-medium ${
+              orderStatus.status === 'ready' ? 'text-green-600' : 
+              orderStatus.status === 'processing' ? 'text-blue-600' : 'text-red-600'
+            }`}>
+              {orderStatus.status}
+            </span>
           </p>
         </div>
         
-        <div className="max-w-4xl mx-auto">
-          <div className="glass-card p-6 rounded-lg">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Search Interface
-            </h2>
-            <p className="text-gray-300 mb-6">
-              This is a simplified version of the stock media search page for testing Vercel deployment.
-              The full search functionality will be restored once we confirm the deployment is working.
-            </p>
-            
-            <div className="mb-6">
-              <input 
-                type="text" 
-                placeholder="Search for images, videos, or audio..."
-                className="w-full p-4 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primaryOrange-500"
-                disabled
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-800/50 p-4 rounded-lg">
-                <div className="w-full h-32 bg-gray-700 rounded mb-2"></div>
-                <p className="text-gray-400 text-sm">Sample Image 1</p>
-              </div>
-              <div className="bg-gray-800/50 p-4 rounded-lg">
-                <div className="w-full h-32 bg-gray-700 rounded mb-2"></div>
-                <p className="text-gray-400 text-sm">Sample Image 2</p>
-              </div>
-              <div className="bg-gray-800/50 p-4 rounded-lg">
-                <div className="w-full h-32 bg-gray-700 rounded mb-2"></div>
-                <p className="text-gray-400 text-sm">Sample Image 3</p>
-              </div>
-            </div>
-            
-            <div className="text-center">
-              <p className="text-gray-400 mb-4">
-                Full search functionality will be available after authentication is properly configured.
-              </p>
-              <Link 
-                href="/" 
-                className="bg-primaryOrange-500 hover:bg-primaryOrange-600 text-white px-6 py-3 rounded-lg transition-colors"
-              >
-                Back to Home
-              </Link>
-            </div>
-          </div>
-        </div>
+        {orderStatus.status === 'ready' && (
+          <button
+            onClick={handleDownload}
+            disabled={downloadLinkMutation.isPending}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {downloadLinkMutation.isPending ? 'Getting Link...' : 'Download'}
+          </button>
+        )}
       </div>
     </div>
-  );
+  )
 }
