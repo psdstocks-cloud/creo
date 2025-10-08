@@ -25,27 +25,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { useStockMediaSearchSimple } from '../hooks/useStockMediaSearchSimple';
 import { useAuth } from '../contexts/AuthContext';
+import { StockInfo } from '../types/nehtw';
 
 // ============================================================================
 // Types and Interfaces
 // ============================================================================
 
-interface StockMediaItem {
-  id: string;
-  title: string;
-  thumbnail: string;
-  cost: number;
-  filesize: string;
-  site: string;
-  tags: string[];
-  dimensions: {
-    width: number;
-    height: number;
-  };
-  license: string;
-  downloads?: number;
-  rating?: number;
-}
+// Use the proper StockInfo type from nehtw.ts
+type StockMediaItem = StockInfo;
 
 interface SearchFilters {
   site: string;
@@ -258,7 +245,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({ item, isOpen, onClose, onAd
                     className="w-full h-64 lg:h-96 object-cover rounded-lg"
                   />
                   <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-                    {item.dimensions.width} × {item.dimensions.height}
+                    {item.dimensions?.width} × {item.dimensions?.height}
                   </div>
                 </div>
 
@@ -625,7 +612,7 @@ const StockMediaSearch: React.FC = () => {
                         className="w-full h-48 object-cover rounded-lg"
                       />
                       <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-                        {item.dimensions.width} × {item.dimensions.height}
+                        {item.dimensions?.width} × {item.dimensions?.height}
                       </div>
                       <button
                         onClick={() => handlePreview(item)}

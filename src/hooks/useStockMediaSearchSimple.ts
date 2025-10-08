@@ -13,7 +13,7 @@ import { StockSearchResponse, StockInfo } from '../types/nehtw';
 // ============================================================================
 
 // Use the proper types from nehtw.ts
-type StockMediaItem = StockInfo;
+// type StockMediaItem = StockInfo; // Not used directly in this file
 type SearchResults = StockSearchResponse;
 
 interface UseStockMediaSearchSimpleOptions {
@@ -90,7 +90,13 @@ const searchStockMedia = async (options: {
       results: data.results || [],
       total: data.total || 0,
       page: data.page || page,
-      hasMore: data.has_more || false
+      limit: data.limit || limit,
+      has_more: data.has_more || false,
+      search_metadata: data.search_metadata || {
+        query: query,
+        filters_applied: [],
+        search_time_ms: 0
+      }
     };
     
   } catch (error) {
@@ -230,7 +236,13 @@ const searchStockMedia = async (options: {
         results: mockResults,
         total: 2,
         page,
-        hasMore: false
+        limit,
+        has_more: false,
+        search_metadata: {
+          query: query,
+          filters_applied: [],
+          search_time_ms: 0
+        }
       };
     }
     
