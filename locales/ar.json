@@ -359,60 +359,11 @@
     "teamCollaborationQuestion": "هل يمكن لفريقي التعاون في المشاريع باستخدام كريو؟",
     "teamCollaborationAnswer": "بالطبع! خطتنا المهنية تشمل ميزات التعاون الجماعي التي تتيح لك مشاركة التحميلات، إدارة نقاط الفريق، والعمل معاً في المشاريع. يمكنك دعوة أعضاء الفريق، تعيين الصلاحيات، وحتى تتبع من قام بتحميل ماذا. إنه مثالي للوكالات، فرق التسويق، أو أي مجموعة تحتاج للعمل معاً في المشاريع الإبداعية!"
   },
-  "StockMediaSearch": {
-    "title": "البحث في الوسائط المخزنة",
-    "subtitle": "ابحث عن الصور والفيديوهات والمتجهات المثالية لمشاريعك",
-    "searchInput": {
-      "label": "البحث",
-      "placeholder": "أدخل الكلمات المفتاحية أو العبارات أو المفاهيم..."
-    },
-    "siteSelector": {
-      "label": "الموقع",
-      "allSites": "جميع المواقع"
-    },
-    "typeSelector": {
-      "label": "النوع",
-      "all": "جميع الأنواع",
-      "images": "الصور",
-      "videos": "الفيديوهات",
-      "vectors": "المتجهات"
-    },
-    "sortBy": "ترتيب حسب",
-    "sortOptions": {
-      "relevance": "الصلة",
-      "newest": "الأحدث",
-      "popular": "الأكثر شعبية",
-      "price": "السعر"
-    },
-    "resultsCount": "{count, plural, =0 {لا توجد نتائج} =1 {نتيجة واحدة} other {# نتائج}}",
-    "showingResults": "عرض نتائج البحث",
-    "previewButton": "معاينة",
-    "addToCart": "أضف للسلة",
-    "downloadNow": "تحميل الآن",
-    "credits": "نقاط",
-    "closeModal": "إغلاق النافذة",
-    "details": "التفاصيل",
-    "type": "النوع",
-    "size": "الحجم",
-    "dimensions": "الأبعاد",
-    "license": "الترخيص",
-    "quality": "الجودة",
-    "description": "الوصف",
-    "tags": "العلامات",
-    "emptyState": {
-      "title": "لا توجد نتائج",
-      "description": "حاول تعديل مصطلحات البحث أو المرشحات للعثور على ما تبحث عنه.",
-      "retryButton": "حاول مرة أخرى"
-    },
-    "errorState": {
-      "title": "فشل البحث",
-      "description": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.",
-      "retryButton": "إعادة البحث"
-    }
-  },
   "OrderManagement": {
     "title": "إدارة الطلبات",
     "subtitle": "إدارة طلبات الوسائط المخزنة والتحميلات",
+    "authRequired": "مطلوب تسجيل الدخول",
+    "authRequiredMessage": "يرجى تسجيل الدخول لعرض طلباتك",
     "export": "تصدير CSV",
     "refresh": "تحديث",
     "resultsCount": "{count, plural, =0 {لا توجد طلبات} =1 {طلب واحد} other {# طلبات}}",
@@ -475,250 +426,6 @@
       "title": "فشل في تحميل الطلبات",
       "description": "حدث خطأ أثناء تحميل طلباتك. يرجى المحاولة مرة أخرى.",
       "retryButton": "إعادة المحاولة"
-    }
-  },
-  "AIGenerationInterface": {
-    "title": "توليد الصور بالذكاء الاصطناعي",
-    "subtitle": "أنشئ صوراً مذهلة بالذكاء الاصطناعي",
-    "credits": "نقاط",
-    "download": "تحميل",
-    "vary": "تغيير",
-    "upscale": "تكبير",
-    "status": {
-      "generating": "قيد التوليد",
-      "completed": "مكتمل",
-      "failed": "فشل"
-    },
-    "suggestions": {
-      "title": "اقتراحات النص"
-    },
-    "queue": {
-      "title": "طابور التوليد",
-      "items": "عناصر"
-    },
-    "costCalculator": {
-      "title": "حاسبة التكلفة",
-      "baseCost": "التكلفة الأساسية",
-      "quality": "الجودة",
-      "count": "العدد",
-      "total": "المجموع"
-    },
-    "generationForm": {
-      "title": "توليد الصور",
-      "prompt": "النص",
-      "promptPlaceholder": "اوصف الصورة التي تريد توليدها...",
-      "style": "النمط",
-      "styles": {
-        "realistic": "واقعي",
-        "artistic": "فني",
-        "abstract": "مجرد",
-        "minimalist": "بسيط"
-      },
-      "quality": "الجودة",
-      "qualities": {
-        "standard": "عادي",
-        "high": "عالي",
-        "premium": "متميز",
-        "ultra": "فائق"
-      },
-      "count": "العدد",
-      "generate": "توليد الصور",
-      "generating": "قيد التوليد..."
-    },
-    "results": {
-      "title": "الصور المولدة",
-      "emptyTitle": "لم يتم توليد صور بعد",
-      "emptyDescription": "أدخل نصاً واضغط توليد لإنشاء أول صورة بالذكاء الاصطناعي."
-    },
-    "history": {
-      "title": "تاريخ التوليد"
-    },
-    "shortcuts": {
-      "title": "اختصارات لوحة المفاتيح",
-      "generate": "توليد",
-      "suggestions": "اقتراحات",
-      "history": "التاريخ"
-    }
-  },
-  "APIErrorBoundary": {
-    "title": "حدث خطأ",
-    "retry": "حاول مرة أخرى",
-    "retrying": "جاري المحاولة...",
-    "dismiss": "إغلاق",
-    "retryCount": "محاولة {count}",
-    "contactSupport": "تحتاج مساعدة؟",
-    "getHelp": "اتصل بالدعم",
-    "errorDetails": "تفاصيل الخطأ"
-  },
-  "ToastNotification": {
-    "success": {
-      "orderCompleted": "تم الطلب",
-      "orderCompletedMessage": "تم معالجة طلبك بنجاح.",
-      "downloadReady": "التحميل جاهز",
-      "downloadReadyMessage": "ملفك جاهز للتحميل.",
-      "generationComplete": "اكتمل التوليد",
-      "generationCompleteMessage": "تم توليد صورتك بالذكاء الاصطناعي بنجاح."
-    },
-    "error": {
-      "orderFailed": "فشل الطلب",
-      "orderFailedMessage": "لم يتم معالجة طلبك. يرجى المحاولة مرة أخرى.",
-      "generationFailed": "فشل التوليد",
-      "generationFailedMessage": "فشل في توليد الصورة بالذكاء الاصطناعي. يرجى المحاولة مرة أخرى.",
-      "downloadFailed": "فشل التحميل",
-      "downloadFailedMessage": "تعذر تحميل الملف. يرجى المحاولة مرة أخرى."
-    },
-    "warning": {
-      "lowCredits": "نقاط قليلة",
-      "lowCreditsMessage": "نقاطك قليلة. فكر في شراء المزيد.",
-      "sessionExpiring": "انتهاء الجلسة",
-      "sessionExpiringMessage": "ستنتهي جلستك قريباً. يرجى حفظ عملك."
-    },
-    "info": {
-      "orderProcessing": "معالجة الطلب",
-      "orderProcessingMessage": "جاري معالجة طلبك. قد يستغرق هذا بضع دقائق.",
-      "generationStarted": "بدء التوليد",
-      "generationStartedMessage": "بدأ توليد الصورة بالذكاء الاصطناعي. ستتم إشعارك عند اكتمالها."
-    },
-    "progress": {
-      "orderProgress": "تقدم الطلب",
-      "generationProgress": "تقدم التوليد",
-      "uploadProgress": "تقدم الرفع"
-    }
-  },
-  "ErrorHandlingExample": {
-    "mainTitle": "نظام معالجة الأخطاء",
-    "mainSubtitle": "معالجة شاملة للأخطاء مع آليات إعادة المحاولة وتغذية راجعة للمستخدم",
-    "title": "محاكاة الأخطاء",
-    "description": "اختبر أنواع مختلفة من الأخطاء وشاهد كيف يتم التعامل معها من قبل النظام."
-  },
-  "Dashboard": {
-    "welcomeBack": "مرحباً بعودتك",
-    "dashboardSubtitle": "إليك ما يحدث مع حسابك",
-    "loading": "جاري تحميل لوحة التحكم...",
-    "authenticationRequired": "مطلوب تسجيل الدخول",
-    "pleaseSignIn": "يرجى تسجيل الدخول للوصول إلى لوحة التحكم",
-    "goToHome": "العودة للرئيسية",
-    "overview": "نظرة عامة",
-    "search": "البحث",
-    "aiGeneration": "توليد بالذكاء الاصطناعي",
-    "orders": "الطلبات",
-    "downloads": "التحميلات",
-    "settings": "الإعدادات",
-    "recentActivity": "النشاط الأخير",
-    "viewAll": "عرض الكل",
-    "orderStatus": "حالة الطلب",
-    "manageOrders": "إدارة الطلبات",
-    "progress": "التقدم",
-    "estimatedTime": "الوقت المتوقع",
-    "download": "تحميل",
-    "quickActions": "إجراءات سريعة",
-    "searchMedia": "البحث في الوسائط",
-    "searchMediaDescription": "البحث عن وتحميل الوسائط",
-    "aiGenerationDescription": "إنشاء صور بالذكاء الاصطناعي",
-    "orderHistory": "تاريخ الطلبات",
-    "orderHistoryDescription": "عرض تاريخ طلباتك",
-    "accountSettings": "إعدادات الحساب",
-    "accountSettingsDescription": "إدارة حسابك",
-    "credits": "النقاط",
-    "downloads": "التحميلات",
-    "aiGenerations": "توليدات الذكاء الاصطناعي",
-    "activeOrders": "الطلبات النشطة",
-    "downloadCompleted": "اكتمل التحميل",
-    "downloadCompletedDescription": "تم تحميل الصورة بنجاح",
-    "aiGenerationCompleted": "اكتمل التوليد بالذكاء الاصطناعي",
-    "aiGenerationCompletedDescription": "تم توليد الصورة بالذكاء الاصطناعي بنجاح",
-    "orderProcessing": "جاري معالجة الطلب",
-    "orderProcessingDescription": "طلبك قيد المعالجة",
-    "order1": "طلب صورة مخزون #1234",
-    "order2": "طلب توليد بالذكاء الاصطناعي #5678",
-    "order3": "طلب تحميل فيديو #9012"
-  },
-  "StockMediaSearch": {
-    "title": "البحث في الوسائط",
-    "subtitle": "ابحث وحمل صور وفيديوهات وصوت عالية الجودة من مصادر متميزة متعددة",
-    "search": {
-      "placeholder": "ابحث عن صور أو فيديوهات أو صوت...",
-      "label": "البحث عن الوسائط",
-      "siteLabel": "اختر المصدر",
-      "allSites": "جميع المصادر"
-    },
-    "filters": {
-      "title": "المرشحات",
-      "site": "المصدر",
-      "minPrice": "أقل سعر (جنيه)",
-      "maxPrice": "أعلى سعر (جنيه)",
-      "license": "نوع الترخيص",
-      "sortBy": "ترتيب حسب",
-      "allSites": "جميع المصادر",
-      "allLicenses": "جميع التراخيص",
-      "commercial": "تجاري",
-      "editorial": "تحريري",
-      "free": "مجاني",
-      "relevance": "الصلة",
-      "price": "السعر",
-      "newest": "الأحدث",
-      "popular": "الأكثر شعبية"
-    },
-    "results": {
-      "found": "تم العثور على {count} نتيجة",
-      "page": "صفحة {current} من {total}",
-      "preview": "معاينة الصورة",
-      "addToCart": "أضف للسلة",
-      "download": "تحميل"
-    },
-    "empty": {
-      "title": "لم يتم العثور على نتائج",
-      "description": "حاول تعديل مصطلحات البحث أو المرشحات للعثور على ما تبحث عنه.",
-      "clearSearch": "مسح البحث"
-    },
-    "error": {
-      "title": "فشل البحث",
-      "generic": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.",
-      "retry": "حاول مرة أخرى"
-    },
-    "modal": {
-      "close": "إغلاق المعاينة",
-      "details": "التفاصيل",
-      "cost": "التكلفة",
-      "filesize": "حجم الملف",
-      "site": "المصدر",
-      "license": "الترخيص",
-      "tags": "العلامات",
-      "addToCart": "أضف للسلة",
-      "download": "تحميل",
-      "loginRequired": "يرجى تسجيل الدخول لإضافة عناصر للسلة أو التحميل"
-    },
-    "pagination": {
-      "previous": "السابق",
-      "next": "التالي"
-    }
-  },
-  "OrderManagement": {
-    "title": "إدارة الطلبات",
-    "subtitle": "تتبع وإدارة تحميلات الوسائط الخاصة بك",
-    "authRequired": "مطلوب تسجيل الدخول",
-    "authRequiredMessage": "يرجى تسجيل الدخول لعرض طلباتك",
-    "refresh": "تحديث",
-    "export": "تصدير CSV",
-    "status": {
-      "pending": "في الانتظار",
-      "processing": "قيد المعالجة",
-      "ready": "جاهز",
-      "error": "خطأ",
-      "cancelled": "ملغي"
-    },
-    "filters": {
-      "searchPlaceholder": "البحث في الطلبات...",
-      "allStatuses": "جميع الحالات",
-      "allSites": "جميع المواقع",
-      "pending": "في الانتظار",
-      "processing": "قيد المعالجة",
-      "ready": "جاهز",
-      "error": "خطأ",
-      "cancelled": "ملغي",
-      "dateRange": "نطاق التاريخ",
-      "startDate": "تاريخ البداية",
-      "endDate": "تاريخ النهاية"
     },
     "table": {
       "media": "الوسائط",
@@ -807,8 +514,7 @@
       "emptyDescription": "أدخل نصاً واضغط توليد لإنشاء أول صورة بالذكاء الاصطناعي."
     },
     "history": {
-      "title": "تاريخ التوليد",
-      "empty": "لا يوجد تاريخ توليد بعد"
+      "title": "تاريخ التوليد"
     },
     "shortcuts": {
       "title": "اختصارات لوحة المفاتيح",
@@ -822,6 +528,158 @@
     "downloadImage": "تحميل الصورة",
     "toggleFavorite": "تبديل المفضلة",
     "shareImage": "مشاركة الصورة"
+  },
+  "APIErrorBoundary": {
+    "title": "حدث خطأ",
+    "retry": "حاول مرة أخرى",
+    "retrying": "جاري المحاولة...",
+    "dismiss": "إغلاق",
+    "retryCount": "محاولة {count}",
+    "contactSupport": "تحتاج مساعدة؟",
+    "getHelp": "اتصل بالدعم",
+    "errorDetails": "تفاصيل الخطأ"
+  },
+  "ToastNotification": {
+    "success": {
+      "orderCompleted": "تم الطلب",
+      "orderCompletedMessage": "تم معالجة طلبك بنجاح.",
+      "downloadReady": "التحميل جاهز",
+      "downloadReadyMessage": "ملفك جاهز للتحميل.",
+      "generationComplete": "اكتمل التوليد",
+      "generationCompleteMessage": "تم توليد صورتك بالذكاء الاصطناعي بنجاح."
+    },
+    "error": {
+      "orderFailed": "فشل الطلب",
+      "orderFailedMessage": "لم يتم معالجة طلبك. يرجى المحاولة مرة أخرى.",
+      "generationFailed": "فشل التوليد",
+      "generationFailedMessage": "فشل في توليد الصورة بالذكاء الاصطناعي. يرجى المحاولة مرة أخرى.",
+      "downloadFailed": "فشل التحميل",
+      "downloadFailedMessage": "تعذر تحميل الملف. يرجى المحاولة مرة أخرى."
+    },
+    "warning": {
+      "lowCredits": "نقاط قليلة",
+      "lowCreditsMessage": "نقاطك قليلة. فكر في شراء المزيد.",
+      "sessionExpiring": "انتهاء الجلسة",
+      "sessionExpiringMessage": "ستنتهي جلستك قريباً. يرجى حفظ عملك."
+    },
+    "info": {
+      "orderProcessing": "معالجة الطلب",
+      "orderProcessingMessage": "جاري معالجة طلبك. قد يستغرق هذا بضع دقائق.",
+      "generationStarted": "بدء التوليد",
+      "generationStartedMessage": "بدأ توليد الصورة بالذكاء الاصطناعي. ستتم إشعارك عند اكتمالها."
+    },
+    "progress": {
+      "orderProgress": "تقدم الطلب",
+      "generationProgress": "تقدم التوليد",
+      "uploadProgress": "تقدم الرفع"
+    }
+  },
+  "ErrorHandlingExample": {
+    "mainTitle": "نظام معالجة الأخطاء",
+    "mainSubtitle": "معالجة شاملة للأخطاء مع آليات إعادة المحاولة وتغذية راجعة للمستخدم",
+    "title": "محاكاة الأخطاء",
+    "description": "اختبر أنواع مختلفة من الأخطاء وشاهد كيف يتم التعامل معها من قبل النظام."
+  },
+  "Dashboard": {
+    "welcomeBack": "مرحباً بعودتك",
+    "dashboardSubtitle": "إليك ما يحدث مع حسابك",
+    "loading": "جاري تحميل لوحة التحكم...",
+    "authenticationRequired": "مطلوب تسجيل الدخول",
+    "pleaseSignIn": "يرجى تسجيل الدخول للوصول إلى لوحة التحكم",
+    "goToHome": "العودة للرئيسية",
+    "overview": "نظرة عامة",
+    "search": "البحث",
+    "aiGeneration": "توليد بالذكاء الاصطناعي",
+    "orders": "الطلبات",
+    "downloads": "التحميلات",
+    "settings": "الإعدادات",
+    "recentActivity": "النشاط الأخير",
+    "viewAll": "عرض الكل",
+    "orderStatus": "حالة الطلب",
+    "manageOrders": "إدارة الطلبات",
+    "progress": "التقدم",
+    "estimatedTime": "الوقت المتوقع",
+    "download": "تحميل",
+    "quickActions": "إجراءات سريعة",
+    "searchMedia": "البحث في الوسائط",
+    "searchMediaDescription": "البحث عن وتحميل الوسائط",
+    "aiGenerationDescription": "إنشاء صور بالذكاء الاصطناعي",
+    "orderHistory": "تاريخ الطلبات",
+    "orderHistoryDescription": "عرض تاريخ طلباتك",
+    "accountSettings": "إعدادات الحساب",
+    "accountSettingsDescription": "إدارة حسابك",
+    "credits": "النقاط",
+    "aiGenerations": "توليدات الذكاء الاصطناعي",
+    "activeOrders": "الطلبات النشطة",
+    "downloadCompleted": "اكتمل التحميل",
+    "downloadCompletedDescription": "تم تحميل الصورة بنجاح",
+    "aiGenerationCompleted": "اكتمل التوليد بالذكاء الاصطناعي",
+    "aiGenerationCompletedDescription": "تم توليد الصورة بالذكاء الاصطناعي بنجاح",
+    "orderProcessing": "جاري معالجة الطلب",
+    "orderProcessingDescription": "طلبك قيد المعالجة",
+    "order1": "طلب صورة مخزون #1234",
+    "order2": "طلب توليد بالذكاء الاصطناعي #5678",
+    "order3": "طلب تحميل فيديو #9012"
+  },
+  "StockMediaSearch": {
+    "title": "البحث في الوسائط",
+    "subtitle": "ابحث وحمل صور وفيديوهات وصوت عالية الجودة من مصادر متميزة متعددة",
+    "search": {
+      "placeholder": "ابحث عن صور أو فيديوهات أو صوت...",
+      "label": "البحث عن الوسائط",
+      "siteLabel": "اختر المصدر",
+      "allSites": "جميع المصادر"
+    },
+    "filters": {
+      "title": "المرشحات",
+      "site": "المصدر",
+      "minPrice": "أقل سعر (جنيه)",
+      "maxPrice": "أعلى سعر (جنيه)",
+      "license": "نوع الترخيص",
+      "sortBy": "ترتيب حسب",
+      "allSites": "جميع المصادر",
+      "allLicenses": "جميع التراخيص",
+      "commercial": "تجاري",
+      "editorial": "تحريري",
+      "free": "مجاني",
+      "relevance": "الصلة",
+      "price": "السعر",
+      "newest": "الأحدث",
+      "popular": "الأكثر شعبية"
+    },
+    "results": {
+      "found": "تم العثور على {count} نتيجة",
+      "page": "صفحة {current} من {total}",
+      "preview": "معاينة الصورة",
+      "addToCart": "أضف للسلة",
+      "download": "تحميل"
+    },
+    "empty": {
+      "title": "لم يتم العثور على نتائج",
+      "description": "حاول تعديل مصطلحات البحث أو المرشحات للعثور على ما تبحث عنه.",
+      "clearSearch": "مسح البحث"
+    },
+    "error": {
+      "title": "فشل البحث",
+      "generic": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.",
+      "retry": "حاول مرة أخرى"
+    },
+    "modal": {
+      "close": "إغلاق المعاينة",
+      "details": "التفاصيل",
+      "cost": "التكلفة",
+      "filesize": "حجم الملف",
+      "site": "المصدر",
+      "license": "الترخيص",
+      "tags": "العلامات",
+      "addToCart": "أضف للسلة",
+      "download": "تحميل",
+      "loginRequired": "يرجى تسجيل الدخول لإضافة عناصر للسلة أو التحميل"
+    },
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي"
+    }
   },
   "NotFound": {
     "title": "الصفحة غير موجودة",
