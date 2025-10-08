@@ -61,11 +61,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(user)
             setSession(session)
             setLoading(false)
+            
+            // Set cookie for server-side detection
+            document.cookie = 'demo_user=true; path=/; max-age=86400' // 24 hours
             return true
           } catch (error) {
             console.warn('Invalid demo user data:', error)
             localStorage.removeItem('demo_user')
             localStorage.removeItem('demo_session')
+            // Clear demo cookie
+            document.cookie = 'demo_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
           }
         }
       }
@@ -108,6 +113,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('demo_user')
       localStorage.removeItem('demo_session')
+      // Clear demo cookie
+      document.cookie = 'demo_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
     }
     
     // Also sign out from Supabase if available

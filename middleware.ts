@@ -35,13 +35,20 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
   
+  // Check for demo user in cookies (fallback for server-side detection)
+  const demoUserCookie = request.cookies.get('demo_user')
+  const hasDemoUser = demoUserCookie && demoUserCookie.value === 'true'
+  
   // Protected routes
   const protectedPaths = ['/dashboard', '/orders', '/ai-generation', '/admin']
   const isProtectedPath = protectedPaths.some(path => 
     request.nextUrl.pathname.startsWith(path)
   )
   
-  if (isProtectedPath && !user) {
+  // Allow access if user exists OR if it's a demo user
+  const hasValidAuth = user || hasDemoUser
+  
+  if (isProtectedPath && !hasValidAuth) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/auth/signin'
     redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
