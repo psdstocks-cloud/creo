@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientAuthProvider from "../components/ClientAuthProvider";
 import { validateEnvironmentOnStartup } from "../utils/env-validation";
-import { NextIntlClientProvider } from 'next-intl';
-import translations from '../../locales/en.json';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,9 +32,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider locale="en" messages={translations}>
-          <ClientAuthProvider>{children}</ClientAuthProvider>
-        </NextIntlClientProvider>
+        <ClientAuthProvider>{children}</ClientAuthProvider>
       </body>
     </html>
   );
