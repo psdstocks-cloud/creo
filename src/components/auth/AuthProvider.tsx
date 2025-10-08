@@ -12,6 +12,7 @@ interface AuthContextType {
   isAdmin: boolean
   userRole: string | null
   hasPermission: (permission: string) => boolean
+  isDemoUser: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -130,6 +131,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return userRole === 'super_admin' || userRole === 'content_manager' || userRole === 'support_admin'
   }, [userRole])
 
+  const isDemoUser = useMemo(() => {
+    return user?.email?.endsWith('@creo.demo') || false
+  }, [user])
+
   const hasPermission = (permission: string): boolean => {
     if (!user?.email) return false
     const demoAccount = DEMO_ADMIN_ACCOUNTS[user.email as keyof typeof DEMO_ADMIN_ACCOUNTS]
@@ -149,7 +154,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut, 
       isAdmin, 
       userRole, 
-      hasPermission 
+      hasPermission,
+      isDemoUser
     }}>
       {children}
     </AuthContext.Provider>
