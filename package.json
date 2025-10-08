@@ -20,7 +20,6 @@
     "axios": "^1.12.2",
     "framer-motion": "^12.23.22",
     "next": "15.5.4",
-    "next-intl": "^4.3.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-error-boundary": "^6.0.0",

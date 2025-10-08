@@ -1,10 +1,8 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export default function NotFound() {
-  const t = useTranslations('NotFound');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center p-4">
@@ -16,9 +14,9 @@ export default function NotFound() {
             </svg>
           </div>
           <h1 className="text-4xl font-bold text-white mb-2">404</h1>
-          <h2 className="text-xl font-semibold text-white mb-4">{t('title')}</h2>
+          <h2 className="text-xl font-semibold text-white mb-4">Page Not Found</h2>
           <p className="text-gray-300 mb-6">
-            {t('message')}
+            The page you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
         </div>
         
@@ -27,14 +25,14 @@ export default function NotFound() {
             href="/"
             className="inline-block w-full bg-primaryOrange-500 hover:bg-primaryOrange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
-            {t('goHome')}
+            Go Home
           </Link>
           
           <Link
             href="/stock-search"
             className="inline-block w-full bg-deepPurple-500 hover:bg-deepPurple-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
           >
-            {t('searchStock')}
+            Search Stock Media
           </Link>
         </div>
       </div>
