@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations } from 'next-intl';
 import { 
   signUpSchema, 
   signInSchema, 
@@ -39,7 +38,6 @@ export default function AuthModal({
   onSuccess,
   className = '' 
 }: AuthModalProps) {
-  const t = useTranslations('Auth');
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
@@ -129,7 +127,7 @@ export default function AuthModal({
           code: error.message,
         });
       } else {
-        setSuccess(t('accountCreatedMessage'));
+        setSuccess('Account created successfully! Please check your email to verify your account.');
         setMode('signin');
         onSuccess?.(result.user);
       }
@@ -168,7 +166,7 @@ export default function AuthModal({
           code: error.message,
         });
       } else {
-        setSuccess(t('signInSuccessMessage'));
+        setSuccess('Welcome back! You have been signed in successfully.');
         onSuccess?.(result.user);
         onClose();
       }
@@ -206,7 +204,7 @@ export default function AuthModal({
           code: error.message,
         });
       } else {
-        setSuccess(t('checkEmailMessage'));
+        setSuccess('Please check your email for password reset instructions.');
         setMode('signin');
       }
     } catch (err: unknown) {
@@ -243,7 +241,7 @@ export default function AuthModal({
           code: error.message,
         });
       } else {
-        setSuccess(t('passwordUpdatedMessage'));
+        setSuccess('Your password has been updated successfully.');
         setMode('signin');
       }
     } catch (err: unknown) {
@@ -295,21 +293,21 @@ export default function AuthModal({
 
   const getTitle = () => {
     switch (mode) {
-      case 'signin': return t('signInTitle');
-      case 'signup': return t('signUpTitle');
-      case 'reset': return t('resetPasswordTitle');
-      case 'update': return t('updatePasswordTitle');
-      default: return t('signInTitle');
+      case 'signin': return 'Sign In';
+      case 'signup': return 'Create Account';
+      case 'reset': return 'Reset Password';
+      case 'update': return 'Update Password';
+      default: return 'Sign In';
     }
   };
 
   const getSubtitle = () => {
     switch (mode) {
-      case 'signin': return t('signInSubtitle');
-      case 'signup': return t('signUpSubtitle');
-      case 'reset': return t('resetPasswordSubtitle');
-      case 'update': return t('updatePasswordSubtitle');
-      default: return t('signInSubtitle');
+      case 'signin': return 'Welcome back! Please sign in to your account.';
+      case 'signup': return 'Create your account to get started.';
+      case 'reset': return 'Enter your email address and we\'ll send you a link to reset your password.';
+      case 'update': return 'Enter your new password below.';
+      default: return 'Welcome back! Please sign in to your account.';
     }
   };
 
@@ -353,7 +351,7 @@ export default function AuthModal({
                     onClick={() => setSuccess(null)}
                     className="text-green-400 hover:text-green-600"
                   >
-                    <span className="sr-only">{t('close')}</span>
+                    <span className="sr-only">{"Close"}</span>
                     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
@@ -380,7 +378,7 @@ export default function AuthModal({
                     onClick={() => setError(null)}
                     className="text-red-400 hover:text-red-600"
                   >
-                    <span className="sr-only">{t('close')}</span>
+                    <span className="sr-only">{"Close"}</span>
                     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
@@ -407,7 +405,7 @@ export default function AuthModal({
                   >
                     <path d={provider.icon} />
                   </svg>
-                  {mode === 'signin' ? t(`signInWith${provider.name}`) : t(`signInWith${provider.name}`)}
+                  {mode === 'signin' ? `Sign in with ${provider.name}` : `Sign in with ${provider.name}`}
                 </button>
               ))}
               
@@ -416,7 +414,7 @@ export default function AuthModal({
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">{t('orDivider')}</span>
+                  <span className="px-2 bg-white text-gray-500">{"or"}</span>
                 </div>
               </div>
             </div>
@@ -427,13 +425,13 @@ export default function AuthModal({
             <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-4">
               <div>
                 <label htmlFor="signin-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('emailLabel')}
+                  {"Email"}
                 </label>
                 <input
                   id="signin-email"
                   type="email"
                   {...signInForm.register('email')}
-                  placeholder={t('emailPlaceholder')}
+                  placeholder={"Enter your email"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {signInForm.formState.errors.email && (
@@ -445,13 +443,13 @@ export default function AuthModal({
 
               <div>
                 <label htmlFor="signin-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('passwordLabel')}
+                  {"Password"}
                 </label>
                 <input
                   id="signin-password"
                   type="password"
                   {...signInForm.register('password')}
-                  placeholder={t('passwordPlaceholder')}
+                  placeholder={"Enter your password"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {signInForm.formState.errors.password && (
@@ -470,7 +468,7 @@ export default function AuthModal({
                     className="h-4 w-4 text-primaryOrange focus:ring-primaryOrange border-gray-300 rounded"
                   />
                   <label htmlFor="remember-me" className="mr-2 block text-sm text-gray-700 dark:text-gray-300">
-                    {t('rememberMe')}
+                    {"Remember me"}
                   </label>
                 </div>
                 <button
@@ -478,7 +476,7 @@ export default function AuthModal({
                   onClick={() => setMode('reset')}
                   className="text-sm text-primaryOrange hover:text-orange-600"
                 >
-                  {t('forgotPassword')}
+                  {"Forgot password?"}
                 </button>
               </div>
 
@@ -487,19 +485,19 @@ export default function AuthModal({
                 disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primaryOrange to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryOrange disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? t('loading') : t('signInButton')}
+                {loading ? "Loading..." : "Sign In"}
               </button>
 
               <div className="text-center">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  {t('dontHaveAccount')}{' '}
+                  {"Don't have an account?"}{' '}
                 </span>
                 <button
                   type="button"
                   onClick={() => setMode('signup')}
                   className="text-sm font-medium text-primaryOrange hover:text-orange-600"
                 >
-                  {t('signUpLink')}
+                  {"Sign up"}
                 </button>
               </div>
             </form>
@@ -509,13 +507,13 @@ export default function AuthModal({
             <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
               <div>
                 <label htmlFor="signup-fullname" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('fullNameLabel')}
+                  {"Full Name"}
                 </label>
                 <input
                   id="signup-fullname"
                   type="text"
                   {...signUpForm.register('fullName')}
-                  placeholder={t('fullNamePlaceholder')}
+                  placeholder={"Enter your full name"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {signUpForm.formState.errors.fullName && (
@@ -527,13 +525,13 @@ export default function AuthModal({
 
               <div>
                 <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('emailLabel')}
+                  {"Email"}
                 </label>
                 <input
                   id="signup-email"
                   type="email"
                   {...signUpForm.register('email')}
-                  placeholder={t('emailPlaceholder')}
+                  placeholder={"Enter your email"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {signUpForm.formState.errors.email && (
@@ -545,13 +543,13 @@ export default function AuthModal({
 
               <div>
                 <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('passwordLabel')}
+                  {"Password"}
                 </label>
                 <input
                   id="signup-password"
                   type="password"
                   {...signUpForm.register('password')}
-                  placeholder={t('passwordPlaceholder')}
+                  placeholder={"Enter your password"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {signUpForm.formState.errors.password && (
@@ -563,13 +561,13 @@ export default function AuthModal({
 
               <div>
                 <label htmlFor="signup-confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('confirmPasswordLabel')}
+                  {"Confirm Password"}
                 </label>
                 <input
                   id="signup-confirm-password"
                   type="password"
                   {...signUpForm.register('confirmPassword')}
-                  placeholder={t('confirmPasswordPlaceholder')}
+                  placeholder={"Confirm your password"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {signUpForm.formState.errors.confirmPassword && (
@@ -587,7 +585,7 @@ export default function AuthModal({
                   className="h-4 w-4 text-primaryOrange focus:ring-primaryOrange border-gray-300 rounded"
                 />
                 <label htmlFor="accept-terms" className="mr-2 block text-sm text-gray-700 dark:text-gray-300">
-                  {t('acceptTerms')}
+                  {"I accept the terms and conditions"}
                 </label>
               </div>
               {signUpForm.formState.errors.acceptTerms && (
@@ -601,19 +599,19 @@ export default function AuthModal({
                 disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primaryOrange to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryOrange disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? t('loading') : t('signUpButton')}
+                {loading ? "Loading..." : "Sign Up"}
               </button>
 
               <div className="text-center">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  {t('alreadyHaveAccount')}{' '}
+                  {"Already have an account?"}{' '}
                 </span>
                 <button
                   type="button"
                   onClick={() => setMode('signin')}
                   className="text-sm font-medium text-primaryOrange hover:text-orange-600"
                 >
-                  {t('signInLink')}
+                  {"Sign in"}
                 </button>
               </div>
             </form>
@@ -623,13 +621,13 @@ export default function AuthModal({
             <form onSubmit={resetForm.handleSubmit(handleResetPassword)} className="space-y-4">
               <div>
                 <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('emailLabel')}
+                  {"Email"}
                 </label>
                 <input
                   id="reset-email"
                   type="email"
                   {...resetForm.register('email')}
-                  placeholder={t('emailPlaceholder')}
+                  placeholder={"Enter your email"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {resetForm.formState.errors.email && (
@@ -644,7 +642,7 @@ export default function AuthModal({
                 disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primaryOrange to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryOrange disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? t('loading') : t('resetPasswordButton')}
+                {loading ? "Loading..." : "Reset Password"}
               </button>
 
               <div className="text-center">
@@ -653,7 +651,7 @@ export default function AuthModal({
                   onClick={() => setMode('signin')}
                   className="text-sm font-medium text-primaryOrange hover:text-orange-600"
                 >
-                  {t('backToSignIn')}
+                  {"Back to Sign In"}
                 </button>
               </div>
             </form>
@@ -663,13 +661,13 @@ export default function AuthModal({
             <form onSubmit={updateForm.handleSubmit(handleUpdatePassword)} className="space-y-4">
               <div>
                 <label htmlFor="update-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('passwordLabel')}
+                  {"Password"}
                 </label>
                 <input
                   id="update-password"
                   type="password"
                   {...updateForm.register('password')}
-                  placeholder={t('passwordPlaceholder')}
+                  placeholder={"Enter your password"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {updateForm.formState.errors.password && (
@@ -681,13 +679,13 @@ export default function AuthModal({
 
               <div>
                 <label htmlFor="update-confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('confirmPasswordLabel')}
+                  {"Confirm Password"}
                 </label>
                 <input
                   id="update-confirm-password"
                   type="password"
                   {...updateForm.register('confirmPassword')}
-                  placeholder={t('confirmPasswordPlaceholder')}
+                  placeholder={"Confirm your password"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryOrange focus:border-transparent"
                 />
                 {updateForm.formState.errors.confirmPassword && (
@@ -702,7 +700,7 @@ export default function AuthModal({
                 disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primaryOrange to-orange-600 hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryOrange disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? t('loading') : t('updatePasswordButton')}
+                {loading ? "Loading..." : "Update Password"}
               </button>
 
               <div className="text-center">
@@ -711,7 +709,7 @@ export default function AuthModal({
                   onClick={() => setMode('signin')}
                   className="text-sm font-medium text-primaryOrange hover:text-orange-600"
                 >
-                  {t('backToSignIn')}
+                  {"Back to Sign In"}
                 </button>
               </div>
             </form>
@@ -722,7 +720,7 @@ export default function AuthModal({
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
-            <span className="sr-only">{t('close')}</span>
+            <span className="sr-only">{"Close"}</span>
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
 import AuthModal from './AuthModal';
 
 interface AuthButtonProps {
@@ -21,7 +20,6 @@ export default function AuthButton({
   className = '',
   children,
 }: AuthButtonProps) {
-  const t = useTranslations('Auth');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getButtonClasses = () => {
@@ -44,7 +42,7 @@ export default function AuthButton({
 
   const getButtonText = () => {
     if (children) return children;
-    return initialMode === 'signin' ? t('signInButton') : t('signUpButton');
+    return initialMode === 'signin' ? 'Sign In' : 'Sign Up';
   };
 
   return (
