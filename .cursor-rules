@@ -1,0 +1,32 @@
+---
+description: Guidelines for Creo Next.js App with Supabase Auth and NEHTW API
+alwaysApply: true
+---
+
+# Creo Development Rules
+
+## Stack Requirements
+- Next.js 15 with App Router
+- TypeScript (strict mode)
+- Supabase SSR (@supabase/ssr package ONLY)
+- Tailwind CSS v4
+- React Query for API management
+- NEHTW API integration
+
+## Critical Authentication Rules
+🚨 NEVER use deprecated @supabase/auth-helpers-nextjs
+✅ ALWAYS use @supabase/ssr with getAll/setAll pattern
+✅ ALWAYS implement proper middleware for session refresh
+
+## File Structure
+- Use the existing src/ directory structure
+- Components in src/components/
+- API routes in src/app/api/
+- Hooks in src/hooks/
+- Types in src/types/
+
+## Code Standards
+- TypeScript strict mode
+- Error boundaries for all async operations
+- Proper loading states
+- NEHTW API rate limiting (2s between requests)

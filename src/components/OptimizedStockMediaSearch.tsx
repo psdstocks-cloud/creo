@@ -12,15 +12,15 @@ import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  useDebouncedSearch, 
-  useLazyImage, 
-  useVirtualScroll,
-  createOptimizedComponent,
-  // createOptimizedCallback,
-  // createOptimizedMemo,
-  usePerformanceMonitor
-} from '../utils/performance';
+// import { 
+//   useDebouncedSearch, 
+//   useLazyImage, 
+//   useVirtualScroll,
+//   createOptimizedComponent,
+//   // createOptimizedCallback,
+//   // createOptimizedMemo,
+//   usePerformanceMonitor
+// } from '../utils/performance-simple';
 
 // ============================================================================
 // Types and Interfaces
@@ -71,10 +71,18 @@ const MediaItemComponent: React.FC<MediaItemProps> = React.memo(({
   onAddToCart, 
   onDownload 
 }) => {
-  const { imageSrc, isLoaded, isError, imgRef, handleLoad, handleError } = useLazyImage(
-    item.thumbnail,
-    '/placeholder-image.jpg'
-  );
+  // const { imageSrc, isLoaded, isError, imgRef, handleLoad, handleError } = useLazyImage(
+  //   item.thumbnail,
+  //   '/placeholder-image.jpg'
+  // );
+  
+  // Fallback for missing useLazyImage
+  const imageSrc = item.thumbnail;
+  const isLoaded = true;
+  const isError = false;
+  const imgRef = null;
+  const handleLoad = () => {};
+  const handleError = () => {};
 
   const handlePreview = useCallback(() => {
     onPreview(item);
@@ -192,18 +200,25 @@ const VirtualScrollContainer: React.FC<VirtualScrollContainerProps> = React.memo
   onDownload,
   containerHeight
 }) => {
-  const { visibleItems, totalHeight, offsetY, setScrollTop } = useVirtualScroll(
-    items,
-    {
-      itemHeight: 300, // Approximate height of each item
-      containerHeight,
-      overscan: 5
-    }
-  );
+  // const { visibleItems, totalHeight, offsetY, setScrollTop } = useVirtualScroll(
+  //   items,
+  //   {
+  //     itemHeight: 300, // Approximate height of each item
+  //     containerHeight,
+  //     overscan: 5
+  //   }
+  // );
+  
+  // Fallback for missing useVirtualScroll
+  const visibleItems = items;
+  const totalHeight = items.length * 300;
+  const offsetY = 0;
+  const setScrollTop = () => {};
 
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    setScrollTop(e.currentTarget.scrollTop);
-  }, [setScrollTop]);
+    // setScrollTop(e.currentTarget.scrollTop);
+    // No-op since setScrollTop is a no-op function
+  }, []);
 
   return (
     <div
@@ -369,10 +384,11 @@ const OptimizedStockMediaSearch: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Performance monitoring
-  usePerformanceMonitor('OptimizedStockMediaSearch');
+  // usePerformanceMonitor('OptimizedStockMediaSearch');
 
   // Debounced search
-  const debouncedQuery = useDebouncedSearch(searchParams.query, 500);
+  // const debouncedQuery = useDebouncedSearch(searchParams.query, 500);
+  const debouncedQuery = searchParams.query;
 
   // Memoized search function
   const performSearch = useCallback(async (params: SearchParams) => {
@@ -589,4 +605,5 @@ const OptimizedStockMediaSearch: React.FC = () => {
   );
 };
 
-export default createOptimizedComponent(OptimizedStockMediaSearch, 'OptimizedStockMediaSearch');
+// export default createOptimizedComponent(OptimizedStockMediaSearch, 'OptimizedStockMediaSearch');
+export default OptimizedStockMediaSearch;

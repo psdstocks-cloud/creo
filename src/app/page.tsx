@@ -1,5 +1,8 @@
 'use client';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // Temporarily disable components that require auth for testing
 // import AuthTest from "../components/AuthTest";
 // import NehtwAPIExampleSimple from "../components/NehtwAPIExampleSimple";

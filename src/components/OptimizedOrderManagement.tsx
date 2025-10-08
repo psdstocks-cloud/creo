@@ -12,15 +12,15 @@ import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  useDebouncedSearch,
-  useVirtualScroll,
-  useOptimizedPolling,
-  createOptimizedComponent,
-  // createOptimizedCallback,
-  // createOptimizedMemo,
-  usePerformanceMonitor
-} from '../utils/performance';
+// import { 
+//   useDebouncedSearch,
+//   useVirtualScroll,
+//   useOptimizedPolling,
+//   createOptimizedComponent,
+//   // createOptimizedCallback,
+//   // createOptimizedMemo,
+//   usePerformanceMonitor
+// } from '../utils/performance-simple';
 
 // ============================================================================
 // Types and Interfaces
@@ -273,18 +273,25 @@ const VirtualOrderContainer: React.FC<VirtualOrderContainerProps> = React.memo((
   onDownload,
   containerHeight
 }) => {
-  const { visibleItems, totalHeight, offsetY, setScrollTop } = useVirtualScroll(
-    orders,
-    {
-      itemHeight: 200, // Approximate height of each order card
-      containerHeight,
-      overscan: 3
-    }
-  );
+  // const { visibleItems, totalHeight, offsetY, setScrollTop } = useVirtualScroll(
+  //   orders,
+  //   {
+  //     itemHeight: 200, // Approximate height of each order card
+  //     containerHeight,
+  //     overscan: 3
+  //   }
+  // );
+  
+  // Fallback for missing useVirtualScroll
+  const visibleItems = orders;
+  const totalHeight = orders.length * 200;
+  const offsetY = 0;
+  const setScrollTop = () => {};
 
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    setScrollTop(e.currentTarget.scrollTop);
-  }, [setScrollTop]);
+    // setScrollTop(e.currentTarget.scrollTop);
+    // No-op since setScrollTop is a no-op function
+  }, []);
 
   return (
     <div
@@ -338,14 +345,18 @@ const OptimizedOrderManagement: React.FC = () => {
   // const [itemsPerPage] = useState(20);
 
   // Performance monitoring
-  usePerformanceMonitor('OptimizedOrderManagement');
+  // usePerformanceMonitor('OptimizedOrderManagement');
 
   // Optimized polling for active orders
-  const { pollingInterval, isUserActive } = useOptimizedPolling(
-    true, // enabled
-    2000, // base interval
-    0.5   // user activity multiplier
-  );
+  // const { pollingInterval, isUserActive } = useOptimizedPolling(
+  //   true, // enabled
+  //   2000, // base interval
+  //   0.5   // user activity multiplier
+  // );
+  
+  // Fallback for missing useOptimizedPolling
+  const pollingInterval = 2000;
+  const isUserActive = true;
 
   const { register, watch } = useForm<OrderFilters>({
     defaultValues: {
@@ -360,7 +371,8 @@ const OptimizedOrderManagement: React.FC = () => {
   const watchedFilters = watch();
 
   // Debounced search
-  const debouncedSearch = useDebouncedSearch(watchedFilters.search, 300);
+  // const debouncedSearch = useDebouncedSearch(watchedFilters.search, 300);
+  const debouncedSearch = watchedFilters.search;
 
   // Memoized container height
   const containerHeight = useMemo(() => {
@@ -804,4 +816,5 @@ const OptimizedOrderManagement: React.FC = () => {
   );
 };
 
-export default createOptimizedComponent(OptimizedOrderManagement, 'OptimizedOrderManagement');
+// export default createOptimizedComponent(OptimizedOrderManagement, 'OptimizedOrderManagement');
+export default OptimizedOrderManagement;

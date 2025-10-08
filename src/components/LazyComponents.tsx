@@ -8,7 +8,7 @@
 'use client';
 
 import React from 'react';
-import { createCodeSplitComponent } from '../utils/performance';
+import { createLazyComponent } from '../utils/performance-simple';
 
 // ============================================================================
 // Lazy Loading Fallbacks
@@ -47,9 +47,8 @@ const ErrorFallback: React.FC<{ error?: Error; retry?: () => void }> = ({ error,
 // AI Generation Components
 // ============================================================================
 
-export const LazyAIGenerationInterface = createCodeSplitComponent(
-  () => import('./AIGenerationInterface'),
-  LoadingFallback
+export const LazyAIGenerationInterface = createLazyComponent(
+  () => import('./AIGenerationInterface')
 );
 
 // Removed AIGenerationExample as it doesn't exist
@@ -58,90 +57,76 @@ export const LazyAIGenerationInterface = createCodeSplitComponent(
 // Order Management Components
 // ============================================================================
 
-export const LazyOrderManagement = createCodeSplitComponent(
-  () => import('./OrderManagement'),
-  LoadingFallback
+export const LazyOrderManagement = createLazyComponent(
+  () => import('./OrderManagement')
 );
 
-export const LazyOptimizedOrderManagement = createCodeSplitComponent(
-  () => import('./OptimizedOrderManagement'),
-  LoadingFallback
+export const LazyOptimizedOrderManagement = createLazyComponent(
+  () => import('./OptimizedOrderManagement')
 );
 
 // ============================================================================
 // Stock Media Components
 // ============================================================================
 
-export const LazyStockMediaSearch = createCodeSplitComponent(
+export const LazyStockMediaSearch = createLazyComponent(
   () => import('./StockMediaSearch'),
-  LoadingFallback
 );
 
-export const LazyOptimizedStockMediaSearch = createCodeSplitComponent(
+export const LazyOptimizedStockMediaSearch = createLazyComponent(
   () => import('./OptimizedStockMediaSearch'),
-  LoadingFallback
 );
 
 // ============================================================================
 // Authentication Components
 // ============================================================================
 
-export const LazyAuthModal = createCodeSplitComponent(
+export const LazyAuthModal = createLazyComponent(
   () => import('./AuthModal'),
-  LoadingFallback
 );
 
-export const LazyAuthButton = createCodeSplitComponent(
+export const LazyAuthButton = createLazyComponent(
   () => import('./AuthButton'),
-  LoadingFallback
 );
 
-export const LazyAuthTest = createCodeSplitComponent(
+export const LazyAuthTest = createLazyComponent(
   () => import('./AuthTest'),
-  LoadingFallback
 );
 
 // ============================================================================
 // UI Components
 // ============================================================================
 
-export const LazyFAQAccordion = createCodeSplitComponent(
+export const LazyFAQAccordion = createLazyComponent(
   () => import('./FAQAccordionFriendly'),
-  LoadingFallback
 );
 
-export const LazyTestimonialsCarousel = createCodeSplitComponent(
+export const LazyTestimonialsCarousel = createLazyComponent(
   () => import('./TestimonialsPlaceholderCarousel'),
-  LoadingFallback
 );
 
-export const LazyInteractivePricing = createCodeSplitComponent(
+export const LazyInteractivePricing = createLazyComponent(
   () => import('./InteractivePricingSliderExample'),
-  LoadingFallback
 );
 
-export const LazyPricingRollback = createCodeSplitComponent(
+export const LazyPricingRollback = createLazyComponent(
   () => import('./PricingRollbackInfo'),
-  LoadingFallback
 );
 
 // ============================================================================
 // Error Handling Components
 // ============================================================================
 
-export const LazyAPIErrorBoundary = createCodeSplitComponent(
+export const LazyAPIErrorBoundary = createLazyComponent(
   () => import('./APIErrorBoundary'),
-  LoadingFallback
 );
 
-export const LazyToastNotification = createCodeSplitComponent(
+export const LazyToastNotification = createLazyComponent(
   () => import('./ToastNotification'),
-  LoadingFallback
 );
 
-export const LazyErrorHandlingExample = createCodeSplitComponent(
+export const LazyErrorHandlingExample = createLazyComponent(
   () => import('./ErrorHandlingExample'),
-  LoadingFallback
 );
 
 // ============================================================================
@@ -154,18 +139,16 @@ export const LazyErrorHandlingExample = createCodeSplitComponent(
 // Payment Components
 // ============================================================================
 
-export const LazyMockPaymentComponent = createCodeSplitComponent(
+export const LazyMockPaymentComponent = createLazyComponent(
   () => import('./MockPaymentComponent'),
-  LoadingFallback
 );
 
 // ============================================================================
 // API Example Components
 // ============================================================================
 
-export const LazyNehtwAPIExample = createCodeSplitComponent(
+export const LazyNehtwAPIExample = createLazyComponent(
   () => import('./NehtwAPIExampleSimple'),
-  LoadingFallback
 );
 
 // ============================================================================

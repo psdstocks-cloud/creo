@@ -10,7 +10,7 @@ import {
   DEFAULT_CACHE_CONFIG, 
   CRITICAL_CACHE_CONFIG
   // BACKGROUND_CACHE_CONFIG 
-} from '../utils/performance';
+} from '../utils/performance-simple';
 
 // ============================================================================
 // Query Client Configuration

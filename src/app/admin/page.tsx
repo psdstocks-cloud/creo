@@ -2,6 +2,9 @@
 
 import React from 'react';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const AdminDashboard = () => {
   return (
     <div className="admin-dashboard p-6 bg-gray-100 min-h-screen">
