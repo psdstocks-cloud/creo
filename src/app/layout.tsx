@@ -27,8 +27,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Validate environment variables on startup
-  validateEnvironmentOnStartup();
+  // Temporarily disable environment validation to test Vercel deployment
+  // validateEnvironmentOnStartup();
 
   // Temporarily disable next-intl
   // const messages = await getMessages();
@@ -40,7 +40,9 @@ export default async function RootLayout({
       >
         {/* Temporarily disable NextIntlClientProvider */}
         {/* <NextIntlClientProvider messages={messages}> */}
-          <ClientAuthProvider>{children}</ClientAuthProvider>
+        {/* Temporarily disable ClientAuthProvider to test basic deployment */}
+        {/* <ClientAuthProvider>{children}</ClientAuthProvider> */}
+        {children}
         {/* </NextIntlClientProvider> */}
       </body>
     </html>

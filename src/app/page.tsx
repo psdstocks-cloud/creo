@@ -1,8 +1,9 @@
 'use client';
 
-import AuthTest from "../components/AuthTest";
-import NehtwAPIExampleSimple from "../components/NehtwAPIExampleSimple";
-import MockPaymentComponent from "../components/MockPaymentComponent";
+// Temporarily disable components that require auth for testing
+// import AuthTest from "../components/AuthTest";
+// import NehtwAPIExampleSimple from "../components/NehtwAPIExampleSimple";
+// import MockPaymentComponent from "../components/MockPaymentComponent";
 
 export default function Home() {
   return (
@@ -10,98 +11,24 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Creo - Supabase Authentication Test
+            Creo - Test Deployment
           </h1>
           <p className="text-primaryOrange-200 text-lg">
-            Test your Supabase authentication setup
+            Basic deployment test without authentication
           </p>
         </div>
         
-                <AuthTest />
-
-                <NehtwAPIExampleSimple />
-
-                <div className="mt-8">
-                  <MockPaymentComponent 
-                    onPaymentSuccess={() => console.log('Payment successful!')}
-                    amount={25.99}
-                    description="Test Purchase"
-                  />
-                </div>
-
-                <div className="mt-12 text-center">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            Available Components
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <div className="glass-card p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">AuthModal</h3>
-              <p className="text-sm text-gray-300">Complete authentication modal with sign up, sign in, and password reset</p>
-            </div>
-            <div className="glass-card p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">AuthButton</h3>
-              <p className="text-sm text-gray-300">Simple authentication button component</p>
-            </div>
-            <div className="glass-card p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">FAQ Accordion</h3>
-              <p className="text-sm text-gray-300">Friendly FAQ component with search and filtering</p>
-            </div>
-            <div className="glass-card p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">Pricing Rollback</h3>
-              <p className="text-sm text-gray-300">Points rollback policy information component</p>
-            </div>
-            <div className="glass-card p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-white mb-2">Interactive Pricing</h3>
-              <p className="text-sm text-gray-300">Interactive pricing slider with tiered calculations</p>
-            </div>
-                    <div className="glass-card p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white mb-2">Testimonials</h3>
-                      <p className="text-sm text-gray-300">Animated testimonials carousel with Framer Motion</p>
-                    </div>
-                    <div className="glass-card p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white mb-2">Webhook Test</h3>
-                      <p className="text-sm text-gray-300">Test nehtw webhook integration with various events</p>
-                    </div>
-                    <div className="glass-card p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white mb-2">Stock Media Search</h3>
-                      <p className="text-sm text-gray-300">Comprehensive search component with glassmorphism design</p>
-                      <a 
-                        href="/stock-search" 
-                        className="inline-block mt-2 bg-primaryOrange-500 hover:bg-primaryOrange-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-                      >
-                        View Component
-                      </a>
-                    </div>
-                    <div className="glass-card p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white mb-2">Order Management</h3>
-                      <p className="text-sm text-gray-300">Complete order management with real-time updates and downloads</p>
-                      <a 
-                        href="/orders" 
-                        className="inline-block mt-2 bg-deepPurple-500 hover:bg-deepPurple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-                      >
-                        View Component
-                      </a>
-                    </div>
-                    <div className="glass-card p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white mb-2">AI Generation Interface</h3>
-                      <p className="text-sm text-gray-300">Advanced AI image generation with real-time progress and queue management</p>
-                      <a 
-                        href="/ai-generation" 
-                        className="inline-block mt-2 bg-gradient-to-r from-primaryOrange-500 to-deepPurple-500 hover:from-primaryOrange-600 hover:to-deepPurple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-                      >
-                        View Component
-                      </a>
-                    </div>
-                    <div className="glass-card p-4 rounded-lg">
-                      <h3 className="text-lg font-semibold text-white mb-2">Error Handling System</h3>
-                      <p className="text-sm text-gray-300">Comprehensive error handling with retry mechanisms and user feedback</p>
-                      <a 
-                        href="/error-handling" 
-                        className="inline-block mt-2 bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-600 hover:to-yellow-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-                      >
-                        View Component
-                      </a>
-                    </div>
+        <div className="text-center">
+          <p className="text-white text-lg mb-4">
+            This is a basic test to verify Vercel deployment is working.
+          </p>
+          <div className="space-x-4">
+            <a href="/dashboard" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+              Go to Dashboard
+            </a>
+            <a href="/orders" className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+              Go to Orders
+            </a>
           </div>
         </div>
       </div>
