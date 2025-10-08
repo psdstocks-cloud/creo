@@ -4,11 +4,12 @@ import withNextIntl from './next-intl.config.js';
 const nextConfig = {
   // Remove or empty experimental config to fix 'turbo' errors
   experimental: {},
-  // Enable static export for Netlify
-  output: 'export' as const,
+  // Remove static export for Vercel compatibility
+  // output: 'export' as const, // Commented out for Vercel
   trailingSlash: true,
   images: {
-    unoptimized: true
+    // Enable image optimization for Vercel
+    unoptimized: false
   },
   // Other config options if any
 };
