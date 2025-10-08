@@ -4,6 +4,8 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Omit specific keys from secrets scanning (these are public environment variables)
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_NEHTW_API_KEY,NEXT_PUBLIC_NEHTW_BASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_SUPABASE_URL"
 
 [[redirects]]
   from = "/*"
