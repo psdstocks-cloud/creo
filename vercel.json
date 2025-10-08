@@ -1,14 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "outputDirectory": ".next",
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "headers": [
     {
       "source": "/api/(.*)",
@@ -40,8 +31,5 @@
       "source": "/api/webhooks/stripe",
       "destination": "/api/stripe/webhook"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
