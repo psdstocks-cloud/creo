@@ -213,11 +213,9 @@ const VirtualScrollContainer: React.FC<VirtualScrollContainerProps> = React.memo
   const visibleItems = items;
   const totalHeight = items.length * 300;
   const offsetY = 0;
-  const setScrollTop = () => {};
 
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    // setScrollTop(e.currentTarget.scrollTop);
-    // No-op since setScrollTop is a no-op function
+  const handleScroll = useCallback(() => {
+    // No-op for now since virtual scrolling is disabled
   }, []);
 
   return (
