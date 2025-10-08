@@ -25,11 +25,11 @@ export default function AIGenerationPage() {
       return
     }
 
-    try {
-      const jobId = await createJobMutation.mutateAsync(prompt.trim())
-      setActiveJobs(prev => [...prev, jobId])
-      setPrompt('')
-    } catch (error) {
+      try {
+        const response = await createJobMutation.mutateAsync(prompt.trim())
+        setActiveJobs(prev => [...prev, response.job_id])
+        setPrompt('')
+      } catch (error) {
       console.error('Failed to create AI job:', error)
       alert('Failed to create AI job. Please try again.')
     }

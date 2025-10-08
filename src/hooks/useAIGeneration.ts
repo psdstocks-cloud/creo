@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { nehtwClient } from '@/lib/nehtw-client-new'
+import { nehtwClient } from '@/lib/nehtw-api-client'
 import { queryKeys } from '@/lib/query-client'
 
 export const useCreateAIJob = () => {
@@ -7,12 +7,13 @@ export const useCreateAIJob = () => {
   
   return useMutation({
     mutationFn: (prompt: string) => nehtwClient.createAIJob(prompt),
-    onSuccess: (jobId) => {
+    onSuccess: (data) => {
+      const jobId = data.job_id
       // Invalidate jobs list
-      queryClient.invalidateQueries({ queryKey: queryKeys.aiGeneration.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.aiJobs() })
       
       // Pre-populate the AI result cache with initial state
-      queryClient.setQueryData(queryKeys.aiGeneration.job(jobId), {
+      queryClient.setQueryData(queryKeys.aiResult(jobId), {
         __id: jobId,
         prompt: '',
         type: 'imagine',
@@ -37,7 +38,7 @@ export const useCreateAIJob = () => {
 
 export const useAIResult = (jobId: string, enabled = true) => {
   return useQuery({
-    queryKey: queryKeys.aiGeneration.job(jobId),
+    queryKey: queryKeys.aiResult(jobId),
     queryFn: () => nehtwClient.getAIResult(jobId),
     enabled: enabled && !!jobId,
     refetchInterval: (query) => {
@@ -69,13 +70,14 @@ export const useAIAction = () => {
       action: 'vary' | 'upscale'; 
       index: number; 
       varyType?: 'subtle' | 'strong' 
-    }) => nehtwClient.performAIAction(jobId, action, index, varyType),
-    onSuccess: (newJobId, variables) => {
+    }) => nehtwClient.performAIAction({ jobId, action, index, varyType }),
+    onSuccess: (data, variables) => {
+      const newJobId = data.job_id
       // Invalidate jobs list
-      queryClient.invalidateQueries({ queryKey: queryKeys.aiGeneration.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.aiJobs() })
       
       // Pre-populate the new job result cache
-      queryClient.setQueryData(queryKeys.aiGeneration.job(newJobId), {
+      queryClient.setQueryData(queryKeys.aiResult(newJobId), {
         __id: newJobId,
         prompt: `${variables.action} of job ${variables.jobId}`,
         type: variables.action,
@@ -101,7 +103,7 @@ export const useAIAction = () => {
 // AI Jobs History Hook
 export const useAIJobsHistory = () => {
   return useQuery({
-    queryKey: queryKeys.aiGeneration.history(),
+    queryKey: queryKeys.aiJobs(),
     queryFn: async () => {
       // This would need to be implemented on your backend
       // For now, return empty array or use localStorage to track jobs

@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { nehtwClient } from '@/lib/nehtw-client-new'
+import { nehtwClient } from '@/lib/nehtw-api-client'
 import { queryKeys } from '@/lib/query-client'
 
 export const useStockInfo = (site: string, id: string, url?: string) => {
   return useQuery({
-    queryKey: queryKeys.stockMedia.info(site, id),
+    queryKey: queryKeys.stockInfo(site, id, url),
     queryFn: () => nehtwClient.getStockInfo(site, id, url),
     enabled: !!(site && id),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes
   })
 }
 
@@ -17,13 +17,14 @@ export const useCreateOrder = () => {
   
   return useMutation({
     mutationFn: ({ site, id, url }: { site: string; id: string; url?: string }) =>
-      nehtwClient.createOrder(site, id, url),
-    onSuccess: (taskId) => {
+      nehtwClient.createStockOrder(site, id, url),
+    onSuccess: (data) => {
+      const taskId = data.task_id
       // Invalidate orders list and start polling for status
-      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders() })
       
       // Pre-populate the order status cache
-      queryClient.setQueryData(queryKeys.orders.status(taskId), {
+      queryClient.setQueryData(queryKeys.orderStatus(taskId), {
         success: true,
         status: 'processing'
       })
@@ -36,7 +37,7 @@ export const useCreateOrder = () => {
 
 export const useOrderStatus = (taskId: string, enabled = true) => {
   return useQuery({
-    queryKey: queryKeys.orders.status(taskId),
+    queryKey: queryKeys.orderStatus(taskId),
     queryFn: () => nehtwClient.getOrderStatus(taskId),
     enabled: enabled && !!taskId,
     refetchInterval: (query) => {
@@ -69,20 +70,20 @@ export const useDownloadLink = () => {
   })
 }
 
-// New hooks for enhanced functionality
+// Enhanced hooks for NEHTW API integration
 export const useStockSites = () => {
   return useQuery({
-    queryKey: ['stockSites'],
+    queryKey: queryKeys.stockSites(),
     queryFn: () => nehtwClient.getStockSites(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - sites don't change often
+    gcTime: 30 * 60 * 1000, // 30 minutes cache
   })
 }
 
 export const useUserBalance = () => {
   return useQuery({
-    queryKey: ['userBalance'],
-    queryFn: () => nehtwClient.getBalance(),
+    queryKey: queryKeys.userBalance(),
+    queryFn: () => nehtwClient.getUserBalance(),
     staleTime: 30 * 1000, // 30 seconds
     gcTime: 2 * 60 * 1000, // 2 minutes
     refetchInterval: 60 * 1000, // Refetch every minute

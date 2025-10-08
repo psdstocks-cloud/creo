@@ -57,13 +57,13 @@ export default function StockSearchPage() {
     if (!stockInfo) return
 
     try {
-      const taskId = await createOrderMutation.mutateAsync({
+      const response = await createOrderMutation.mutateAsync({
         site: searchParams.site,
         id: searchParams.id,
         url: searchParams.url
       })
       
-      setActiveOrders(prev => [...prev, taskId])
+      setActiveOrders(prev => [...prev, response.task_id])
       success('Order Created', 'Your download order has been created successfully.')
     } catch (error) {
       console.error('Failed to create order:', error)
@@ -176,8 +176,8 @@ export default function StockSearchPage() {
               <div className="md:w-1/3 p-6">
                 <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden">
                   <Image
-                    src={stockInfo.image}
-                    alt={stockInfo.title}
+                    src={stockInfo.data.image}
+                    alt={stockInfo.data.title}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -187,24 +187,24 @@ export default function StockSearchPage() {
 
               {/* Media Details */}
               <div className="md:w-2/3 p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{stockInfo.title}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{stockInfo.data.title}</h2>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <span className="text-sm font-medium text-gray-500">Source:</span>
-                    <p className="text-lg text-gray-900">{stockInfo.source}</p>
+                    <p className="text-lg text-gray-900">{stockInfo.data.source}</p>
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">Cost:</span>
-                    <p className="text-lg text-gray-900">${stockInfo.cost}</p>
+                    <p className="text-lg text-gray-900">${stockInfo.data.cost}</p>
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">Author:</span>
-                    <p className="text-lg text-gray-900">{stockInfo.author || 'N/A'}</p>
+                    <p className="text-lg text-gray-900">{stockInfo.data.author || 'N/A'}</p>
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">File Size:</span>
-                    <p className="text-lg text-gray-900">{stockInfo.sizeInBytes || 'N/A'}</p>
+                    <p className="text-lg text-gray-900">{stockInfo.data.sizeInBytes || 'N/A'}</p>
                   </div>
                 </div>
 

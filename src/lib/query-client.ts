@@ -5,7 +5,7 @@
  * background refetching, and request deduplication.
  */
 
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, isServer } from '@tanstack/react-query';
 import { 
   DEFAULT_CACHE_CONFIG, 
   CRITICAL_CACHE_CONFIG
@@ -16,17 +16,27 @@ import {
 // Query Client Configuration
 // ============================================================================
 
-export const queryClient = new QueryClient({
+function makeQueryClient() {
+  return new QueryClient({
   defaultOptions: {
     queries: {
-      // Default cache configuration
-      ...DEFAULT_CACHE_CONFIG,
+      // Optimized for NEHTW API with 2s rate limiting
+      staleTime: 5 * 60 * 1000, // 5 minutes for stock data
+      gcTime: 10 * 60 * 1000, // 10 minutes cache time
       
       // Network mode for better UX
       networkMode: 'online',
       
-      // Retry configuration
+      // Enhanced retry configuration for NEHTW API
       retry: (failureCount, error) => {
+        // Don't retry on rate limits or auth errors
+        if (error && typeof error === 'object' && 'message' in error) {
+          const message = (error as { message: string }).message;
+          if (message.includes('429') || message.includes('401') || message.includes('Rate limit')) {
+            return false;
+          }
+        }
+        
         // Don't retry on 4xx errors
         if (error && typeof error === 'object' && 'status' in error) {
           const status = (error as { status: number }).status;
@@ -39,19 +49,13 @@ export const queryClient = new QueryClient({
         return failureCount < 3;
       },
       
-      // Retry delay with exponential backoff
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      // Retry delay with exponential backoff (respects 2s rate limit)
+      retryDelay: (attemptIndex) => Math.min(2000 * 2 ** attemptIndex, 30000),
       
       // Background refetch configuration
       refetchOnWindowFocus: false,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      
-      // Stale time configuration
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      
-      // Cache time configuration
-      gcTime: 10 * 60 * 1000, // 10 minutes
       
       // Structural sharing for better performance
       structuralSharing: true,
@@ -61,22 +65,60 @@ export const queryClient = new QueryClient({
     },
     
     mutations: {
-      // Default mutation configuration
+      // Enhanced mutation configuration for NEHTW API
       retry: 1,
-      retryDelay: 1000,
+      retryDelay: 2000, // Respect rate limiting (2s minimum)
       
       // Network mode
       networkMode: 'online'
     }
   }
-});
+  });
+}
+
+let browserQueryClient: QueryClient | undefined = undefined
+
+export function getQueryClient() {
+  if (isServer) {
+    return makeQueryClient()
+  } else {
+    if (!browserQueryClient) browserQueryClient = makeQueryClient()
+    return browserQueryClient
+  }
+}
+
+// Legacy export for backward compatibility
+export const queryClient = makeQueryClient();
 
 // ============================================================================
 // Query Key Factories
 // ============================================================================
 
 export const queryKeys = {
-  // Stock Media
+  // Hierarchical query keys for efficient invalidation
+  all: ['nehtw'] as const,
+  
+  // Stock Media Keys
+  stockSites: () => [...queryKeys.all, 'stock-sites'] as const,
+  stockInfo: (site: string, id: string, url?: string) => 
+    [...queryKeys.all, 'stock-info', { site, id, url }] as const,
+  
+  // Orders Keys
+  orders: () => [...queryKeys.all, 'orders'] as const,
+  order: (taskId: string) => [...queryKeys.all, 'orders', taskId] as const,
+  orderStatus: (taskId: string) => [...queryKeys.all, 'orders', taskId, 'status'] as const,
+  downloadLink: (taskId: string) => [...queryKeys.all, 'orders', taskId, 'download'] as const,
+  
+  // AI Generation Keys
+  aiJobs: () => [...queryKeys.all, 'ai-jobs'] as const,
+  aiJob: (jobId: string) => [...queryKeys.all, 'ai-jobs', jobId] as const,
+  aiResult: (jobId: string) => [...queryKeys.all, 'ai-jobs', jobId, 'result'] as const,
+  
+  // User Account Keys
+  user: () => [...queryKeys.all, 'user'] as const,
+  userBalance: () => [...queryKeys.all, 'user', 'balance'] as const,
+  
+  // Legacy keys for backward compatibility
   stockMedia: {
     all: ['stockMedia'] as const,
     search: (params: Record<string, unknown>) => ['stockMedia', 'search', params] as const,
@@ -85,7 +127,6 @@ export const queryKeys = {
     download: (taskId: string, type?: string) => ['stockMedia', 'download', taskId, type] as const
   },
   
-  // AI Generation
   aiGeneration: {
     all: ['aiGeneration'] as const,
     job: (jobId: string) => ['aiGeneration', 'job', jobId] as const,
@@ -93,23 +134,8 @@ export const queryKeys = {
     balance: () => ['aiGeneration', 'balance'] as const
   },
   
-  // Orders
-  orders: {
-    all: ['orders'] as const,
-    list: (filters: Record<string, unknown>) => ['orders', 'list', filters] as const,
-    detail: (orderId: string) => ['orders', 'detail', orderId] as const,
-    status: (orderId: string) => ['orders', 'status', orderId] as const
-  },
   
-  // User
-  user: {
-    all: ['user'] as const,
-    profile: (userId?: string) => ['user', 'profile', userId] as const,
-    preferences: (userId?: string) => ['user', 'preferences', userId] as const,
-    credits: (userId?: string) => ['user', 'credits', userId] as const
-  },
   
-  // Analytics
   analytics: {
     all: ['analytics'] as const,
     usage: (userId?: string, period?: string) => ['analytics', 'usage', userId, period] as const,
@@ -130,11 +156,11 @@ export const invalidateAIGeneration = () => {
 };
 
 export const invalidateOrders = () => {
-  return queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
+  return queryClient.invalidateQueries({ queryKey: queryKeys.orders() });
 };
 
 export const invalidateUser = () => {
-  return queryClient.invalidateQueries({ queryKey: queryKeys.user.all });
+  return queryClient.invalidateQueries({ queryKey: queryKeys.user() });
 };
 
 // ============================================================================
@@ -155,7 +181,7 @@ export const prefetchStockMediaSearch = async (params: Record<string, unknown>) 
 
 export const prefetchUserProfile = async (userId?: string) => {
   return queryClient.prefetchQuery({
-    queryKey: queryKeys.user.profile(userId),
+    queryKey: [...queryKeys.user(), 'profile', userId],
     queryFn: async () => {
       // Mock implementation - replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -167,7 +193,7 @@ export const prefetchUserProfile = async (userId?: string) => {
 
 export const prefetchUserCredits = async (userId?: string) => {
   return queryClient.prefetchQuery({
-    queryKey: queryKeys.user.credits(userId),
+    queryKey: [...queryKeys.user(), 'credits', userId],
     queryFn: async () => {
       // Mock implementation - replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 100));
