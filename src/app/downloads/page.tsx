@@ -46,6 +46,10 @@ export default function DownloadsPage() {
     orderTitle: string
     orderCreatedAt: string
   } | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [sortBy, setSortBy] = useState<'name' | 'date' | 'size' | 'downloads'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   
   const { data: orders = [], isLoading } = useUserOrders()
 
@@ -74,7 +78,7 @@ export default function DownloadsPage() {
       )
   }, [orders])
 
-  // Apply filters
+  // Apply filters and sorting
   const filteredFiles = useMemo(() => {
     let files = allFiles
 
@@ -102,10 +106,30 @@ export default function DownloadsPage() {
       })
     }
 
-    return files.sort((a: typeof files[0], b: typeof files[0]) => 
-      new Date(b.orderCreatedAt).getTime() - new Date(a.orderCreatedAt).getTime()
-    )
-  }, [allFiles, filters])
+    // Apply sorting
+    files.sort((a: typeof files[0], b: typeof files[0]) => {
+      let comparison = 0
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name)
+          break
+        case 'date':
+          comparison = new Date(a.orderCreatedAt).getTime() - new Date(b.orderCreatedAt).getTime()
+          break
+        case 'size':
+          comparison = (a.size || 0) - (b.size || 0)
+          break
+        case 'downloads':
+          comparison = a.downloadCount - b.downloadCount
+          break
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
+
+    return files
+  }, [allFiles, filters, sortBy, sortOrder])
 
   // Calculate statistics
   const stats = useMemo(() => {
