@@ -98,7 +98,7 @@ export function runPricingTests(): void {
       calculateTieredPricing(points);
       console.log(`❌ ${points} should have thrown an error`);
     } catch (error) {
-      console.log(`✅ ${points} correctly threw error: ${error.message}`);
+      console.log(`✅ ${points} correctly threw error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   });
   console.log('\n');
@@ -181,7 +181,7 @@ export function interactivePricingCalculator(points: number): void {
     }
     
   } catch (error) {
-    console.error(`❌ Error: ${error.message}`);
+    console.error(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

@@ -1,5 +1,6 @@
 'use client'
 import { useAuth } from '@/components/auth/AuthProvider'
+import { DemoLogin } from '@/components/auth/DemoLogin'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
@@ -36,6 +37,9 @@ function SignInContent() {
             Sign in to your account
           </h2>
         </div>
+        
+        {/* Demo Login Component */}
+        <DemoLogin />
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" role="form" aria-label="Sign in form">
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-md p-4" role="alert" aria-live="polite">
