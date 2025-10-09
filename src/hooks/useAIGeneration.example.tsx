@@ -22,7 +22,7 @@ export function BasicAIGenerationExample() {
     if (!prompt.trim()) return;
 
     try {
-      const jobId = await createJob.mutateAsync(prompt);
+      const jobId = await createJob.mutateAsync({ prompt });
       console.log('AI job created:', jobId);
     } catch (error) {
       console.error('Failed to create AI job:', error);
