@@ -58,13 +58,9 @@ export default function StockSearchPage() {
 
     try {
       const response = await createOrderMutation.mutateAsync({
-        site_id: searchParams.site,
-        stock_id: searchParams.id,
-        metadata: {
-          original_url: searchParams.url,
-          project_name: 'Stock Media Download',
-          usage_type: 'commercial'
-        }
+        site: searchParams.site,
+        id: searchParams.id,
+        url: searchParams.url
       })
       
       setActiveOrders(prev => [...prev, response])

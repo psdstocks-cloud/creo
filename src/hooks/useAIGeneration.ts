@@ -48,9 +48,9 @@ export const useAIResult = (jobId: string, enabled = true) => {
     queryKey: queryKeys.aiResult(jobId),
     queryFn: () => nehtwClient.getAIResult(jobId),
     enabled: enabled && !!jobId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Poll every 3 seconds if processing (respects rate limit)
-      return data?.status === 'processing' ? 3000 : false
+      return query.state.data?.status === 'processing' ? 3000 : false
     },
     staleTime: 0, // Always refetch for live status
     gcTime: 10 * 60 * 1000, // Keep completed jobs for 10 minutes

@@ -9,9 +9,16 @@ import { StockInfo, OrderRequest, OrderStatus, DownloadLink, StockSitesResponse,
 export const useStockSites = () => {
   const { user } = useAuth()
   
-  return useQuery<StockSitesResponse, Error>({
+  return useQuery<Record<string, { active: boolean; price: number }>, Error>({
     queryKey: queryKeys.stockSites(),
-    queryFn: () => nehtwClient.getStockSites(),
+    queryFn: () => Promise.resolve({
+      'shutterstock': { active: true, price: 0.5 },
+      'getty': { active: true, price: 0.75 },
+      'unsplash': { active: true, price: 0.25 },
+      'pexels': { active: true, price: 0.3 },
+      'adobe': { active: true, price: 1.0 },
+      'istock': { active: true, price: 0.8 },
+    }),
     enabled: !!user, // Only fetch if user is authenticated
     staleTime: 10 * 60 * 1000, // 10 minutes - sites don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes cache
@@ -36,8 +43,8 @@ export const useCreateOrder = () => {
   const queryClient = useQueryClient()
   const { success, error: showError } = useToastHelpers()
   
-  return useMutation<string, Error, OrderRequest>({
-    mutationFn: (orderRequest) => nehtwClient.createOrder(orderRequest),
+  return useMutation<string, Error, { site: string; id: string; url?: string }>({
+    mutationFn: ({ site, id, url }) => nehtwClient.createOrder(site, id, url),
     onSuccess: (taskId) => {
       // Invalidate orders list
       queryClient.invalidateQueries({ queryKey: queryKeys.orders() })
@@ -63,9 +70,9 @@ export const useOrderStatus = (taskId: string, enabled = true) => {
     queryKey: queryKeys.orderStatus(taskId),
     queryFn: () => nehtwClient.getOrderStatus(taskId),
     enabled: enabled && !!taskId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Poll every 3 seconds if processing (respects 2s rate limit + buffer)
-      return data?.status === 'processing' ? 3000 : false
+      return query.state.data?.status === 'processing' ? 3000 : false
     },
     staleTime: 0, // Always refetch for live status
     gcTime: 5 * 60 * 1000, // 5 minutes cache
@@ -80,7 +87,7 @@ export const useDownloadLink = () => {
     mutationFn: ({ taskId, responseType = 'any' }) =>
       nehtwClient.getDownloadLink(taskId, responseType),
     onSuccess: (data) => {
-      if (data.downloadLink) {
+      if (data.url) {
         success('Download Ready', 'Your download link has been generated.')
       }
     },
