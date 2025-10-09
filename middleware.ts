@@ -1,65 +1,45 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request: NextRequest) {
-  // Skip middleware during build time or if environment variables are not available
-  if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return NextResponse.next({ request })
-  }
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.next({ request })
-  }
-
-  let supabaseResponse = NextResponse.next({ request })
-  
+  let response = NextResponse.next()
   const supabase = createServerClient(
-    supabaseUrl,
-    supabaseAnonKey,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
+        getAll() { return request.cookies.getAll() },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => 
-            request.cookies.set(name, value)
-          )
-          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           )
-        },
-      },
+        }
+      }
     }
   )
 
+  // Protect dashboard, profile, orders, AI routes, etc.
+  const protectedRoutes = ['/dashboard', '/orders', '/ai-generation', '/billing', '/settings']
+  const isProtected = protectedRoutes.some(path => request.nextUrl.pathname.startsWith(path))
   const { data: { user } } = await supabase.auth.getUser()
   
   // Check for demo user in cookies (fallback for server-side detection)
   const demoUserCookie = request.cookies.get('demo_user')
   const hasDemoUser = demoUserCookie && demoUserCookie.value === 'true'
   
-  // Protected routes
-  const protectedPaths = ['/dashboard', '/orders', '/ai-generation', '/admin']
-  const isProtectedPath = protectedPaths.some(path => 
-    request.nextUrl.pathname.startsWith(path)
-  )
-  
   // Allow access if user exists OR if it's a demo user
   const hasValidAuth = user || hasDemoUser
-  
-  if (isProtectedPath && !hasValidAuth) {
+
+  if (isProtected && !hasValidAuth) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/auth/signin'
     redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
   }
-  
-  return supabaseResponse
+
+  return response
 }
 
 export const config = {

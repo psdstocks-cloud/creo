@@ -1,13 +1,18 @@
 'use client'
 
 import { useAuth } from '@/components/auth/AuthProvider'
+import { DashboardLoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import Link from 'next/link'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 export default function DashboardPage() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return <DashboardLoadingSkeleton />
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

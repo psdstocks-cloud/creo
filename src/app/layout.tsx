@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from '@/components/auth/AuthProvider';
-import { Navbar } from '@/components/layout/Navbar';
+import { ClientLayout } from '@/components/layout/ClientLayout';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ToastProvider } from '@/components/ui/Toast';
 
@@ -23,10 +23,9 @@ export default async function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <ToastProvider>
-              <div className="min-h-screen bg-gray-50">
-                <Navbar />
-                <main>{children}</main>
-              </div>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
             </ToastProvider>
           </AuthProvider>
         </QueryProvider>
