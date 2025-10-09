@@ -5,6 +5,9 @@
  * Run this script after setting up your Supabase project
  */
 
+// Load environment variables from .env.local
+require('dotenv').config({ path: '.env.local' })
+
 const { createClient } = require('@supabase/supabase-js')
 
 console.log('🔧 Creating Admin User in Supabase...\n')
@@ -28,7 +31,7 @@ async function createAdminUser() {
   try {
     console.log('📧 Creating admin user...')
     
-    const adminEmail = 'admin@creo.com'
+    const adminEmail = 'psdstockss@gmail.com'
     const adminPassword = 'CreoAdmin2024!'
     
     // Create user in Supabase Auth
