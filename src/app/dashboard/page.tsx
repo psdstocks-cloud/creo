@@ -9,21 +9,11 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   ChartBarIcon,
-  CurrencyDollarIcon,
   CloudArrowDownIcon,
   SparklesIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
-  ArrowDownTrayIcon,
-  CalendarIcon,
-  ClockIcon,
-  DevicePhoneMobileIcon,
-  EyeIcon,
-  Cog6ToothIcon,
   HomeIcon,
   MagnifyingGlassIcon,
-  ClipboardDocumentListIcon,
-  UserCircleIcon
+  ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline'
 
 // Force dynamic rendering
@@ -101,13 +91,13 @@ export default function DashboardPage() {
 // Overview Tab Component
 // ============================================================================
 
-function OverviewTab({ user }: { user: any }) {
+function OverviewTab({ user }: { user: { email?: string } }) {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-purple-500 to-orange-500 rounded-xl p-8 text-white">
-        <h2 className="text-2xl font-bold mb-2">Welcome back, {user.email?.split('@')[0]}!</h2>
-        <p className="text-purple-100">Ready to create something amazing? Let's get started.</p>
+                 <h2 className="text-2xl font-bold mb-2">Welcome back, {user.email?.split('@')[0]}!</h2>
+                 <p className="text-purple-100">Ready to create something amazing? Let&apos;s get started.</p>
       </div>
 
       {/* Quick Actions */}

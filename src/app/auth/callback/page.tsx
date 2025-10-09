@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
-import { useAuth } from '@/components/auth/AuthProvider'
+// import { useAuth } from '@/components/auth/AuthProvider'
 import { useToastHelpers } from '@/components/ui/Toast'
 
 export default function AuthCallbackPage() {

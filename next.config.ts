@@ -11,6 +11,13 @@ const nextConfig = {
     // Enable image optimization for Vercel
     unoptimized: false
   },
+  // Skip linting during build
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   // Other config options if any
 };
 

@@ -6,8 +6,8 @@ import {
   CurrencyDollarIcon,
   ClockIcon,
   UserGroupIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
   ArrowDownTrayIcon,
   CalendarIcon,
   EyeIcon,
@@ -115,7 +115,7 @@ export function AdvancedAnalyticsDashboard() {
             { id: 'overview', label: 'Overview', icon: ChartBarIcon },
             { id: 'spending', label: 'Spending', icon: CurrencyDollarIcon },
             { id: 'usage', label: 'Usage', icon: UserGroupIcon },
-            { id: 'trends', label: 'Trends', icon: TrendingUpIcon },
+            { id: 'trends', label: 'Trends', icon: ArrowTrendingUpIcon },
             { id: 'performance', label: 'Performance', icon: Cog6ToothIcon }
           ].map((tab) => (
             <button
@@ -188,7 +188,7 @@ function OverviewTab({ analytics }: { analytics: any }) {
           title="Success Rate"
           value={`${analytics.overview.successRate.toFixed(1)}%`}
           change={5.2}
-          icon={TrendingUpIcon}
+          icon={ArrowTrendingUpIcon}
           color="purple"
         />
         <MetricCard
@@ -343,7 +343,7 @@ function UsageTab({ analytics }: { analytics: any }) {
         <MetricCard
           title="Retention Rate"
           value={`${analytics.userEngagement.retentionRate}%`}
-          icon={TrendingUpIcon}
+          icon={ArrowTrendingUpIcon}
           color="orange"
         />
       </div>
@@ -434,7 +434,7 @@ function TrendsTab({ analytics }: { analytics: any }) {
           title="Order Growth"
           value={`${analytics.growthMetrics.orderGrowth > 0 ? '+' : ''}${analytics.growthMetrics.orderGrowth.toFixed(1)}%`}
           change={analytics.growthMetrics.orderGrowth}
-          icon={TrendingUpIcon}
+          icon={ArrowTrendingUpIcon}
           color="blue"
         />
         <MetricCard
@@ -455,7 +455,7 @@ function TrendsTab({ analytics }: { analytics: any }) {
           title="Revenue Growth"
           value={`${analytics.growthMetrics.revenueGrowth > 0 ? '+' : ''}${analytics.growthMetrics.revenueGrowth.toFixed(1)}%`}
           change={analytics.growthMetrics.revenueGrowth}
-          icon={TrendingUpIcon}
+          icon={ArrowTrendingUpIcon}
           color="orange"
         />
       </div>
@@ -522,13 +522,13 @@ function PerformanceTab({ analytics }: { analytics: any }) {
         <MetricCard
           title="Completion Rate"
           value={`${analytics.orderPerformance.completionRate}%`}
-          icon={TrendingUpIcon}
+          icon={ArrowTrendingUpIcon}
           color="green"
         />
         <MetricCard
           title="Error Rate"
           value={`${analytics.orderPerformance.errorRate}%`}
-          icon={TrendingDownIcon}
+          icon={ArrowTrendingDownIcon}
           color="red"
         />
         <MetricCard
@@ -642,7 +642,7 @@ function MetricCard({
     : 'text-gray-500'
 
   const ChangeIcon = change !== undefined
-    ? change >= 0 ? TrendingUpIcon : TrendingDownIcon
+    ? change >= 0 ? ArrowTrendingUpIcon : ArrowTrendingDownIcon
     : null
 
   return (
