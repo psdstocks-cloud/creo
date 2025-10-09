@@ -2,7 +2,7 @@
 
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { getQueryClient } from '@/lib/query-client'
+import { queryClient } from '@/lib/query-client'
 import { AuthProvider } from '@/components/auth/AuthProvider'
 import { ToastProvider } from '@/components/ui/Toast'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
@@ -12,7 +12,7 @@ interface ClientProvidersProps {
 }
 
 export function ClientProviders({ children }: ClientProvidersProps) {
-  const queryClient = getQueryClient()
+  // Use the imported queryClient
 
   return (
     <ErrorBoundary>

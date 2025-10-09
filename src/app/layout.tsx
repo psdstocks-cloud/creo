@@ -1,23 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from '@/components/layout/Navbar'
-import { ClientProviders } from '@/components/ClientProviders'
-import { DemoLogin } from '@/components/DemoLogin'
+import { AuthProvider } from '@/components/auth/AuthProvider';
+import { Navbar } from '@/components/layout/Navbar';
+import { QueryProvider } from '@/components/providers/QueryProvider';
+import { ToastProvider } from '@/components/ui/Toast';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Fonts are handled by Tailwind CSS
 
 export const metadata: Metadata = {
-  title: "Creo - Stock Media Platform",
-  description: "AI-powered stock media platform with NEHTW integration",
+  title: 'Creo - Stock Media Platform',
+  description: 'AI-powered stock media platform with NEHTW integration',
 };
 
 export default async function RootLayout({
@@ -27,16 +19,17 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ClientProviders>
-          <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <DemoLogin />
-            <main>{children}</main>
-          </div>
-        </ClientProviders>
+      <body>
+        <QueryProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <div className="min-h-screen bg-gray-50">
+                <Navbar />
+                <main>{children}</main>
+              </div>
+            </ToastProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

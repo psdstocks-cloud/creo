@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '@/lib/query-client'
 
 // ============================================================================
 // Order Management Hooks for Unified Tracking
@@ -14,7 +13,7 @@ export const useUserOrders = (_options?: {
   status?: string;
 }) => {
   return useQuery({
-    queryKey: queryKeys.orders(),
+    queryKey: ['orders'],
     queryFn: async () => {
       // This combines both stock and AI orders
       // Implementation would aggregate from localStorage or backend
@@ -35,7 +34,7 @@ export const useUserOrders = (_options?: {
  */
 export const useOrderDetails = (orderId: string) => {
   return useQuery({
-    queryKey: queryKeys.order(orderId),
+    queryKey: ['orders', orderId],
     queryFn: async () => {
       // Fetch specific order details
       const orders = JSON.parse(localStorage.getItem('all_orders') || '[]')
@@ -51,7 +50,7 @@ export const useOrderDetails = (orderId: string) => {
  */
 export const useOrderStatistics = () => {
   return useQuery({
-    queryKey: [...queryKeys.orders(), 'statistics'],
+    queryKey: ['orders', 'statistics'],
     queryFn: async () => {
       const orders = JSON.parse(localStorage.getItem('all_orders') || '[]')
       
@@ -72,7 +71,7 @@ export const useOrderStatistics = () => {
  */
 export const useDownloadHistory = () => {
   return useQuery({
-    queryKey: [...queryKeys.orders(), 'downloads'],
+    queryKey: ['orders', 'downloads'],
     queryFn: async () => {
       const downloads = localStorage.getItem('download_history')
       return downloads ? JSON.parse(downloads) : []
@@ -100,7 +99,7 @@ export const useTrackDownload = () => {
       return downloadInfo
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.all, 'downloads'] })
+      queryClient.invalidateQueries({ queryKey: ['downloads'] })
     },
   })
 }
@@ -135,7 +134,7 @@ export const useBulkOrderActions = () => {
       return { success: true, affected: actions.orderIds.length }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.orders() })
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
     },
   })
 }
@@ -145,7 +144,7 @@ export const useBulkOrderActions = () => {
  */
 export const useOrderAnalytics = () => {
   return useQuery({
-    queryKey: [...queryKeys.orders(), 'analytics'],
+    queryKey: ['orders', 'analytics'],
     queryFn: async () => {
       const orders = JSON.parse(localStorage.getItem('all_orders') || '[]')
       

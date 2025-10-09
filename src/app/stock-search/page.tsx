@@ -63,7 +63,7 @@ export default function StockSearchPage() {
         url: searchParams.url
       })
       
-      setActiveOrders(prev => [...prev, response.task_id])
+      setActiveOrders(prev => [...prev, response])
       success('Order Created', 'Your download order has been created successfully.')
     } catch (error) {
       console.error('Failed to create order:', error)
@@ -176,8 +176,8 @@ export default function StockSearchPage() {
               <div className="md:w-1/3 p-6">
                 <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden">
                   <Image
-                    src={stockInfo.data.image}
-                    alt={stockInfo.data.title}
+                    src={stockInfo.url}
+                    alt={stockInfo.title}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -187,24 +187,24 @@ export default function StockSearchPage() {
 
               {/* Media Details */}
               <div className="md:w-2/3 p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{stockInfo.data.title}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{stockInfo.title}</h2>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <span className="text-sm font-medium text-gray-500">Source:</span>
-                    <p className="text-lg text-gray-900">{stockInfo.data.source}</p>
+                    <p className="text-lg text-gray-900">{stockInfo.site.name}</p>
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">Cost:</span>
-                    <p className="text-lg text-gray-900">${stockInfo.data.cost}</p>
+                    <p className="text-lg text-gray-900">${stockInfo.pricing.price}</p>
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">Author:</span>
-                    <p className="text-lg text-gray-900">{stockInfo.data.author || 'N/A'}</p>
+                    <p className="text-lg text-gray-900">{stockInfo.contributor.name || 'N/A'}</p>
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">File Size:</span>
-                    <p className="text-lg text-gray-900">{stockInfo.data.sizeInBytes || 'N/A'}</p>
+                    <p className="text-lg text-gray-900">{stockInfo.metadata.file_size_mb ? `${stockInfo.metadata.file_size_mb} MB` : 'N/A'}</p>
                   </div>
                 </div>
 
@@ -254,8 +254,8 @@ function OrderStatusCard({
   const handleDownload = useCallback(async () => {
     try {
       const result = await downloadLinkMutation.mutateAsync({ taskId })
-      if (result.downloadLink) {
-        window.open(result.downloadLink, '_blank')
+      if (result.url) {
+        window.open(result.url, '_blank')
       }
     } catch (error) {
       console.error('Failed to get download link:', error)
@@ -272,7 +272,7 @@ function OrderStatusCard({
           <p className="font-medium text-gray-900">Order: {taskId}</p>
           <p className="text-sm text-gray-500">
             Status: <span className={`font-medium ${
-              orderStatus.status === 'ready' ? 'text-green-600' : 
+              orderStatus.status === 'completed' ? 'text-green-600' : 
               orderStatus.status === 'processing' ? 'text-blue-600' : 'text-red-600'
             }`}>
               {orderStatus.status}
@@ -280,7 +280,7 @@ function OrderStatusCard({
           </p>
         </div>
         
-        {orderStatus.status === 'ready' && (
+        {orderStatus.status === 'completed' && (
           <button
             onClick={handleDownload}
             disabled={downloadLinkMutation.isPending}

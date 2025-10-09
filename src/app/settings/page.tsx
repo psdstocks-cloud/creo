@@ -16,9 +16,17 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default function SettingsPage() {
-  const { user, userRole, isDemoUser, isAdmin } = useAuth()
+  const { user, loading } = useAuth()
   const { data: balance, isLoading: balanceLoading } = useUserBalance()
   const [activeTab, setActiveTab] = useState('account')
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primaryOrange"></div>
+      </div>
+    )
+  }
 
   if (!user) {
     return (
@@ -85,11 +93,9 @@ export default function SettingsPage() {
                     <div className="p-3 bg-gray-50 rounded-md border">
                       <div className="flex items-center justify-between">
                         <span className="text-gray-900">{user.email}</span>
-                        {isDemoUser && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Demo Account
-                          </span>
-                        )}
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Active Account
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -98,13 +104,11 @@ export default function SettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Account Role</label>
                     <div className="p-3 bg-gray-50 rounded-md border">
                       <span className="text-gray-900 capitalize">
-                        {userRole?.replace('_', ' ')}
+                        User
                       </span>
-                      {isAdmin && (
-                        <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                          Admin
-                        </span>
-                      )}
+                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        Standard
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -133,21 +137,19 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                {isDemoUser && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <ExclamationTriangleIcon className="h-5 w-5 text-blue-400" />
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-blue-800">Demo Account</h3>
-                        <div className="mt-2 text-sm text-blue-700">
-                          <p>You&apos;re using a demo account for testing purposes. Some features may be limited.</p>
-                        </div>
+                <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <CheckCircleIcon className="h-5 w-5 text-green-400" />
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-green-800">Account Status</h3>
+                      <div className="mt-2 text-sm text-green-700">
+                        <p>Your account is active and ready to use all features.</p>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
 

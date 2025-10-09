@@ -5,9 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { useAuth } from '@/components/auth/AuthProvider'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-
 function SignInContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -39,7 +36,11 @@ function SignInContent() {
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primaryOrange"></div>
+      </div>
+    }>
       <SignInContent />
     </Suspense>
   )

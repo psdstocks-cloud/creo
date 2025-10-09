@@ -3,11 +3,23 @@
 import { BrandButton } from '@/components/ui/BrandButton'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { SparklesIcon, PhotoIcon, CpuChipIcon, CreditCardIcon } from '@heroicons/react/24/outline'
+import { useAuth } from '@/components/auth/AuthProvider'
+import Link from 'next/link'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primaryOrange"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 relative overflow-hidden">
       {/* Background Elements */}
@@ -32,21 +44,51 @@ export default function Home() {
           </div>
           
           <div className="animate-slide-up space-x-4">
-            <BrandButton 
-              variant="primary" 
-              size="lg" 
-              glow={true}
-              className="mr-4"
-            >
-              <SparklesIcon className="w-5 h-5 mr-2" />
-              Start Creating
-            </BrandButton>
-            <BrandButton 
-              variant="glass" 
-              size="lg"
-            >
-              Learn More
-            </BrandButton>
+            {user ? (
+              <>
+                <Link href="/dashboard">
+                  <BrandButton 
+                    variant="primary" 
+                    size="lg" 
+                    glow={true}
+                    className="mr-4"
+                  >
+                    <SparklesIcon className="w-5 h-5 mr-2" />
+                    Go to Dashboard
+                  </BrandButton>
+                </Link>
+                <Link href="/stock-search">
+                  <BrandButton 
+                    variant="glass" 
+                    size="lg"
+                  >
+                    Search Stock Media
+                  </BrandButton>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/signin">
+                  <BrandButton 
+                    variant="primary" 
+                    size="lg" 
+                    glow={true}
+                    className="mr-4"
+                  >
+                    <SparklesIcon className="w-5 h-5 mr-2" />
+                    Sign In
+                  </BrandButton>
+                </Link>
+                <Link href="/stock-search">
+                  <BrandButton 
+                    variant="glass" 
+                    size="lg"
+                  >
+                    Browse Stock Media
+                  </BrandButton>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -86,19 +128,47 @@ export default function Home() {
             Join thousands of creators who are already using Creo to streamline their content creation process.
           </p>
           <div className="space-x-4">
-            <BrandButton 
-              variant="primary" 
-              size="lg" 
-              glow={true}
-            >
-              Get Started Free
-            </BrandButton>
-            <BrandButton 
-              variant="secondary" 
-              size="lg"
-            >
-              View Pricing
-            </BrandButton>
+            {user ? (
+              <>
+                <Link href="/ai-generation">
+                  <BrandButton 
+                    variant="primary" 
+                    size="lg" 
+                    glow={true}
+                  >
+                    Start AI Generation
+                  </BrandButton>
+                </Link>
+                <Link href="/orders">
+                  <BrandButton 
+                    variant="secondary" 
+                    size="lg"
+                  >
+                    View Orders
+                  </BrandButton>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/signin">
+                  <BrandButton 
+                    variant="primary" 
+                    size="lg" 
+                    glow={true}
+                  >
+                    Get Started Free
+                  </BrandButton>
+                </Link>
+                <Link href="/stock-search">
+                  <BrandButton 
+                    variant="secondary" 
+                    size="lg"
+                  >
+                    Browse Stock Media
+                  </BrandButton>
+                </Link>
+              </>
+            )}
           </div>
         </GlassCard>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/browser'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,13 +24,13 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
-  let supabase = null
-  
-  try {
-    supabase = createClient()
-  } catch (error) {
-    console.warn('Supabase client not available:', error)
-  }
+  const supabase = useMemo(() => {
+    if (typeof window === 'undefined') return null
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return null
+    }
+    return createClient()
+  }, [])
   
   const {
     register,
@@ -42,14 +42,13 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
   })
 
   const onSubmit = async (data: AuthFormData) => {
-    setLoading(true)
-    setError(null)
-
     if (!supabase) {
-      setError('Authentication service not available')
-      setLoading(false)
+      setError('Authentication service is not available')
       return
     }
+
+    setLoading(true)
+    setError(null)
 
     try {
       if (mode === 'signin') {
