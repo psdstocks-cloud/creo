@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from '@/components/auth/AuthProvider';
-import { ClientLayout } from '@/components/layout/ClientLayout';
+import { UserProvider } from '@/contexts/UserContext';
+import { EnhancedClientLayout } from '@/components/layout/EnhancedClientLayout';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ToastProvider } from '@/components/ui/Toast';
 
 // Fonts are handled by Tailwind CSS
 
 export const metadata: Metadata = {
-  title: 'Creo - Stock Media Platform',
-  description: 'AI-powered stock media platform with NEHTW integration',
+  title: 'Creo - AI-Powered Stock Media Platform',
+  description: 'Generate AI images and search stock media with our comprehensive platform',
 };
 
 export default async function RootLayout({
@@ -22,11 +23,13 @@ export default async function RootLayout({
       <body>
         <QueryProvider>
           <AuthProvider>
-            <ToastProvider>
-              <ClientLayout>
-                {children}
-              </ClientLayout>
-            </ToastProvider>
+            <UserProvider>
+              <ToastProvider>
+                <EnhancedClientLayout>
+                  {children}
+                </EnhancedClientLayout>
+              </ToastProvider>
+            </UserProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
