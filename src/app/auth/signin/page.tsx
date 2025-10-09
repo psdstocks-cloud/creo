@@ -4,6 +4,7 @@ import { DemoLogin } from '@/components/auth/DemoLogin'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
+import Link from 'next/link'
 
 function SignInContent() {
   const { signIn, loading, user } = useAuth()
@@ -105,6 +106,17 @@ function SignInContent() {
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
+        
+        {/* Sign Up Link */}
+        <div className="mt-6 text-center text-sm">
+          Don&apos;t have an account?{' '}
+          <Link
+            href="/auth/signup"
+            className="font-semibold text-orange-600 hover:text-purple-600 underline transition-colors"
+          >
+            Sign up
+          </Link>
+        </div>
       </div>
     </div>
   )
