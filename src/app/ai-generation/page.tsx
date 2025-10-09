@@ -251,21 +251,21 @@ function AIJobCard({ jobId, aiActionMutation }: {
       {/* Status Header */}
       <div className="p-4 border-b border-gray-200/50">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900 truncate">{(jobResult as any).prompt || 'AI Generation'}</h3>
-          <StatusBadge status={jobResult.status} />
+          <h3 className="font-semibold text-gray-900 truncate">{(jobResult as { prompt?: string }).prompt || 'AI Generation'}</h3>
+          <StatusBadge status={(jobResult as { status?: string }).status || 'processing'} />
         </div>
         
         {/* Progress Bar */}
-        {jobResult.status === 'processing' && (
+        {(jobResult as { status?: string }).status === 'processing' && (
           <div className="mt-2">
             <div className="flex justify-between text-sm text-gray-600 mb-1">
               <span>Processing...</span>
-              <span>{(jobResult as any).percentage_complete || 0}%</span>
+              <span>{(jobResult as { percentage_complete?: number }).percentage_complete || 0}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-gradient-to-r from-purple-500 to-orange-500 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${(jobResult as any).percentage_complete || 0}%` }}
+                style={{ width: `${(jobResult as { percentage_complete?: number }).percentage_complete || 0}%` }}
               />
             </div>
           </div>
@@ -273,14 +273,14 @@ function AIJobCard({ jobId, aiActionMutation }: {
       </div>
 
       {/* Results Grid */}
-      {jobResult.files && jobResult.files.length > 0 && (
+      {(jobResult as { files?: Array<{ thumb_lg?: string; thumb_sm?: string; download: string }> }).files && (jobResult as { files?: Array<{ thumb_lg?: string; thumb_sm?: string; download: string }> }).files!.length > 0 && (
         <div className="p-4">
           <div className="grid grid-cols-2 gap-2">
-            {jobResult.files.map((file: { thumb_lg?: string; thumb_sm?: string; download: string }, index: number) => (
+            {(jobResult as { files?: Array<{ thumb_lg?: string; thumb_sm?: string; download: string }> }).files!.map((file: { thumb_lg?: string; thumb_sm?: string; download: string }, index: number) => (
               <div key={index} className="relative group">
                 <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden">
                   <Image
-                    src={file.thumb_lg || file.thumb_sm}
+                    src={file.thumb_lg || file.thumb_sm || '/placeholder-image.png'}
                     alt={`Generated image ${index + 1}`}
                     fill
                     className="object-cover"

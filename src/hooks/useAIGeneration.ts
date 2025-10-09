@@ -72,12 +72,6 @@ export const useAIResult = (jobId: string, enabled = true) => {
         return false
       }
       return failureCount < 3
-    },
-    onSuccess: (data) => {
-      // Notify when job completes
-      if (data?.status === 'completed' && data.files?.length > 0) {
-        success('AI Generation Complete! ✨', `Your images are ready for download.`)
-      }
     }
   })
 }
