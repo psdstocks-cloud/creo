@@ -1,377 +1,322 @@
 'use client'
-
-import { useState, useCallback } from 'react'
-import { useStockSites, useStockInfo, useCreateOrder, useOrderStatus, useDownloadLink } from '@/hooks/useStockMedia'
+import { useState, useEffect, useMemo } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
-import { MagnifyingGlassIcon, PhotoIcon, CloudArrowDownIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
-// import { LoadingState, LoadingCard } from '@/components/ui/LoadingState'
+import { 
+  useStockSites, 
+  useUserBalance 
+} from '@/hooks/useStockMedia'
+import { useBatchStockInfo, useBatchStockOrder } from '@/hooks/useBatchStockInfo'
+import { parseInputLines, getInputStats } from '@/lib/stock-parse'
+import { StockSitesGrid, StockSitesGridSkeleton } from '@/components/stock-search/StockSiteCard'
+import { BatchSearchResults, BatchSearchResultsSkeleton } from '@/components/stock-search/BatchSearchResults'
 import { useToastHelpers } from '@/components/ui/Toast'
-import { BatchStockSearch } from '@/components/stock-search/BatchStockSearch'
-import { PageLayout } from '@/components/layout/PageLayout'
-import Image from 'next/image'
+import { 
+  MagnifyingGlassIcon, 
+  ExclamationCircleIcon,
+  DocumentTextIcon,
+  SparklesIcon
+} from '@heroicons/react/24/outline'
+import { motion } from 'framer-motion'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-interface SearchParams {
-  site: string
-  query: string
-  id: string
-  url?: string
-}
-
 export default function StockSearchPage() {
   const { user } = useAuth()
   const { success, error: showError } = useToastHelpers()
-  const [searchParams, setSearchParams] = useState<SearchParams>({
-    site: '',
-    query: '',
-    id: '',
-    url: ''
-  })
-  const [activeOrders, setActiveOrders] = useState<string[]>([])
-  const [searchMode, setSearchMode] = useState<'single' | 'batch'>('single')
-
-  // API Hooks
-  const { data: stockSites, isLoading: sitesLoading } = useStockSites()
-  const { data: stockInfo, isLoading: infoLoading, error: infoError } = useStockInfo(
-    searchParams.site, 
-    searchParams.id, 
-    searchParams.url,
-  )
   
-  const createOrderMutation = useCreateOrder()
-  const downloadLinkMutation = useDownloadLink()
+  // State management
+  const [input, setInput] = useState('')
+  const [hasSearched, setHasSearched] = useState(false)
+  
+  // API hooks
+  const { data: stockSites, isLoading: sitesLoading, error: sitesError } = useStockSites()
+  const { data: userBalance } = useUserBalance()
+  const { createBatchOrder } = useBatchStockOrder()
 
-  // Handle search form submission
-  const handleSearch = useCallback((e: React.FormEvent) => {
+  // Parse input lines
+  const parsedInputs = useMemo(() => {
+    return parseInputLines(input, stockSites)
+  }, [input, stockSites])
+
+  // Input statistics
+  const inputStats = useMemo(() => {
+    return getInputStats(parsedInputs)
+  }, [parsedInputs])
+
+  // Batch info fetching
+  const {
+    data: batchResults = [],
+    isLoading: resultsLoading,
+    refetch: refetchResults,
+    stats: resultsStats
+  } = useBatchStockInfo(parsedInputs, {
+    enabled: hasSearched && parsedInputs.length > 0
+  })
+
+  // Handle form submission
+  const handleCheckFiles = (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!searchParams.site || !searchParams.id) {
-      alert('Please select a site and enter an ID')
+    if (!input.trim()) {
+      showError('Empty Input', 'Please enter some URLs or IDs to search.')
       return
     }
 
-    // Search is automatic via the useStockInfo hook when params change
-  }, [searchParams])
+    if (inputStats.valid === 0) {
+      showError('No Valid Inputs', 'Please enter valid stock media URLs or IDs.')
+      return
+    }
 
-  // Handle order creation
-  const handleCreateOrder = useCallback(async () => {
-    if (!stockInfo) return
+    setHasSearched(true)
+    refetchResults()
+  }
+
+  // Handle bulk order
+  const handleBulkOrder = async () => {
+    const validResults = batchResults.filter(r => r.isSuccess && r.data)
+    
+    if (validResults.length === 0) {
+      showError('No Items to Order', 'No valid items available for ordering.')
+      return
+    }
+
+    const totalCost = validResults.reduce((sum, r) => sum + (r.data?.cost || 0), 0)
+    
+    if (userBalance && userBalance.balance < totalCost) {
+      showError('Insufficient Balance', `You need $${totalCost.toFixed(2)} but have $${userBalance.balance.toFixed(2)}.`)
+      return
+    }
 
     try {
-      const response = await createOrderMutation.mutateAsync({
-        site: searchParams.site,
-        id: searchParams.id,
-        url: searchParams.url
-      })
-      
-      setActiveOrders(prev => [...prev, response])
-      success('Order Created', 'Your download order has been created successfully.')
-    } catch (error) {
-      console.error('Failed to create order:', error)
-      showError('Order Failed', 'Failed to create order. Please try again.')
+      await createBatchOrder(validResults)
+    } catch (error: any) {
+      showError('Bulk Order Failed', error.message || 'Failed to create bulk order.')
     }
-  }, [stockInfo, searchParams, createOrderMutation, success, showError])
+  }
 
+  // Check for missing environment variables
+  const hasEnvIssues = !process.env.NEXT_PUBLIC_NEHTW_API_KEY || !process.env.NEXT_PUBLIC_NEHTW_BASE_URL
+
+  // Require authentication
   if (!user) {
     return (
-      <PageLayout
-        title="Stock Media Search"
-        subtitle="Search and download stock media from multiple sources"
-        requiresAuth={true}
-      />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-purple-50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-md mx-auto px-4"
+        >
+          <SparklesIcon className="h-12 w-12 mx-auto text-purple-400 mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Authentication Required</h3>
+          <p className="text-gray-600">Please sign in to access the stock search feature.</p>
+        </motion.div>
+      </div>
     )
   }
 
   return (
-    <PageLayout
-      title="Stock Media Search"
-      subtitle="Search and download stock media from multiple sources"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Search Mode Toggle */}
-        <div className="mb-8">
-          <div className="flex justify-center">
-            <div className="bg-white/60 backdrop-blur-md rounded-lg p-1 border border-white/20">
-              <button
-                onClick={() => setSearchMode('single')}
-                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  searchMode === 'single'
-                    ? 'bg-white text-orange-600 shadow-sm'
-                    : 'text-gray-700 hover:bg-white/50'
-                }`}
-              >
-                <MagnifyingGlassIcon className="h-4 w-4 mr-2" />
-                Single Search
-              </button>
-              <button
-                onClick={() => setSearchMode('batch')}
-                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  searchMode === 'batch'
-                    ? 'bg-white text-orange-600 shadow-sm'
-                    : 'text-gray-700 hover:bg-white/50'
-                }`}
-              >
-                <Squares2X2Icon className="h-4 w-4 mr-2" />
-                Batch Search
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Render appropriate search interface */}
-        {searchMode === 'batch' ? (
-          <BatchStockSearch />
-        ) : (
-          <SingleStockSearch
-            searchParams={searchParams}
-            setSearchParams={setSearchParams}
-            activeOrders={activeOrders}
-            setActiveOrders={setActiveOrders}
-            stockSites={stockSites}
-            sitesLoading={sitesLoading}
-            stockInfo={stockInfo}
-            infoLoading={infoLoading}
-            infoError={infoError}
-            createOrderMutation={createOrderMutation}
-            downloadLinkMutation={downloadLinkMutation}
-            handleSearch={handleSearch}
-            handleCreateOrder={handleCreateOrder}
-          />
-        )}
-      </div>
-    </PageLayout>
-  )
-}
-
-// Single Search Component
-function SingleStockSearch({
-  searchParams,
-  setSearchParams,
-  activeOrders,
-  setActiveOrders,
-  stockSites,
-  sitesLoading,
-  stockInfo,
-  infoLoading,
-  infoError,
-  createOrderMutation,
-  downloadLinkMutation,
-  handleSearch,
-  handleCreateOrder
-}: {
-  searchParams: SearchParams
-  setSearchParams: React.Dispatch<React.SetStateAction<SearchParams>>
-  activeOrders: string[]
-  setActiveOrders: React.Dispatch<React.SetStateAction<string[]>>
-  stockSites: any
-  sitesLoading: boolean
-  stockInfo: any
-  infoLoading: boolean
-  infoError: any
-  createOrderMutation: any
-  downloadLinkMutation: any
-  handleSearch: (e: React.FormEvent) => void
-  handleCreateOrder: () => void
-}) {
-  return (
-    <div className="space-y-8">
-      {/* Search Form */}
-      <div className="bg-white/60 backdrop-blur-md rounded-lg border border-white/20 p-6">
-        <form onSubmit={handleSearch} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Site Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Stock Site
-              </label>
-              <select
-                value={searchParams.site}
-                onChange={(e) => setSearchParams(prev => ({ ...prev, site: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={sitesLoading}
-              >
-                <option value="">Select a site...</option>
-                {stockSites && Object.entries(stockSites).map(([site, config]) => (
-                  <option key={site} value={site} disabled={!config.active}>
-                    {site} {config.active ? `($${config.price})` : '(Inactive)'}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Media ID */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Media ID
-              </label>
-              <input
-                type="text"
-                value={searchParams.id}
-                onChange={(e) => setSearchParams(prev => ({ ...prev, id: e.target.value }))}
-                placeholder="Enter media ID..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-
-            {/* Optional URL */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Original URL (Optional)
-              </label>
-              <input
-                type="url"
-                value={searchParams.url}
-                onChange={(e) => setSearchParams(prev => ({ ...prev, url: e.target.value }))}
-                placeholder="https://..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              disabled={!searchParams.site || !searchParams.id || infoLoading}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
-            >
-              <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
-              {infoLoading ? 'Searching...' : 'Search Media'}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Search Results */}
-      {infoError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800">
-            Error: {infoError.message}
-          </p>
-        </div>
-      )}
-
-      {stockInfo && (
-        <div className="bg-white/60 backdrop-blur-md rounded-lg border border-white/20 overflow-hidden">
-          <div className="md:flex">
-            {/* Media Preview */}
-            <div className="md:w-1/3 p-6">
-              <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden">
-                <Image
-                  src={stockInfo.url}
-                  alt={stockInfo.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-              </div>
-            </div>
-
-            {/* Media Details */}
-            <div className="md:w-2/3 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{stockInfo.title}</h2>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Source:</span>
-                  <p className="text-lg text-gray-900">{stockInfo.site.name}</p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Cost:</span>
-                  <p className="text-lg text-gray-900">${stockInfo.pricing.price}</p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Author:</span>
-                  <p className="text-lg text-gray-900">{stockInfo.contributor.name || 'N/A'}</p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">File Size:</span>
-                  <p className="text-lg text-gray-900">{stockInfo.metadata.file_size_mb ? `${stockInfo.metadata.file_size_mb} MB` : 'N/A'}</p>
-                </div>
-              </div>
-
-              <button
-                onClick={handleCreateOrder}
-                disabled={createOrderMutation.isPending}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-              >
-                <CloudArrowDownIcon className="h-5 w-5 mr-2" />
-                {createOrderMutation.isPending ? 'Creating Order...' : 'Order & Download'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Active Orders */}
-      {activeOrders.length > 0 && (
-        <div className="bg-white/60 backdrop-blur-md rounded-lg border border-white/20 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Orders</h3>
-          <div className="space-y-4">
-            {activeOrders.map((taskId) => (
-              <OrderStatusCard 
-                key={taskId} 
-                taskId={taskId} 
-                downloadLinkMutation={downloadLinkMutation}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// Order Status Card Component
-function OrderStatusCard({ 
-  taskId, 
-  downloadLinkMutation 
-}: { 
-  taskId: string
-  downloadLinkMutation: ReturnType<typeof useDownloadLink>
-}) {
-  const { data: orderStatus } = useOrderStatus(taskId)
-
-  const handleDownload = useCallback(async () => {
-    try {
-      const result = await downloadLinkMutation.mutateAsync({ taskId })
-      if (result.url) {
-        window.open(result.url, '_blank')
-      }
-    } catch (error) {
-      console.error('Failed to get download link:', error)
-      alert('Failed to get download link. Please try again.')
-    }
-  }, [taskId, downloadLinkMutation])
-
-  if (!orderStatus) return null
-
-  return (
-    <div className="border border-gray-200 rounded-lg p-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="font-medium text-gray-900">Order: {taskId}</p>
-          <p className="text-sm text-gray-500">
-            Status: <span className={`font-medium ${
-              orderStatus.status === 'completed' ? 'text-green-600' : 
-              orderStatus.status === 'processing' ? 'text-blue-600' : 'text-red-600'
-            }`}>
-              {orderStatus.status}
-            </span>
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto space-y-8">
         
-        {orderStatus.status === 'completed' && (
-          <button
-            onClick={handleDownload}
-            disabled={downloadLinkMutation.isPending}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+        {/* Header */}
+        <motion.header
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent mb-2">
+            Batch Stock Search
+          </h1>
+          <p className="text-lg text-gray-600">
+            Check and order stock assets from multiple sources with one action
+          </p>
+          {userBalance && (
+            <p className="text-sm text-gray-500 mt-1">
+              Available Balance: <span className="font-semibold text-purple-600">
+                ${userBalance.balance.toFixed(2)}
+              </span>
+            </p>
+          )}
+        </motion.header>
+
+        {/* Environment Warning */}
+        {hasEnvIssues && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-yellow-50 border border-yellow-200 rounded-xl p-4"
           >
-            {downloadLinkMutation.isPending ? 'Getting Link...' : 'Download'}
-          </button>
+            <div className="flex items-center">
+              <ExclamationCircleIcon className="h-5 w-5 text-yellow-600 mr-2" />
+              <div className="text-yellow-800">
+                <strong>Configuration Issue:</strong> NEHTW API credentials are missing. 
+                Stock search functionality will be limited.
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Stock Sites Grid */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Available Stock Sources</h2>
+              <div className="text-sm text-gray-500">
+                {stockSites && Object.values(stockSites).filter(s => s.active).length} active sources
+              </div>
+            </div>
+            
+            {sitesError ? (
+              <div className="text-center py-8">
+                <ExclamationCircleIcon className="h-12 w-12 mx-auto text-red-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Failed to Load Stock Sources</h3>
+                <p className="text-gray-600">{sitesError.message}</p>
+              </div>
+            ) : sitesLoading ? (
+              <StockSitesGridSkeleton />
+            ) : stockSites ? (
+              <StockSitesGrid sites={stockSites} />
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No stock sources available</p>
+              </div>
+            )}
+          </div>
+        </motion.section>
+
+        {/* Input Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <form onSubmit={handleCheckFiles} className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-6">
+            <div className="mb-4">
+              <label htmlFor="batch-input" className="block text-lg font-semibold text-gray-900 mb-2">
+                Enter Stock Media URLs or IDs
+              </label>
+              <p className="text-sm text-gray-600 mb-4">
+                Paste image URLs or IDs, one per line. We support Shutterstock, iStock, Adobe Stock, and more.
+              </p>
+              
+              <textarea
+                id="batch-input"
+                rows={8}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={`https://www.shutterstock.com/image-photo/beautiful-sunset-landscape-123456789
+https://www.istockphoto.com/photo/example-gm987654321
+adobe:555666777
+1234567890`}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white/80 font-mono text-sm resize-vertical"
+                disabled={resultsLoading}
+              />
+              
+              {/* Input Statistics */}
+              {input.trim() && (
+                <div className="mt-3 flex items-center space-x-6 text-sm">
+                  <span className="text-gray-600">
+                    Total: <span className="font-medium">{inputStats.total}</span>
+                  </span>
+                  <span className="text-green-600">
+                    Valid: <span className="font-medium">{inputStats.valid}</span>
+                  </span>
+                  {inputStats.invalid > 0 && (
+                    <span className="text-red-600">
+                      Invalid: <span className="font-medium">{inputStats.invalid}</span>
+                    </span>
+                  )}
+                  
+                  {/* Site Breakdown */}
+                  {Object.entries(inputStats.siteBreakdown).length > 0 && (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-gray-500">Sites:</span>
+                      {Object.entries(inputStats.siteBreakdown).map(([site, count]) => (
+                        <span key={site} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                          {site}: {count}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-center">
+              <motion.button
+                type="submit"
+                disabled={!input.trim() || inputStats.valid === 0 || resultsLoading || sitesLoading}
+                className="inline-flex items-center px-8 py-3 text-base font-semibold text-white bg-gradient-to-r from-orange-500 to-purple-600 rounded-xl shadow-lg hover:from-orange-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
+                {resultsLoading ? 'Checking Files...' : 'Check Files'}
+              </motion.button>
+            </div>
+          </form>
+        </motion.section>
+
+        {/* Results Section */}
+        {hasSearched && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Search Results</h2>
+              
+              {resultsStats.success > 0 && (
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-600">
+                    {resultsStats.success} items found
+                  </span>
+                  <button
+                    onClick={handleBulkOrder}
+                    disabled={!userBalance || resultsStats.success === 0}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Order All Valid Items
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {resultsLoading ? (
+              <BatchSearchResultsSkeleton />
+            ) : (
+              <BatchSearchResults
+                results={batchResults}
+                isLoading={resultsLoading}
+                userBalance={userBalance?.balance || 0}
+                onOrder={(result) => {
+                  // Handle individual order
+                  console.log('Order individual item:', result)
+                }}
+                onViewOriginal={(result) => {
+                  if (result.input.url) {
+                    window.open(result.input.url, '_blank')
+                  }
+                }}
+                onRemove={(result) => {
+                  // Remove item from input
+                  const lines = input.split('\n')
+                  const filteredLines = lines.filter(line => line.trim() !== result.input.raw.trim())
+                  setInput(filteredLines.join('\n'))
+                }}
+              />
+            )}
+          </motion.section>
         )}
       </div>
     </div>
   )
 }
+

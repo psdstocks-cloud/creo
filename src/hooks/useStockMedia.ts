@@ -5,6 +5,10 @@ import { useAuth } from '@/components/auth/AuthProvider'
 import { useToastHelpers } from '@/components/ui/Toast'
 import { StockInfo, OrderRequest, OrderStatus, DownloadLink, StockSitesResponse, AccountBalance } from '@/types/nehtw'
 
+// Enhanced exports for batch compatibility
+export { nehtwClient as nehtwAPI } from '@/lib/nehtw-client'
+export { queryKeys } from '@/lib/query-keys'
+
 // Get available stock sites
 export const useStockSites = () => {
   const { user } = useAuth()
@@ -22,6 +26,15 @@ export const useStockSites = () => {
     enabled: !!user, // Only fetch if user is authenticated
     staleTime: 10 * 60 * 1000, // 10 minutes - sites don't change often
     gcTime: 30 * 60 * 1000, // 30 minutes cache
+    retry: (failureCount, error) => {
+      if (error?.message?.includes('401') || error?.message?.includes('403')) {
+        return false
+      }
+      return failureCount < 2
+    },
+    meta: {
+      errorMessage: 'Failed to load stock sites'
+    }
   })
 }
 
@@ -35,6 +48,13 @@ export const useStockInfo = (site: string, id: string, url?: string) => {
     enabled: !!(user && site && id), // Only run if we have required params
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 15 * 60 * 1000, // 15 minutes cache
+    retry: (failureCount, error) => {
+      if (error?.message?.includes('404')) return false
+      return failureCount < 2
+    },
+    meta: {
+      errorMessage: `Failed to get info for ${site}:${id}`
+    }
   })
 }
 
@@ -109,4 +129,39 @@ export const useUserBalance = () => {
     gcTime: 2 * 60 * 1000, // 2 minutes
     refetchInterval: 60 * 1000, // Refresh every minute
   })
+}
+
+// Generic fetch functions for batch operations
+export const stockMediaAPI = {
+  // Raw API calls without React Query wrapping
+  getStockSites: () => nehtwClient.getStockSites(),
+  getStockInfo: (site: string, id: string, url?: string) => 
+    nehtwClient.getStockInfo(site, id, url),
+  createOrder: (site: string, id: string, url?: string) => 
+    nehtwClient.createOrder(site, id, url),
+  getOrderStatus: (taskId: string) => nehtwClient.getOrderStatus(taskId),
+  getDownloadLink: (taskId: string, responseType?: string) => 
+    nehtwClient.getDownloadLink(taskId, responseType),
+  getUserBalance: () => nehtwClient.getBalance(),
+}
+
+// Batch-specific hooks integration
+export const useBatchOperations = () => {
+  const queryClient = useQueryClient()
+  
+  return {
+    invalidateAllStockQueries: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['creo', 'nehtw'] 
+      })
+    },
+    
+    prefetchStockInfo: (site: string, id: string, url?: string) => {
+      queryClient.prefetchQuery({
+        queryKey: queryKeys.stockInfo(site, id, url),
+        queryFn: () => nehtwClient.getStockInfo(site, id, url),
+        staleTime: 5 * 60 * 1000
+      })
+    }
+  }
 }

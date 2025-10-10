@@ -1,0 +1,62 @@
+{
+  "shutterstock": {
+    "name": "Shutterstock",
+    "icon": "/icons/shutterstock.svg",
+    "color": "#ee2a24",
+    "website": "https://www.shutterstock.com"
+  },
+  "istockphoto": {
+    "name": "iStock",
+    "icon": "/icons/istock.svg", 
+    "color": "#1cb850",
+    "website": "https://www.istockphoto.com"
+  },
+  "adobestock": {
+    "name": "Adobe Stock",
+    "icon": "/icons/adobe.svg",
+    "color": "#470137",
+    "website": "https://stock.adobe.com"
+  },
+  "dreamstime": {
+    "name": "Dreamstime",
+    "icon": "/icons/dreamstime.svg",
+    "color": "#7ab800",
+    "website": "https://www.dreamstime.com"
+  },
+  "alamy": {
+    "name": "Alamy",
+    "icon": "/icons/alamy.svg",
+    "color": "#2e5c9a",
+    "website": "https://www.alamy.com"
+  },
+  "freepik": {
+    "name": "Freepik",
+    "icon": "/icons/freepik.svg",
+    "color": "#1273eb",
+    "website": "https://www.freepik.com"
+  },
+  "unsplash": {
+    "name": "Unsplash",
+    "icon": "/icons/unsplash.svg",
+    "color": "#000000",
+    "website": "https://unsplash.com"
+  },
+  "pexels": {
+    "name": "Pexels",
+    "icon": "/icons/pexels.svg",
+    "color": "#05a081",
+    "website": "https://www.pexels.com"
+  },
+  "pixabay": {
+    "name": "Pixabay",
+    "icon": "/icons/pixabay.svg",
+    "color": "#02be6e",
+    "website": "https://pixabay.com"
+  },
+  "gettyimages": {
+    "name": "Getty Images",
+    "icon": "/icons/getty.svg",
+    "color": "#000000",
+    "website": "https://www.gettyimages.com"
+  }
+}

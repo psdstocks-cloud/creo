@@ -17,6 +17,7 @@ import { useStockSites } from '@/hooks/useStockMedia'
 import { useBatchStockInfo, useBatchStockOrder } from '@/hooks/useBatchStockInfo'
 import { parseInputLines, getInputStats, ParsedStockInput } from '@/lib/stock-parse'
 import { StockSiteCard, StockSitesGrid } from './StockSiteCard'
+import { BatchSearchResults, BatchSearchResultsSkeleton } from './BatchSearchResults'
 import { PageLayout } from '@/components/layout/PageLayout'
 
 interface BatchStockSearchProps {
@@ -229,58 +230,30 @@ https://www.pexels.com/photo/example-1234567/`}
             )}
           </div>
 
-          {/* Results Grid */}
-          <div className="space-y-4">
-            {parsedInputs.map((input, index) => {
-              const result = batchStockInfo.data?.[index]
-              if (!result) return null
-
-              return (
-                <motion.div
-                  key={input.raw}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="border border-gray-200 rounded-lg p-4 bg-white/50"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-sm font-medium text-gray-900">
-                          {input.site}:{input.id}
-                        </span>
-                        {result.isLoading && (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
-                        )}
-                        {result.isSuccess && (
-                          <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                        )}
-                        {result.error && (
-                          <XCircleIcon className="h-4 w-4 text-red-500" />
-                        )}
-                      </div>
-                      
-                      <p className="text-sm text-gray-600 truncate">
-                        {input.raw}
-                      </p>
-                      
-                      {result.error && (
-                        <p className="text-sm text-red-600 mt-1">
-                          {result.error.message}
-                        </p>
-                      )}
-                      
-                      {result.data && (
-                        <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
-                          <span>${result.data.pricing?.price || 'N/A'}</span>
-                          <span>{result.data.title}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
+          {/* Results Display */}
+          {batchStockInfo.isLoading ? (
+            <BatchSearchResultsSkeleton />
+          ) : (
+            <BatchSearchResults
+              results={batchStockInfo.data || []}
+              isLoading={batchStockInfo.isLoading}
+              onOrder={(result) => {
+                // Handle individual order
+                console.log('Order individual item:', result)
+              }}
+              onViewOriginal={(result) => {
+                if (result.input.url) {
+                  window.open(result.input.url, '_blank')
+                }
+              }}
+              onRemove={(result) => {
+                // Remove item from input
+                const lines = inputText.split('\n')
+                const filteredLines = lines.filter(line => line.trim() !== result.input.raw.trim())
+                setInputText(filteredLines.join('\n'))
+              }}
+            />
+          )}
 
           {/* Summary Statistics */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
