@@ -1,43 +1,86 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { UserProvider } from '@/contexts/UserContext';
 import { EnhancedClientLayout } from '@/components/layout/EnhancedClientLayout';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ToastProvider } from '@/components/ui/Toast';
 
-// Fonts are handled by Tailwind CSS
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Creo - AI-Powered Stock Media Platform',
-  description: 'Generate AI images and search stock media with our comprehensive platform',
-};
+  description: 'A comprehensive SaaS platform for stock media search, AI image generation, and content management with modern glassmorphism design.',
+  keywords: ['stock media', 'AI generation', 'glassmorphism', 'SaaS', 'creative assets'],
+  authors: [{ name: 'Creo Team' }],
+  creator: 'Creo',
+  publisher: 'Creo',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  openGraph: {
+    title: 'Creo - AI-Powered Stock Media Platform',
+    description: 'Search and download stock media from multiple sources with AI-powered generation',
+    url: 'https://creo-wine.vercel.app',
+    siteName: 'Creo',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Creo - AI-Powered Stock Media Platform',
+    description: 'Search and download stock media from multiple sources with AI-powered generation',
+  },
+}
 
-// This layout sets the global background for the whole site.
-// Remove all instances of 'bg-black' or any black background classes.
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      {/* Branded Creo glass + gradient background.
-          Supports dark mode out of the box with Tailwind's dark: syntax. */}
-      <body className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 dark:bg-gray-950">
-        <QueryProvider>
-          <AuthProvider>
-            <UserProvider>
-              <ToastProvider>
-                <EnhancedClientLayout>
-                  {children}
-                </EnhancedClientLayout>
-              </ToastProvider>
-            </UserProvider>
-          </AuthProvider>
-        </QueryProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body 
+        className={`
+          ${inter.className} 
+          min-h-screen 
+          bg-gradient-to-br 
+          from-gray-50 
+          to-purple-50 
+          antialiased 
+          overflow-x-hidden
+        `}
+        suppressHydrationWarning
+      >
+        {/* Skip link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-4 py-2 bg-orange-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+        >
+          Skip to main content
+        </a>
+        
+        {/* Main content wrapper with all providers */}
+        <div id="main-content" className="relative">
+          <QueryProvider>
+            <AuthProvider>
+              <UserProvider>
+                <ToastProvider>
+                  <EnhancedClientLayout>
+                    {children}
+                  </EnhancedClientLayout>
+                </ToastProvider>
+              </UserProvider>
+            </AuthProvider>
+          </QueryProvider>
+        </div>
       </body>
     </html>
-  );
+  )
 }
