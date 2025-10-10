@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { Suspense } from 'react'
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { UserProvider } from '@/contexts/UserContext';
 import { EnhancedClientLayout } from '@/components/layout/EnhancedClientLayout';
@@ -39,6 +40,36 @@ export const metadata: Metadata = {
   },
 }
 
+// Loading fallback component
+function GlobalLoadingFallback() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+      <p className="text-gray-600 text-sm">Loading Creo...</p>
+    </div>
+  )
+}
+
+// Error fallback component
+const GlobalErrorFallback = ({ error, reset }: { error: Error; reset: () => void }) => {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-8 max-w-md text-center">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Something went wrong</h2>
+        <p className="text-gray-600 text-sm mb-6">
+          {error.message || 'An unexpected error occurred while loading the application.'}
+        </p>
+        <button
+          onClick={reset}
+          className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+        >
+          Try again
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -66,20 +97,22 @@ export default function RootLayout({
           Skip to main content
         </a>
         
-        {/* Main content wrapper with all providers */}
-        <div id="main-content" className="relative">
-          <QueryProvider>
-            <AuthProvider>
-              <UserProvider>
-                <ToastProvider>
-                  <EnhancedClientLayout>
-                    {children}
-                  </EnhancedClientLayout>
-                </ToastProvider>
-              </UserProvider>
-            </AuthProvider>
-          </QueryProvider>
-        </div>
+        {/* Main content wrapper with loading fallback */}
+        <Suspense fallback={<GlobalLoadingFallback />}>
+          <div id="main-content" className="relative">
+            <QueryProvider>
+              <AuthProvider>
+                <UserProvider>
+                  <ToastProvider>
+                    <EnhancedClientLayout>
+                      {children}
+                    </EnhancedClientLayout>
+                  </ToastProvider>
+                </UserProvider>
+              </AuthProvider>
+            </QueryProvider>
+          </div>
+        </Suspense>
       </body>
     </html>
   )
