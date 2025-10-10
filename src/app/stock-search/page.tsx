@@ -98,8 +98,10 @@ export default function StockSearchPage() {
   // Check for missing environment variables
   const hasEnvIssues = !process.env.NEXT_PUBLIC_NEHTW_API_KEY || !process.env.NEXT_PUBLIC_NEHTW_BASE_URL
 
-  // Require authentication
-  if (!user) {
+  // Allow demo access or require authentication
+  const hasDemoUser = typeof window !== 'undefined' && localStorage.getItem('demo_user') === 'true'
+  
+  if (!user && !hasDemoUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-purple-50">
         <motion.div
@@ -109,7 +111,16 @@ export default function StockSearchPage() {
         >
           <SparklesIcon className="h-12 w-12 mx-auto text-purple-400 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Authentication Required</h3>
-          <p className="text-gray-600">Please sign in to access the stock search feature.</p>
+          <p className="text-gray-600 mb-4">Please sign in to access the stock search feature.</p>
+          <button 
+            onClick={() => {
+              localStorage.setItem('demo_user', 'true')
+              window.location.reload()
+            }}
+            className="button-primary"
+          >
+            Try Demo Mode
+          </button>
         </motion.div>
       </div>
     )
