@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useUserBalance } from '@/hooks/useStockMedia'
+import { ProfileForm } from '@/components/settings/ProfileForm'
+import { APIKeyManager } from '@/components/settings/APIKeyManager'
 import { 
   UserIcon, 
   CreditCardIcon, 
@@ -82,74 +84,7 @@ export default function SettingsPage() {
           <div className="p-6">
             {activeTab === 'account' && (
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900">Account Information</h3>
-                  <p className="text-sm text-gray-500">Manage your account details and profile information.</p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <div className="p-3 bg-gray-50 rounded-md border">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-900">{user.email}</span>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          Active Account
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Account Role</label>
-                    <div className="p-3 bg-gray-50 rounded-md border">
-                      <span className="text-gray-900 capitalize">
-                        User
-                      </span>
-                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        Standard
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Current Balance</label>
-                    <div className="p-3 bg-green-50 rounded-md border border-green-200">
-                      <div className="flex items-center">
-                        <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
-                        <span className="text-green-800 font-medium text-lg">
-                          ${balanceLoading ? 'Loading...' : balance?.balance.toFixed(2) || '0.00'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Account Status</label>
-                    <div className="p-3 bg-green-50 rounded-md border border-green-200">
-                      <div className="flex items-center">
-                        <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
-                        <span className="text-green-800 font-medium">Active</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <CheckCircleIcon className="h-5 w-5 text-green-400" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="text-sm font-medium text-green-800">Account Status</h3>
-                      <div className="mt-2 text-sm text-green-700">
-                        <p>Your account is active and ready to use all features.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <ProfileForm />
               </div>
             )}
 
@@ -272,6 +207,12 @@ export default function SettingsPage() {
                     Additional customization options will be available soon.
                   </p>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'api' && (
+              <div className="space-y-6">
+                <APIKeyManager />
               </div>
             )}
           </div>

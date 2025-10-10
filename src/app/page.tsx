@@ -2,6 +2,8 @@
 
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui'
 import { useAuth } from '@/components/auth/AuthProvider'
+import { HomePageSEO } from '@/components/seo/SEOHead'
+import { BreadcrumbJsonLd, FAQJsonLd } from '@/components/seo/JsonLd'
 import { 
   SparklesIcon, 
   PhotoIcon, 
@@ -23,8 +25,39 @@ export default function Home() {
     )
   }
 
+  // FAQ data for structured data
+  const faqData = [
+    {
+      question: "What is Creo?",
+      answer: "Creo is an AI-powered stock media platform that allows you to search millions of high-quality stock photos, videos, and graphics, plus generate custom images using artificial intelligence."
+    },
+    {
+      question: "How does AI image generation work?",
+      answer: "Our AI image generation uses advanced machine learning models to create custom images from text descriptions. Simply describe what you want, and our AI will generate unique, high-quality images for your projects."
+    },
+    {
+      question: "What types of stock media are available?",
+      answer: "We provide access to millions of stock photos, videos, and graphics across various categories including business, technology, lifestyle, nature, and more. All content is high-quality and suitable for commercial use."
+    },
+    {
+      question: "How does the credit system work?",
+      answer: "Creo uses a simple credit-based system. You purchase credits and use them to download stock media or generate AI images. Each download or generation costs a certain number of credits, with transparent pricing."
+    },
+    {
+      question: "Can I use the images for commercial purposes?",
+      answer: "Yes! All stock media and AI-generated images from Creo can be used for commercial purposes, including marketing, advertising, and business projects."
+    }
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
+    <>
+      <HomePageSEO />
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: 'https://creo.vercel.app' }
+      ]} />
+      <FAQJsonLd faqs={faqData} />
+      
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 px-4">
         <div className="absolute inset-0 bg-gradient-brand opacity-5" />
@@ -179,6 +212,7 @@ export default function Home() {
           </Card>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   )
 }

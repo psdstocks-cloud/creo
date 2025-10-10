@@ -1,0 +1,79 @@
+Contact: mailto:security@creo.vercel.app
+Contact: https://creo.vercel.app/security
+Expires: 2025-12-31T23:59:59.000Z
+Encryption: https://creo.vercel.app/.well-known/pgp-key.txt
+Acknowledgments: https://creo.vercel.app/security/acknowledgments
+Preferred-Languages: en, ar
+Canonical: https://creo.vercel.app/.well-known/security.txt
+Policy: https://creo.vercel.app/security/policy
+
+# Security Policy
+# 
+# We take security seriously at Creo. If you discover a security vulnerability,
+# please report it to us as described below.
+#
+# Reporting Security Vulnerabilities
+# ===================================
+#
+# Please do NOT report security vulnerabilities through public GitHub issues.
+# Instead, please report them to security@creo.vercel.app or through our
+# security contact form at https://creo.vercel.app/security
+#
+# What to Expect
+# ==============
+#
+# After you submit a report, we will:
+# 1. Confirm receipt of your vulnerability report within 48 hours
+# 2. Provide regular updates on our progress
+# 3. Credit you in our security acknowledgments (unless you prefer to remain anonymous)
+#
+# Scope
+# =====
+#
+# The following are in scope for our security program:
+# - creo.vercel.app and all subdomains
+# - All API endpoints
+# - Authentication and authorization systems
+# - Payment processing systems
+# - Data storage and processing
+#
+# Out of Scope
+# ============
+#
+# The following are NOT in scope:
+# - Social engineering attacks
+# - Physical attacks
+# - Attacks requiring physical access to user devices
+# - Issues in third-party services we integrate with
+# - Issues that require social engineering
+#
+# Rewards
+# =======
+#
+# We offer rewards for valid security vulnerabilities:
+# - Critical: $500 - $1000
+# - High: $200 - $500
+# - Medium: $50 - $200
+# - Low: $25 - $50
+#
+# Rewards are paid via PayPal or cryptocurrency.
+#
+# Responsible Disclosure
+# ======================
+#
+# We follow responsible disclosure practices:
+# - Do not access or modify data that does not belong to you
+# - Do not disrupt our services
+# - Do not publicly disclose vulnerabilities until we have had a chance to address them
+# - Give us reasonable time to fix issues before public disclosure
+#
+# Legal
+# =====
+#
+# By participating in our security program, you agree to:
+# - Comply with all applicable laws
+# - Not engage in any illegal activities
+# - Respect our users' privacy and data
+# - Follow responsible disclosure practices
+#
+# Thank you for helping keep Creo secure!

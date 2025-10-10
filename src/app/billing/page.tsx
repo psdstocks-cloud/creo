@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useUserBalance } from '@/hooks/useStockMedia'
 import { VirtualPaymentModal } from '@/components/payments/VirtualPaymentModal'
-import { CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline'
+import { CreditCardIcon, BanknotesIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -137,8 +138,15 @@ export default function BillingPage() {
 
         {/* Payment History */}
         <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">Payment History</h3>
+            <Link 
+              href="/billing/history"
+              className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              View all payments
+              <ArrowRightIcon className="ml-1 h-4 w-4" />
+            </Link>
           </div>
           
           <div className="p-6">
@@ -148,6 +156,14 @@ export default function BillingPage() {
               <p className="mt-1 text-sm text-gray-500">
                 Your payment history will appear here after your first purchase.
               </p>
+              <div className="mt-4">
+                <Link 
+                  href="/billing/history"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-100 hover:bg-blue-200"
+                >
+                  View Payment History
+                </Link>
+              </div>
             </div>
           </div>
         </div>

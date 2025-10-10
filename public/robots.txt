@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /billing/history
+Disallow: /downloads
+Disallow: /settings
+Disallow: /orders
+
+# Disallow AI crawlers
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Sitemap
+Sitemap: https://creo.vercel.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

@@ -1,74 +1,44 @@
-'use client'
-
-import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react'
+import { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode
-  variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'glass'
-  size?: 'sm' | 'md' | 'lg' | 'xl'
-  loading?: boolean
-  leftIcon?: ReactNode
-  rightIcon?: ReactNode
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  size?: 'default' | 'sm' | 'lg' | 'icon'
+  asChild?: boolean
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    children, 
-    className, 
-    variant = 'primary', 
-    size = 'md', 
-    loading = false,
-    leftIcon,
-    rightIcon,
-    disabled,
-    ...props 
-  }, ref) => {
-    const baseClasses = 'btn'
-    const sizeClasses = {
-      sm: 'btn-sm',
-      md: 'btn-md', 
-      lg: 'btn-lg',
-      xl: 'btn-xl'
-    }
-    const variantClasses = {
-      primary: 'btn-primary',
-      secondary: 'btn-secondary',
-      ghost: 'btn-ghost',
-      outline: 'btn-outline',
-      glass: 'btn-glass'
-    }
-
+  ({ className, variant = 'default', size = 'default', asChild = false, children, ...props }, ref) => {
+    const Comp = asChild ? 'div' : 'button'
+    
     return (
-      <button
-        ref={ref}
+      <Comp
         className={cn(
-          baseClasses,
-          sizeClasses[size],
-          variantClasses[variant],
+          'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+          {
+            'bg-primary text-primary-foreground hover:bg-primary/90': variant === 'default',
+            'bg-destructive text-destructive-foreground hover:bg-destructive/90': variant === 'destructive',
+            'border border-input bg-background hover:bg-accent hover:text-accent-foreground': variant === 'outline',
+            'bg-secondary text-secondary-foreground hover:bg-secondary/80': variant === 'secondary',
+            'hover:bg-accent hover:text-accent-foreground': variant === 'ghost',
+            'text-primary underline-offset-4 hover:underline': variant === 'link',
+          },
+          {
+            'h-10 px-4 py-2': size === 'default',
+            'h-9 rounded-md px-3': size === 'sm',
+            'h-11 rounded-md px-8': size === 'lg',
+            'h-10 w-10': size === 'icon',
+          },
           className
         )}
-        disabled={disabled || loading}
+        ref={ref}
         {...props}
       >
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="loading-spinner h-4 w-4 mr-2" />
-            Loading...
-          </div>
-        ) : (
-          <div className="flex items-center justify-center">
-            {leftIcon && <span className="mr-2">{leftIcon}</span>}
-            {children}
-            {rightIcon && <span className="ml-2">{rightIcon}</span>}
-          </div>
-        )}
-      </button>
+        {children}
+      </Comp>
     )
   }
 )
-
 Button.displayName = 'Button'
 
 export { Button }
-export type { ButtonProps }

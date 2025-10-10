@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react'
 import { useUserOrders, useGenerateDownloadLink, useCancelOrder, UnifiedOrder } from '@/hooks/useOrderManagement'
 import { useUser } from '@/contexts/UserContext'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { OrderDetailsModal } from '@/components/orders/OrderDetailsModal'
 import { 
   MagnifyingGlassIcon,
   FunnelIcon,
@@ -261,16 +262,9 @@ export default function OrdersPage() {
       {/* Order Details Modal */}
       {selectedOrder && (
         <OrderDetailsModal
-          order={selectedOrder}
+          isOpen={!!selectedOrder}
           onClose={() => setSelectedOrder(null)}
-          onDownload={(fileId) => generateDownloadMutation.mutate({ 
-            orderId: selectedOrder.id, 
-            fileId 
-          })}
-          onCancel={() => {
-            cancelOrderMutation.mutate(selectedOrder.id)
-            setSelectedOrder(null)
-          }}
+          order={selectedOrder}
         />
       )}
     </PageLayout>
@@ -470,169 +464,6 @@ function OrderCard({ order, onViewDetails, onDownload, onCancel, isDownloading, 
   )
 }
 
-// Order Details Modal Component
-function OrderDetailsModal({ order, onClose, onDownload, onCancel }: {
-  order: UnifiedOrder
-  onClose: () => void
-  onDownload: (fileId: string) => void
-  onCancel: () => void
-}) {
-  return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
-      >
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">Order Details</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-6">
-          {/* Order Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Information</h3>
-              <dl className="space-y-3">
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Order ID</dt>
-                  <dd className="text-sm text-gray-900 font-mono">{order.id}</dd>
-                </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Type</dt>
-                  <dd className="text-sm text-gray-900 capitalize">{order.type}</dd>
-                </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Status</dt>
-                  <dd className="text-sm text-gray-900 capitalize">{order.status}</dd>
-                </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Cost</dt>
-                  <dd className="text-sm text-gray-900">${order.cost.toFixed(2)}</dd>
-                </div>
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">Created</dt>
-                  <dd className="text-sm text-gray-900">
-                    {new Date(order.createdAt).toLocaleString()}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Details</h3>
-              <dl className="space-y-3">
-                {order.type === 'stock' && (
-                  <>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Stock Site</dt>
-                      <dd className="text-sm text-gray-900">{order.stockSite}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Media ID</dt>
-                      <dd className="text-sm text-gray-900 font-mono">{order.stockId}</dd>
-                    </div>
-                  </>
-                )}
-                
-                {order.type === 'ai' && (
-                  <>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Style</dt>
-                      <dd className="text-sm text-gray-900">{order.aiStyle}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Quality</dt>
-                      <dd className="text-sm text-gray-900">{order.aiQuality}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Prompt</dt>
-                      <dd className="text-sm text-gray-900">{order.prompt}</dd>
-                    </div>
-                  </>
-                )}
-              </dl>
-            </div>
-          </div>
-
-          {/* Files Gallery */}
-          {order.files && order.files.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Generated Files ({order.files.length})
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {order.files.map((file) => (
-                  <div key={file.id} className="relative group">
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      {file.thumbnailUrl && (
-                        <Image
-                          src={file.thumbnailUrl}
-                          alt={file.name}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        />
-                      )}
-                    </div>
-                    
-                    {/* File Actions Overlay */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                      <button
-                        onClick={() => onDownload(file.id)}
-                        className="p-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-colors"
-                      >
-                        <CloudArrowDownIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-                    
-                    {/* File Info */}
-                    <div className="mt-2">
-                      <p className="text-xs text-gray-500 truncate">{file.name}</p>
-                      <p className="text-xs text-gray-400">
-                        {file.downloadCount} downloads
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Footer Actions */}
-        <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-          >
-            Close
-          </button>
-          
-          {order.status === 'processing' && (
-            <button
-              onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-            >
-              Cancel Order
-            </button>
-          )}
-        </div>
-      </motion.div>
-    </div>
-  )
-}
 
 // Orders List Skeleton
 function OrdersListSkeleton() {

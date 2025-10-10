@@ -6,6 +6,8 @@ import { AuthProvider } from '@/components/auth/AuthProvider';
 import { UserProvider } from '@/contexts/UserContext';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ToastProvider } from '@/components/ui/Toast';
+import { OrganizationJsonLd, WebsiteJsonLd, SoftwareApplicationJsonLd, ServiceJsonLd } from '@/components/seo/JsonLd';
+import SentryErrorBoundary from '@/components/error/SentryErrorBoundary';
 import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] })
@@ -162,19 +164,27 @@ export default function RootLayout({
           Skip to main content
         </a>
         
-        {/* Main content wrapper with loading fallback */}
+        {/* Structured Data */}
+        <OrganizationJsonLd />
+        <WebsiteJsonLd />
+        <SoftwareApplicationJsonLd />
+        <ServiceJsonLd />
+        
+        {/* Main content wrapper with loading fallback and error boundary */}
         <Suspense fallback={<GlobalLoadingFallback />}>
-          <div id="main-content" className="relative min-h-screen">
-            <QueryProvider>
-              <AuthProvider>
-                <UserProvider>
-                  <ToastProvider>
-                    {children}
-                  </ToastProvider>
-                </UserProvider>
-              </AuthProvider>
-            </QueryProvider>
-          </div>
+          <SentryErrorBoundary>
+            <div id="main-content" className="relative min-h-screen">
+              <QueryProvider>
+                <AuthProvider>
+                  <UserProvider>
+                    <ToastProvider>
+                      {children}
+                    </ToastProvider>
+                  </UserProvider>
+                </AuthProvider>
+              </QueryProvider>
+            </div>
+          </SentryErrorBoundary>
         </Suspense>
       </body>
     </html>

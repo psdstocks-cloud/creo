@@ -1,0 +1,31 @@
+# Chromatic configuration for Creo platform
+# This file configures visual regression testing with Chromatic
+
+# Project settings
+projectToken: ${CHROMATIC_PROJECT_TOKEN}
+
+# Build settings
+buildScriptName: build-storybook
+outputDir: storybook-static
+
+# Storybook settings
+storybookBuildDir: .storybook
+storybookConfigDir: .storybook
+
+# Visual testing settings
+exitZeroOnChanges: true
+exitOnceUploaded: true
+skip: false
+
+# Browser settings
+browsers: ['chromium', 'firefox', 'webkit']
+
+# Viewport settings
+viewport: ['mobile', 'tablet', 'desktop']
+
+# Ignore patterns
+ignoreLastBuildOnBranch: main
+autoAcceptChanges: main
+
+# CI settings
+ci: true

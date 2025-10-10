@@ -53,6 +53,34 @@ export default function DownloadsPage() {
   
   const { data: orders = [], isLoading } = useUserOrders()
 
+  // Bulk download handler
+  const handleBulkDownload = () => {
+    const selectedFilesData = filteredFiles.filter(file => selectedFiles.includes(file.id))
+    selectedFilesData.forEach(file => {
+      handleDownload(file)
+    })
+    setSelectedFiles([])
+  }
+
+  // Toggle file selection
+  const toggleFileSelection = (fileId: string) => {
+    setSelectedFiles(prev => 
+      prev.includes(fileId) 
+        ? prev.filter(id => id !== fileId)
+        : [...prev, fileId]
+    )
+  }
+
+  // Select all files
+  const selectAllFiles = () => {
+    setSelectedFiles(filteredFiles.map(file => file.id))
+  }
+
+  // Clear all selections
+  const clearAllSelections = () => {
+    setSelectedFiles([])
+  }
+
   // Extract all files from completed orders
   const allFiles = useMemo(() => {
     return orders
@@ -203,6 +231,28 @@ export default function DownloadsPage() {
               />
             </div>
 
+            {/* Bulk Actions */}
+            {selectedFiles.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">
+                  {selectedFiles.length} selected
+                </span>
+                <button
+                  onClick={handleBulkDownload}
+                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  <CloudArrowDownIcon className="h-4 w-4 mr-2" />
+                  Download Selected
+                </button>
+                <button
+                  onClick={() => setSelectedFiles([])}
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
+
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -326,18 +376,45 @@ export default function DownloadsPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <AnimatePresence>
-              {filteredFiles.map((file: typeof filteredFiles[0]) => (
-                <FileCard
-                  key={file.id}
-                  file={file}
-                  onView={() => setSelectedFile(file)}
-                  onDownload={() => handleDownload(file)}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
+          <>
+            {/* Select All Controls */}
+            {filteredFiles.length > 0 && (
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={selectAllFiles}
+                    className="text-sm text-blue-600 hover:text-blue-700"
+                  >
+                    Select All ({filteredFiles.length})
+                  </button>
+                  <button
+                    onClick={clearAllSelections}
+                    className="text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    Clear Selection
+                  </button>
+                </div>
+                <div className="text-sm text-gray-500">
+                  {selectedFiles.length} of {filteredFiles.length} selected
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <AnimatePresence>
+                {filteredFiles.map((file: typeof filteredFiles[0]) => (
+                  <FileCard
+                    key={file.id}
+                    file={file}
+                    isSelected={selectedFiles.includes(file.id)}
+                    onView={() => setSelectedFile(file)}
+                    onDownload={() => handleDownload(file)}
+                    onToggleSelection={() => toggleFileSelection(file.id)}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          </>
         )}
       </div>
 
@@ -387,7 +464,7 @@ function StatCard({ title, value, icon: Icon, color }: {
 }
 
 // File Card Component
-function FileCard({ file, onView, onDownload }: {
+function FileCard({ file, isSelected, onView, onDownload, onToggleSelection }: {
   file: {
     id: string
     name: string
@@ -403,8 +480,10 @@ function FileCard({ file, onView, onDownload }: {
     orderTitle: string
     orderCreatedAt: string
   }
+  isSelected: boolean
   onView: () => void
   onDownload: () => void
+  onToggleSelection: () => void
 }) {
   const getFileIcon = (type: 'image' | 'video' | 'document') => {
     switch (type) {
@@ -424,7 +503,10 @@ function FileCard({ file, onView, onDownload }: {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 overflow-hidden group"
+      className={`bg-white/60 backdrop-blur-md rounded-xl shadow-lg border overflow-hidden group cursor-pointer ${
+        isSelected ? 'border-green-500 ring-2 ring-green-200' : 'border-white/20'
+      }`}
+      onClick={onToggleSelection}
     >
       {/* File Preview */}
       <div className="aspect-square relative bg-gray-100">
@@ -442,16 +524,37 @@ function FileCard({ file, onView, onDownload }: {
           </div>
         )}
         
+        {/* Selection Checkbox */}
+        <div className="absolute top-2 right-2">
+          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+            isSelected 
+              ? 'bg-green-500 border-green-500' 
+              : 'bg-white/80 border-white'
+          }`}>
+            {isSelected && (
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            )}
+          </div>
+        </div>
+        
         {/* Overlay Actions */}
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
           <button
-            onClick={onView}
+            onClick={(e) => {
+              e.stopPropagation()
+              onView()
+            }}
             className="p-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-colors"
           >
             <EyeIcon className="h-5 w-5" />
           </button>
           <button
-            onClick={onDownload}
+            onClick={(e) => {
+              e.stopPropagation()
+              onDownload()
+            }}
             className="p-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-colors"
           >
             <CloudArrowDownIcon className="h-5 w-5" />
