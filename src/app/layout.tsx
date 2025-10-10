@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   description: 'Generate AI images and search stock media with our comprehensive platform',
 };
 
+// This layout sets the global background for the whole site.
+// Remove all instances of 'bg-black' or any black background classes.
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +23,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
+      {/* Branded Creo glass + gradient background.
+          Supports dark mode out of the box with Tailwind's dark: syntax. */}
+      <body className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 dark:bg-gray-950">
         <QueryProvider>
           <AuthProvider>
             <UserProvider>
