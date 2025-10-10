@@ -21,7 +21,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-brand opacity-10"></div>
       <div className="absolute top-0 left-0 w-full h-full">
@@ -33,12 +33,12 @@ export default function Home() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="animate-fade-in">
-            <h1 className="text-6xl font-bold text-white mb-6 font-display">
+            <h1 className="text-6xl font-bold text-gray-900 mb-6 font-display">
               <span className="bg-gradient-brand bg-clip-text text-transparent">
                 Creo
               </span>
             </h1>
-            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
               AI-Powered Stock Media Platform with Advanced Generation Capabilities
             </p>
           </div>
@@ -96,35 +96,35 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <GlassCard variant="orange" intensity="medium" hover={true} className="p-6 text-center">
             <PhotoIcon className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Stock Media</h3>
-            <p className="text-white/70">Access millions of high-quality stock images, videos, and audio files</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Stock Media</h3>
+            <p className="text-gray-600">Access millions of high-quality stock images, videos, and audio files</p>
           </GlassCard>
 
           <GlassCard variant="purple" intensity="medium" hover={true} className="p-6 text-center">
             <CpuChipIcon className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">AI Generation</h3>
-            <p className="text-white/70">Create unique content with our advanced AI image generation system</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">AI Generation</h3>
+            <p className="text-gray-600">Create unique content with our advanced AI image generation system</p>
           </GlassCard>
 
           <GlassCard variant="light" intensity="medium" hover={true} className="p-6 text-center">
-            <CreditCardIcon className="w-12 h-12 text-white mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Easy Payments</h3>
-            <p className="text-white/70">Simple credit-based system with transparent pricing</p>
+            <CreditCardIcon className="w-12 h-12 text-orange-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Easy Payments</h3>
+            <p className="text-gray-600">Simple credit-based system with transparent pricing</p>
           </GlassCard>
 
           <GlassCard variant="orange" intensity="medium" hover={true} className="p-6 text-center">
             <SparklesIcon className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Advanced Tools</h3>
-            <p className="text-white/70">Professional editing and enhancement tools for all your content</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Advanced Tools</h3>
+            <p className="text-gray-600">Professional editing and enhancement tools for all your content</p>
           </GlassCard>
         </div>
 
         {/* CTA Section */}
         <GlassCard variant="light" intensity="strong" className="p-8 text-center animate-scale-in">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Ready to Transform Your Creative Workflow?
           </h2>
-          <p className="text-white/80 mb-6 max-w-2xl mx-auto">
+          <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
             Join thousands of creators who are already using Creo to streamline their content creation process.
           </p>
           <div className="space-x-4">
