@@ -68,3 +68,4 @@ console.log('3. Use the demo login buttons to test different user roles')
 console.log('4. Test protected routes: /dashboard, /orders, /ai-generation')
 console.log('\n📖 For production setup, see SETUP_GUIDE.md')
 console.log('\n🎉 Ready to test the authentication system!')
+

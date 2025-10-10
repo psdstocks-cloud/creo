@@ -148,3 +148,4 @@ async function setupAdminUser() {
 
 // Run the setup
 setupAdminUser()
+

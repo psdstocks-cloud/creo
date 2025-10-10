@@ -98,3 +98,4 @@ If you encounter any issues:
 3. Test with the admin credentials provided
 
 The admin account is ready for production use! 🎉
+

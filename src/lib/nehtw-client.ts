@@ -1,6 +1,9 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import {
-  StockInfo,
+  NehtwBaseResponse,
+  NehtwErrorResponse,
+  StockSearchParams,
+  StockSearchResponse,
   OrderRequest,
   OrderResponse,
   OrderStatus,
@@ -9,259 +12,298 @@ import {
   AIGenerationResponse,
   AIGenerationJob,
   AccountBalance,
+  UserProfile,
   StockSitesResponse,
-} from '../types/nehtw'
+} from '../types/nehtw';
 
-const NEHTW_BASE_URL = process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api'
-const NEHTW_API_KEY = process.env.NEXT_PUBLIC_NEHTW_API_KEY
-
-interface NehtwResponse<T> {
-  success: boolean
-  data?: T
-  error?: boolean
-  message?: string
+// Custom Error Classes
+export class NehtwAPIError extends Error {
+  constructor(
+    message: string,
+    public statusCode?: number,
+    public code?: string,
+    public details?: unknown
+  ) {
+    super(message);
+    this.name = 'NehtwAPIError';
+  }
 }
 
-class NehtwClient {
-  private client = axios.create({
-    baseURL: NEHTW_BASE_URL,
+export class NehtwTimeoutError extends NehtwAPIError {
+  constructor(message: string = 'Request timeout') {
+    super(message, 408, 'TIMEOUT');
+    this.name = 'NehtwTimeoutError';
+  }
+}
+
+export class NehtwNetworkError extends NehtwAPIError {
+  constructor(message: string = 'Network error') {
+    super(message, 0, 'NETWORK_ERROR');
+    this.name = 'NehtwNetworkError';
+  }
+}
+
+export class NehtwAuthError extends NehtwAPIError {
+  constructor(message: string = 'Authentication failed') {
+    super(message, 401, 'AUTH_ERROR');
+    this.name = 'NehtwAuthError';
+  }
+}
+
+// Legacy interfaces - now using comprehensive types from ../types/nehtw
+
+// Retry Configuration
+interface RetryConfig {
+  maxAttempts: number;
+  baseDelay: number;
+  maxDelay: number;
+  backoffMultiplier: number;
+}
+
+const DEFAULT_RETRY_CONFIG: RetryConfig = {
+  maxAttempts: 3,
+  baseDelay: 2000, // 2 seconds
+  maxDelay: 10000, // 10 seconds
+  backoffMultiplier: 2,
+};
+
+// Nehtw API Client Class
+export class NehtwAPIClient {
+  private client: AxiosInstance;
+  private retryConfig: RetryConfig;
+  private isDebugMode: boolean;
+
+  constructor(
+    baseURL: string = 'https://nehtw.com/api',
+    apiKey?: string,
+    retryConfig: Partial<RetryConfig> = {},
+    debug: boolean = false
+  ) {
+    this.retryConfig = { ...DEFAULT_RETRY_CONFIG, ...retryConfig };
+    this.isDebugMode = debug;
+
+    // Initialize Axios client
+    this.client = axios.create({
+      baseURL,
+      timeout: 30000, // 30 seconds
       headers: {
-      'X-Api-Key': NEHTW_API_KEY,
         'Content-Type': 'application/json',
-    },
-    timeout: 30000,
-  })
+        'X-Api-Key': apiKey || process.env.NEXT_PUBLIC_NEHTW_API_KEY || '',
+      },
+    });
 
-  // Stock Media Methods
-  async getStockInfo(site: string, id: string, url?: string): Promise<StockInfo> {
-    const params = new URLSearchParams({ site, id })
-    if (url) params.append('url', encodeURIComponent(url))
-    
-    const response: AxiosResponse<NehtwResponse<{
-      image: string
-      title: string
-      id: string
-      source: string
-      cost: number
-      ext: string
-      name: string
-      author: string
-      sizeInBytes: string
-    }>> = await this.client.get(
-      `/stockinfo/${site}/${id}?${params.toString()}`
-    )
-    
-    if (!response.data.success || !response.data.data) {
-      throw new Error(response.data.message || 'Failed to get stock info')
+    this.setupInterceptors();
+  }
+
+  private setupInterceptors(): void {
+    // Request interceptor for logging and debugging
+    this.client.interceptors.request.use(
+      (config) => {
+        if (this.isDebugMode) {
+          console.log(`🚀 [NehtwAPI] ${config.method?.toUpperCase()} ${config.url}`, {
+            headers: config.headers,
+            data: config.data,
+            timestamp: new Date().toISOString(),
+          });
+        }
+        return config;
+      },
+      (error) => {
+        if (this.isDebugMode) {
+          console.error('❌ [NehtwAPI] Request Error:', error);
+        }
+        return Promise.reject(this.handleError(error));
+      }
+    );
+
+    // Response interceptor for logging and error handling
+    this.client.interceptors.response.use(
+      (response: AxiosResponse) => {
+        if (this.isDebugMode) {
+          console.log(`✅ [NehtwAPI] ${response.status} ${response.config.url}`, {
+            data: response.data,
+            timestamp: new Date().toISOString(),
+          });
+        }
+        return response;
+      },
+      (error: AxiosError<unknown>) => {
+        if (this.isDebugMode) {
+          console.error('❌ [NehtwAPI] Response Error:', {
+            status: error.response?.status,
+            url: error.config?.url,
+            message: error.message,
+            data: error.response?.data,
+          });
+        }
+        return Promise.reject(this.handleError(error as AxiosError<NehtwErrorResponse>));
+      }
+    );
+  }
+
+  private handleError(error: AxiosError<NehtwErrorResponse>): NehtwAPIError {
+    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+      return new NehtwTimeoutError('Request timed out');
     }
+
+    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      return new NehtwNetworkError('Network connection failed');
+    }
+
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      return new NehtwAuthError('Invalid API key or insufficient permissions');
+    }
+
+    const statusCode = error.response?.status || 500;
     
-    const apiData = response.data.data
+    // Safely access message with proper typing and fallbacks
+    const responseData = error.response?.data as NehtwErrorResponse | undefined;
+    const message = responseData?.error || 
+                   (typeof error.response?.data === 'object' && error.response?.data !== null && 'message' in error.response.data ? (error.response.data as { message: string }).message : undefined) ||
+                   (typeof error.response?.data === 'object' && error.response?.data !== null && 'error' in error.response.data ? (error.response.data as { error: string }).error : undefined) ||
+                   error.message || 
+                   'Unknown error occurred';
     
-    // Transform API response to StockInfo format
-    return {
-      id: apiData.id,
-      title: apiData.title,
-      description: apiData.title,
-      url: apiData.image,
-      thumbnail: apiData.image,
-      type: 'image' as const,
-      category: 'stock',
-      tags: [],
-      keywords: [],
-      size: parseInt(apiData.sizeInBytes) || 0,
-      format: apiData.ext,
-      quality: 'high' as const,
-      license_type: 'royalty_free' as const,
-      usage_rights: {
-        commercial: true,
-        editorial: true,
-        print: true,
-        web: true,
-        social_media: true,
-        unlimited: false,
-      },
-      attribution_required: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      site: {
-        id: apiData.source,
-        name: apiData.source,
-        url: `https://${apiData.source}.com`,
-      },
-      contributor: {
-        id: apiData.author || 'unknown',
-        name: apiData.author || 'Unknown Author',
-      },
-      pricing: {
-        credits: Math.ceil(apiData.cost * 10),
-        currency: 'USD',
-        price: apiData.cost,
-      },
-      statistics: {
-        views: 0,
-        downloads: 0,
-        likes: 0,
-        rating: 0,
-      },
-      metadata: {
-        file_size_mb: parseFloat(apiData.sizeInBytes) / (1024 * 1024) || 0,
-      },
+    const code = responseData?.code || 'UNKNOWN_ERROR';
+    const details = error.response?.data;
+
+    return new NehtwAPIError(message, statusCode, code, details);
+  }
+
+  private async retryRequest<T>(
+    requestFn: () => Promise<AxiosResponse<T>>,
+    attempt: number = 1
+  ): Promise<AxiosResponse<T>> {
+    try {
+      return await requestFn();
+    } catch (error) {
+      if (attempt >= this.retryConfig.maxAttempts) {
+        throw error;
+      }
+
+      // Don't retry on authentication errors
+      if (error instanceof NehtwAuthError) {
+        throw error;
+      }
+
+      // Calculate delay with exponential backoff
+      const delay = Math.min(
+        this.retryConfig.baseDelay * Math.pow(this.retryConfig.backoffMultiplier, attempt - 1),
+        this.retryConfig.maxDelay
+      );
+
+      if (this.isDebugMode) {
+        console.log(`🔄 [NehtwAPI] Retry attempt ${attempt}/${this.retryConfig.maxAttempts} in ${delay}ms`);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return this.retryRequest(requestFn, attempt + 1);
     }
   }
 
-  async createOrder(site: string, id: string, url?: string): Promise<string> {
-    const params = new URLSearchParams()
-    if (url) params.append('url', encodeURIComponent(url))
-    
-    const response: AxiosResponse<{ success: boolean; task_id: string; message?: string }> = await this.client.get(
-      `/stockorder/${site}/${id}?${params.toString()}`
-    )
-    
-    if (!response.data.success) {
-      throw new Error(response.data.message || 'Failed to create order')
-    }
-    
-    return response.data.task_id
-  }
-
-  async getOrderStatus(taskId: string, responseType: 'any' | 'gdrive' = 'any'): Promise<OrderStatus> {
-    const response: AxiosResponse<{ success: boolean; status: 'processing' | 'ready' | 'error' }> = await this.client.get(
-      `/order/${taskId}/status?responsetype=${responseType}`
-    )
-    
-    // Transform API response to match OrderStatus interface
-    return {
-      order_id: taskId,
-      status: response.data.status === 'ready' ? 'completed' : 
-              response.data.status === 'error' ? 'failed' : 'processing',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  }
-
-  async getDownloadLink(taskId: string, responseType: 'any' | 'gdrive' | 'mydrivelink' | 'asia' = 'any'): Promise<DownloadLink> {
-    const response: AxiosResponse<DownloadLink> = await this.client.get(
-      `/v2/order/${taskId}/download?responsetype=${responseType}`
-    )
-    
-    return response.data
-  }
-
-  // AI Generation Methods
-  async createAIJob(prompt: string): Promise<string> {
-    const response: AxiosResponse<{ success: boolean; job_id: string; message?: string }> = await this.client.post('/aig/create', {
-      prompt,
-    })
-    
-    if (!response.data.success) {
-      throw new Error(response.data.message || 'Failed to create AI job')
-    }
-    
-    return response.data.job_id
-  }
-
-  async getAIResult(jobId: string): Promise<AIGenerationJob> {
-    const response: AxiosResponse<{
-      job_id: string;
-      status: 'pending' | 'processing' | 'completed' | 'failed';
-      percentage_complete: number;
-      files?: Array<{
-        index: number;
-        thumb_sm: string;
-        thumb_lg: string;
-        download: string;
-      }>;
-    }> = await this.client.get(
-      `/aig/public/${jobId}`
-    )
-    
-    // Transform API response to AIGenerationJob format
-    return {
-      job_id: response.data.job_id,
-      status: response.data.status,
-      prompt: 'AI generated image',
-      progress: response.data.percentage_complete,
-      result: response.data.files ? {
-        images: response.data.files.map(file => ({
-          id: file.index.toString(),
-          url: file.thumb_lg,
-          thumbnail_url: file.thumb_sm,
-          filename: `generated_${file.index}.jpg`,
-          size: 0,
-          dimensions: { width: 512, height: 512 },
-          format: 'jpg',
-          quality: 'high',
-          metadata: {
-            prompt: 'AI generated image',
-            seed: Math.floor(Math.random() * 1000000),
-            model: 'stable-diffusion',
-            generation_time: 30,
-          },
-        })),
-        generation_time: 30,
-        model_used: 'stable-diffusion',
-        parameters: {
-          style: 'realistic',
-          size: '512x512',
-          steps: 20,
-          guidance_scale: 7.5,
-          seed: Math.floor(Math.random() * 1000000),
-        },
-      } : undefined,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  }
-
-  async performAIAction(jobId: string, action: 'vary' | 'upscale', index: number, varyType?: 'subtle' | 'strong'): Promise<string> {
-    const payload: Record<string, unknown> = { job_id: jobId, action, index }
-    if (action === 'vary' && varyType) {
-      payload.vary_type = varyType
-    }
-    
-    const response: AxiosResponse<{ success: boolean; job_id: string; message?: string }> = await this.client.post('/aig/actions', payload)
-    
-    if (!response.data.success) {
-      throw new Error(response.data.message || 'Failed to perform AI action')
-    }
-    
-    return response.data.job_id
-  }
-
-  // Account Methods
-  async getBalance(): Promise<AccountBalance> {
-    const response = await this.client.get('/me')
-    
-    if (!response.data.success) {
-      throw new Error('Failed to get balance')
-    }
-    
-    const apiData = response.data
-    
-    return {
-      user_id: apiData.username || 'unknown',
-      balance: apiData.balance || 0,
-      currency: 'USD',
-      credits: Math.floor((apiData.balance || 0) * 10), // Convert balance to credits
-      credit_value: 0.1, // Each credit is worth $0.10
-      last_updated: new Date().toISOString(),
-      transactions: {
-        total_spent: 0,
-        total_earned: Math.floor((apiData.balance || 0) * 10),
+  // Public API Methods
+  async search(params: StockSearchParams): Promise<StockSearchResponse> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<StockSearchResponse>>('/search', {
+      params: {
+        q: params.query,
+        page: params.page || 1,
+        limit: params.limit || 20,
+        type: params.type || 'all',
+        category: params.category,
+        sort: params.sort || 'relevance',
       },
-      limits: {
-        daily_download_limit: 1000,
-        monthly_download_limit: 10000,
-        max_file_size: 100 * 1024 * 1024, // 100MB
-      },
-      usage: {
-        downloads_this_month: 0,
-        downloads_today: 0,
-        storage_used: 0,
-        bandwidth_used: 0,
-      },
-    }
+    });
+
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async createOrder(orderData: OrderRequest): Promise<OrderResponse> {
+    const requestFn = () => this.client.post<NehtwBaseResponse<OrderResponse>>('/orders', orderData);
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async getOrderStatus(orderId: string): Promise<OrderStatus> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<OrderStatus>>(`/orders/${orderId}`);
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async getDownloadLink(orderId: string): Promise<DownloadLink> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<DownloadLink>>(`/orders/${orderId}/download`);
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async getCredits(): Promise<AccountBalance> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<AccountBalance>>('/credits');
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async generateAI(request: AIGenerationRequest): Promise<AIGenerationResponse> {
+    const requestFn = () => this.client.post<NehtwBaseResponse<AIGenerationResponse>>('/ai/generate', request);
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async getAIJobStatus(jobId: string): Promise<AIGenerationJob> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<AIGenerationJob>>(`/ai/jobs/${jobId}`);
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  // Utility Methods
+  setDebugMode(enabled: boolean): void {
+    this.isDebugMode = enabled;
+  }
+
+  setRetryConfig(config: Partial<RetryConfig>): void {
+    this.retryConfig = { ...this.retryConfig, ...config };
+  }
+
+  updateApiKey(apiKey: string): void {
+    this.client.defaults.headers['X-Api-Key'] = apiKey;
+  }
+
+  // Additional API Methods
+  async getUserProfile(): Promise<UserProfile> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<UserProfile>>('/me');
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  async getStockSites(): Promise<StockSitesResponse> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<StockSitesResponse>>('/stocksites');
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
+  }
+
+  // Health check method
+  async healthCheck(): Promise<{ status: string; timestamp: string }> {
+    const requestFn = () => this.client.get<NehtwBaseResponse<{ status: string; timestamp: string }>>('/health');
+    
+    const response = await this.retryRequest(requestFn);
+    return response.data.data;
   }
 }
 
-export const nehtwClient = new NehtwClient()
+// Create and export singleton instance
+export const nehtwClient = new NehtwAPIClient(
+  process.env.NEXT_PUBLIC_NEHTW_BASE_URL || 'https://nehtw.com/api',
+  process.env.NEXT_PUBLIC_NEHTW_API_KEY,
+  undefined, // Use default retry config
+  process.env.NODE_ENV === 'development' // Enable debug in development
+);
+
+// Export default instance
+export default nehtwClient;

@@ -3,9 +3,18 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '@/components/auth/AuthProvider'
 import { useToastHelpers } from '@/components/ui/Toast'
+import { FormField, PasswordStrength } from '@/components/ui/FormField'
+import { BrandButton } from '@/components/ui/BrandButton'
+import { GlassCard } from '@/components/ui/GlassCard'
+import { 
+  SparklesIcon, 
+  PhotoIcon, 
+  CpuChipIcon,
+  CheckCircleIcon,
+  StarIcon
+} from '@heroicons/react/24/outline'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -59,146 +68,198 @@ export default function SignUpPage() {
     }
   }
 
+  const features = [
+    {
+      icon: <PhotoIcon className="h-6 w-6" />,
+      title: "Stock Media Search",
+      description: "Access millions of high-quality images and videos"
+    },
+    {
+      icon: <CpuChipIcon className="h-6 w-6" />,
+      title: "AI Generation",
+      description: "Create custom content with advanced AI tools"
+    },
+    {
+      icon: <SparklesIcon className="h-6 w-6" />,
+      title: "Smart Workflow",
+      description: "Streamline your creative process with intelligent tools"
+    }
+  ]
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Creative Director",
+      content: "Creo has revolutionized our content creation workflow. The AI features are incredible!",
+      rating: 5
+    },
+    {
+      name: "Marcus Johnson",
+      role: "Freelance Designer",
+      content: "The stock media search is lightning fast and the quality is outstanding.",
+      rating: 5
+    }
+  ]
+
   return (
-    <div className="min-h-screen flex flex-col justify-center bg-gradient-to-br from-orange-100 via-white to-purple-100 px-4 py-12">
-      <div className="max-w-md w-full mx-auto">
-        <div className="glass-card rounded-xl shadow-lg p-8 sm:p-10 border border-white/20 bg-white/60 backdrop-blur-md relative">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
-              Create your Creo Account
-            </h1>
-            <p className="mt-2 text-gray-600 text-sm">
-              Join Creo to access stock media & AI generation
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50">
+      <div className="flex min-h-screen">
+        {/* Left Side - Hero Visual */}
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-500 to-purple-600 relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="relative z-10 flex flex-col justify-center px-12 py-16 text-white">
+            <div className="max-w-md">
+              <h1 className="text-4xl font-bold mb-6">
+                Join thousands of creators building amazing content
+              </h1>
+              <p className="text-xl text-orange-100 mb-8">
+                Access the world's largest collection of stock media and AI-powered generation tools.
+              </p>
+              
+              {/* Features */}
+              <div className="space-y-4 mb-8">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{feature.title}</h3>
+                      <p className="text-orange-100 text-sm">{feature.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Testimonials */}
+              <div className="space-y-4">
+                {testimonials.map((testimonial, index) => (
+                  <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <div className="flex items-center gap-1 mb-2">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <StarIcon key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    <p className="text-sm mb-2">"{testimonial.content}"</p>
+                    <div className="text-xs text-orange-200">
+                      <span className="font-semibold">{testimonial.name}</span> • {testimonial.role}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" autoComplete="off">
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                autoFocus
-                autoComplete="email"
-                placeholder="you@email.com"
-                {...register('email', { 
-                  required: 'Email required', 
-                  pattern: {
-                    value: /^\S+@\S+$/i,
-                    message: 'Please enter a valid email address'
-                  }
-                })}
-                className={`w-full py-2 px-4 rounded-lg border outline-none bg-white/60 border-gray-200 focus:ring-2 focus:ring-orange-400 transition-colors ${
-                  errors.email ? 'border-red-300 focus:ring-red-400' : ''
-                }`}
-                disabled={submitting || loading}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                  <ExclamationCircleIcon className="h-4 w-4" />
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-            
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="At least 8 characters"
-                minLength={8}
-                autoComplete="new-password"
-                {...register('password', { 
-                  required: 'Password required', 
-                  minLength: {
-                    value: 8,
-                    message: 'Password must be at least 8 characters'
-                  }
-                })}
-                className={`w-full py-2 px-4 rounded-lg border outline-none bg-white/60 border-gray-200 focus:ring-2 focus:ring-orange-400 transition-colors ${
-                  errors.password ? 'border-red-300 focus:ring-red-400' : ''
-                }`}
-                disabled={submitting || loading}
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                  <ExclamationCircleIcon className="h-4 w-4" />
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-            
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                placeholder="Repeat your password"
-                {...register('confirm', { 
-                  required: 'Please confirm your password', 
-                  validate: (value) => value === password || "Passwords do not match"
-                })}
-                className={`w-full py-2 px-4 rounded-lg border outline-none bg-white/60 border-gray-200 focus:ring-2 focus:ring-orange-400 transition-colors ${
-                  errors.confirm ? 'border-red-300 focus:ring-red-400' : ''
-                }`}
-                disabled={submitting || loading}
-              />
-              {errors.confirm && (
-                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                  <ExclamationCircleIcon className="h-4 w-4" />
-                  {errors.confirm.message}
-                </p>
-              )}
-            </div>
-            
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={submitting || loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-purple-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-150 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {submitting || loading ? 'Creating Account...' : 'Create Account'}
-            </button>
-          </form>
-          
-          {/* Sign In Link */}
-          <div className="mt-6 text-center text-sm">
-            Already have an account?{' '}
-            <Link
-              href="/auth/signin"
-              className="font-semibold text-orange-600 hover:text-purple-600 underline transition-colors"
-            >
-              Sign in
-            </Link>
-          </div>
+          {/* Decorative elements */}
+          <div className="absolute top-20 right-20 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+          <div className="absolute bottom-20 left-20 w-24 h-24 bg-orange-300/20 rounded-full blur-lg"></div>
         </div>
-        
-        {/* Terms and Privacy */}
-        <div className="text-xs text-center text-gray-400 mt-10">
-          By signing up, you agree to the{' '}
-          <Link href="/terms" className="underline hover:text-gray-600 transition-colors">
-            Terms of Service
-          </Link>{' '}
-          &{' '}
-          <Link href="/privacy" className="underline hover:text-gray-600 transition-colors">
-            Privacy Policy
-          </Link>
-          .
+
+        {/* Right Side - Sign Up Form */}
+        <div className="flex-1 flex items-center justify-center px-4 py-12 lg:px-8">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Create your account
+              </h2>
+              <p className="text-gray-600">
+                Join Creo to access stock media & AI generation
+              </p>
+            </div>
+
+            <GlassCard variant="solid" padding="lg" className="shadow-xl">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" autoComplete="off">
+                {/* Email */}
+                <FormField
+                  label="Email"
+                  type="email"
+                  placeholder="you@email.com"
+                  autoFocus
+                  autoComplete="email"
+                  {...register('email', { 
+                    required: 'Email is required', 
+                    pattern: {
+                      value: /^\S+@\S+$/i,
+                      message: 'Please enter a valid email address'
+                    }
+                  })}
+                  error={errors.email?.message}
+                  disabled={submitting || loading}
+                />
+                
+                {/* Password */}
+                <FormField
+                  label="Password"
+                  type="password"
+                  placeholder="Create a strong password"
+                  autoComplete="new-password"
+                  {...register('password', { 
+                    required: 'Password is required', 
+                    minLength: {
+                      value: 8,
+                      message: 'Password must be at least 8 characters'
+                    }
+                  })}
+                  error={errors.password?.message}
+                  disabled={submitting || loading}
+                />
+                
+                {/* Password Strength */}
+                {password && <PasswordStrength password={password} />}
+                
+                {/* Confirm Password */}
+                <FormField
+                  label="Confirm Password"
+                  type="password"
+                  placeholder="Repeat your password"
+                  {...register('confirm', { 
+                    required: 'Please confirm your password', 
+                    validate: (value) => value === password || "Passwords do not match"
+                  })}
+                  error={errors.confirm?.message}
+                  disabled={submitting || loading}
+                />
+                
+                {/* Submit Button */}
+                <BrandButton
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  loading={submitting || loading}
+                  disabled={submitting || loading}
+                >
+                  {submitting || loading ? 'Creating Account...' : 'Create Account'}
+                </BrandButton>
+              </form>
+              
+              {/* Sign In Link */}
+              <div className="mt-6 text-center text-sm">
+                Already have an account?{' '}
+                <Link
+                  href="/auth/signin"
+                  className="font-semibold text-orange-600 hover:text-purple-600 transition-colors"
+                >
+                  Sign in
+                </Link>
+              </div>
+            </GlassCard>
+            
+            {/* Terms and Privacy */}
+            <div className="text-xs text-center text-gray-500 mt-6">
+              By signing up, you agree to the{' '}
+              <Link href="/terms" className="underline hover:text-gray-700 transition-colors">
+                Terms of Service
+              </Link>{' '}
+              &{' '}
+              <Link href="/privacy" className="underline hover:text-gray-700 transition-colors">
+                Privacy Policy
+              </Link>
+              .
+            </div>
+          </div>
         </div>
       </div>
-      
-      <style jsx>{`
-        .glass-card {
-          box-shadow: 0 4px 32px 8px rgba(80,38,171,0.03), 0 1.5px 1.5px rgba(255,129,27,0.012);
-        }
-      `}</style>
     </div>
   )
 }

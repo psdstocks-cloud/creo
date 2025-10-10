@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
-import { DashboardLoadingSkeleton } from '@/components/ui/LoadingSkeleton'
+import { DashboardLoadingSkeleton } from '@/components/ui/loading-skeleton'
 import { AdvancedAnalyticsDashboard } from '@/components/analytics/AdvancedAnalyticsDashboard'
 import { PageLayout } from '@/components/layout/PageLayout'
 import Link from 'next/link'

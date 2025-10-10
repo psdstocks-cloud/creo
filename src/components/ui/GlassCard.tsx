@@ -1,53 +1,46 @@
 'use client'
-
-import { ReactNode } from 'react'
+import React from 'react'
 import { cn } from '@/lib/utils'
 
-interface GlassCardProps {
-  children: ReactNode
-  className?: string
-  variant?: 'light' | 'dark' | 'orange' | 'purple'
-  intensity?: 'subtle' | 'medium' | 'strong'
+interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'glass' | 'solid' | 'frosted'
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
   hover?: boolean
-  glow?: boolean
+  children: React.ReactNode
 }
 
-export function GlassCard({ 
-  children, 
-  className, 
-  variant = 'light',
-  intensity = 'medium',
+export function GlassCard({
+  children,
+  variant = 'glass',
+  padding = 'md',
   hover = false,
-  glow = false
+  className,
+  ...props
 }: GlassCardProps) {
-  const baseClasses = "backdrop-blur-glass border border-white/20 rounded-xl"
-  
-  const variantClasses = {
-    light: "bg-glass-white shadow-glass",
-    dark: "bg-glass-black shadow-glass",
-    orange: "bg-glass-orange shadow-glow-orange",
-    purple: "bg-glass-purple shadow-glow-purple"
+  const variants = {
+    glass: 'bg-white/10 backdrop-blur-md border border-white/20 shadow-lg',
+    solid: 'bg-white border border-gray-200 shadow-sm',
+    frosted: 'bg-white/20 backdrop-blur-lg border border-white/30 shadow-xl'
   }
   
-  const intensityClasses = {
-    subtle: "bg-opacity-5",
-    medium: "bg-opacity-10", 
-    strong: "bg-opacity-20"
+  const paddings = {
+    none: '',
+    sm: 'p-4',
+    md: 'p-6',
+    lg: 'p-8',
+    xl: 'p-10'
   }
   
-  const hoverClasses = hover ? "hover:bg-opacity-20 hover:shadow-glow-orange-strong transition-all duration-300" : ""
-  const glowClasses = glow ? "animate-glow-pulse" : ""
-
   return (
-    <div 
+    <div
       className={cn(
-        baseClasses,
-        variantClasses[variant],
-        intensityClasses[intensity],
-        hoverClasses,
-        glowClasses,
+        'rounded-xl transition-all duration-300',
+        variants[variant],
+        paddings[padding],
+        hover && 'hover:shadow-xl hover:-translate-y-1',
         className
       )}
+      {...props}
     >
       {children}
     </div>

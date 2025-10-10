@@ -275,3 +275,4 @@ export function isSupportedSite(siteName: string): boolean {
 export function getSupportedSites(): string[] {
   return Object.keys(STOCK_SITE_PATTERNS)
 }
+

@@ -4,9 +4,9 @@ import './globals.css'
 import { Suspense } from 'react'
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { UserProvider } from '@/contexts/UserContext';
-import { EnhancedClientLayout } from '@/components/layout/EnhancedClientLayout';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ToastProvider } from '@/components/ui/Toast';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -89,6 +89,71 @@ export default function RootLayout({
         `}
         suppressHydrationWarning
       >
+        {/* Browser extension cleanup script */}
+        <Script
+          id="extension-cleanup"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const cleanupBrowserExtensions = () => {
+                  const extensionSelectors = [
+                    '[data-lastpass-icon-root]',
+                    '[data-1password-icon-root]',
+                    '[data-bitwarden-icon-root]',
+                    '[data-dashlane-icon-root]',
+                    'div[style*="position:relative"][style*="height:0px"][style*="width:0px"]',
+                    'div[style*="position: absolute"][style*="height: 0px"][style*="width: 0px"]'
+                  ];
+                  
+                  extensionSelectors.forEach(selector => {
+                    const elements = document.querySelectorAll(selector);
+                    elements.forEach(el => {
+                      if (el.parentNode) {
+                        el.parentNode.removeChild(el);
+                      }
+                    });
+                  });
+                };
+                
+                cleanupBrowserExtensions();
+                
+                const observer = new MutationObserver((mutations) => {
+                  let shouldCleanup = false;
+                  mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                      mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                          const element = node;
+                          if (element.matches && (
+                            element.matches('[data-lastpass-icon-root]') ||
+                            element.matches('[data-1password-icon-root]') ||
+                            element.matches('[data-bitwarden-icon-root]') ||
+                            element.matches('[data-dashlane-icon-root]') ||
+                            element.matches('div[style*="position:relative"][style*="height:0px"][style*="width:0px"]') ||
+                            element.matches('div[style*="position: absolute"][style*="height: 0px"][style*="width: 0px"]')
+                          )) {
+                            shouldCleanup = true;
+                          }
+                        }
+                      });
+                    }
+                  });
+                  
+                  if (shouldCleanup) {
+                    cleanupBrowserExtensions();
+                  }
+                });
+                
+                observer.observe(document.body, {
+                  childList: true,
+                  subtree: true
+                });
+              })();
+            `
+          }}
+        />
+        
         {/* Skip link for accessibility */}
         <a
           href="#main-content"
@@ -99,14 +164,12 @@ export default function RootLayout({
         
         {/* Main content wrapper with loading fallback */}
         <Suspense fallback={<GlobalLoadingFallback />}>
-          <div id="main-content" className="relative">
+          <div id="main-content" className="relative min-h-screen">
             <QueryProvider>
               <AuthProvider>
                 <UserProvider>
                   <ToastProvider>
-                    <EnhancedClientLayout>
-                      {children}
-                    </EnhancedClientLayout>
+                    {children}
                   </ToastProvider>
                 </UserProvider>
               </AuthProvider>

@@ -77,3 +77,4 @@ console.log('• Store credentials securely')
 console.log('• Consider changing password after first login')
 
 console.log('\n🎉 Admin account ready for use!')
+

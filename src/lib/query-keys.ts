@@ -25,3 +25,4 @@ export const queryKeys = {
   user: () => [...queryKeys.nehtw(), 'user'] as const,
   userBalance: () => [...queryKeys.user(), 'balance'] as const,
 } as const
+

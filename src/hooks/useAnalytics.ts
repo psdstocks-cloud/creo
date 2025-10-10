@@ -599,3 +599,4 @@ function downloadAnalyticsReport(analytics: any, format: string) {
   a.click()
   URL.revokeObjectURL(url)
 }
+
