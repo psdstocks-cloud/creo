@@ -20,7 +20,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
         <QueryProvider>
           <AuthProvider>
             <UserProvider>
