@@ -117,7 +117,15 @@ export default function StockSearchPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto space-y-8">
+      {/* Skip Link for Accessibility */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-4 py-2 bg-orange-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
+      
+      <div className="max-w-7xl mx-auto space-y-8" id="main-content">
         
         {/* Header */}
         <motion.header
@@ -145,11 +153,13 @@ export default function StockSearchPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-yellow-50 border border-yellow-200 rounded-xl p-4"
+            className="status-warning p-4 rounded-xl"
+            role="alert"
+            aria-live="polite"
           >
             <div className="flex items-center">
-              <ExclamationCircleIcon className="h-5 w-5 text-yellow-600 mr-2" />
-              <div className="text-yellow-800">
+              <ExclamationCircleIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+              <div>
                 <strong>Configuration Issue:</strong> NEHTW API credentials are missing. 
                 Stock search functionality will be limited.
               </div>
@@ -163,19 +173,32 @@ export default function StockSearchPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-6">
+          <div className="glass-card p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">Available Stock Sources</h2>
-              <div className="text-sm text-gray-500">
-                {stockSites && Object.values(stockSites).filter(s => s.active).length} active sources
+              <div className="flex items-center space-x-2">
+                <span className="status-success text-xs px-2 py-1 rounded-full">
+                  {stockSites && Object.values(stockSites).filter(s => s.active).length} Active
+                </span>
+                <span className="text-sm text-gray-500">
+                  {stockSites && Object.values(stockSites).length} Total Sources
+                </span>
               </div>
             </div>
             
             {sitesError ? (
               <div className="text-center py-8">
-                <ExclamationCircleIcon className="h-12 w-12 mx-auto text-red-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Failed to Load Stock Sources</h3>
+                <div className="status-error inline-flex items-center px-4 py-2 rounded-lg mb-4">
+                  <ExclamationCircleIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+                  <span className="font-medium">Failed to Load Stock Sources</span>
+                </div>
                 <p className="text-gray-600">{sitesError.message}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="button-secondary mt-4"
+                >
+                  Retry
+                </button>
               </div>
             ) : sitesLoading ? (
               <StockSitesGridSkeleton />
@@ -183,7 +206,9 @@ export default function StockSearchPage() {
               <StockSitesGrid sites={stockSites} />
             ) : (
               <div className="text-center py-8 text-gray-500">
-                <p>No stock sources available</p>
+                <DocumentTextIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" aria-hidden="true" />
+                <p className="text-lg font-medium">No stock sources available</p>
+                <p className="text-sm">Please check your configuration or try again later.</p>
               </div>
             )}
           </div>
@@ -195,7 +220,7 @@ export default function StockSearchPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <form onSubmit={handleCheckFiles} className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg border border-white/20 p-6">
+          <form onSubmit={handleCheckFiles} className="glass-card p-6">
             <div className="mb-4">
               <label htmlFor="batch-input" className="block text-lg font-semibold text-gray-900 mb-2">
                 Enter Stock Media URLs or IDs
@@ -213,8 +238,9 @@ export default function StockSearchPage() {
 https://www.istockphoto.com/photo/example-gm987654321
 adobe:555666777
 1234567890`}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white/80 font-mono text-sm resize-vertical"
+                className="form-textarea w-full font-mono text-sm resize-vertical focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 disabled={resultsLoading}
+                aria-describedby="input-help"
               />
               
               {/* Input Statistics */}
@@ -252,14 +278,20 @@ adobe:555666777
               <motion.button
                 type="submit"
                 disabled={!input.trim() || inputStats.valid === 0 || resultsLoading || sitesLoading}
-                className="inline-flex items-center px-8 py-3 text-base font-semibold text-white bg-gradient-to-r from-orange-500 to-purple-600 rounded-xl shadow-lg hover:from-orange-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="button-primary inline-flex items-center px-8 py-3 text-base font-semibold text-white rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                aria-describedby="submit-help"
               >
-                <MagnifyingGlassIcon className="h-5 w-5 mr-2" />
+                <MagnifyingGlassIcon className="h-5 w-5 mr-2" aria-hidden="true" />
                 {resultsLoading ? 'Checking Files...' : 'Check Files'}
               </motion.button>
             </div>
+            
+            {/* Help Text */}
+            <p id="input-help" className="text-xs text-gray-500 mt-2 text-center">
+              Enter one URL or ID per line. Supported formats: URLs, numeric IDs, or site:id format.
+            </p>
           </form>
         </motion.section>
 
@@ -269,6 +301,7 @@ adobe:555666777
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
+            className="glass-card p-6"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-900">Search Results</h2>
@@ -281,13 +314,21 @@ adobe:555666777
                   <button
                     onClick={handleBulkOrder}
                     disabled={!userBalance || resultsStats.success === 0}
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="button-success inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    aria-describedby="bulk-order-help"
                   >
                     Order All Valid Items
                   </button>
                 </div>
               )}
             </div>
+            
+            {/* Bulk Order Help */}
+            {resultsStats.success > 0 && (
+              <p id="bulk-order-help" className="text-xs text-gray-500 mb-4">
+                Order all valid items at once. Individual items can also be ordered separately.
+              </p>
+            )}
             
             {resultsLoading ? (
               <BatchSearchResultsSkeleton />
