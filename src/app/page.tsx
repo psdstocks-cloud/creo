@@ -2,8 +2,6 @@
 
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui'
 import { useAuth } from '@/components/auth/AuthProvider'
-import { HomePageSEO } from '@/components/seo/SEOHead'
-import { BreadcrumbJsonLd, FAQJsonLd } from '@/components/seo/JsonLd'
 import { 
   SparklesIcon, 
   PhotoIcon, 
@@ -51,11 +49,6 @@ export default function Home() {
 
   return (
     <>
-      <HomePageSEO />
-      <BreadcrumbJsonLd items={[
-        { name: 'Home', url: 'https://creo.vercel.app' }
-      ]} />
-      <FAQJsonLd faqs={faqData} />
       
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
       {/* Hero Section */}

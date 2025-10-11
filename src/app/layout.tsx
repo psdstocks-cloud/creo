@@ -6,7 +6,6 @@ import { AuthProvider } from '@/components/auth/AuthProvider';
 import { UserProvider } from '@/contexts/UserContext';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ToastProvider } from '@/components/ui/Toast';
-import { OrganizationJsonLd, WebsiteJsonLd, SoftwareApplicationJsonLd, ServiceJsonLd } from '@/components/seo/JsonLd';
 import SentryErrorBoundary from '@/components/error/SentryErrorBoundary';
 import Script from 'next/script';
 
@@ -164,11 +163,6 @@ export default function RootLayout({
           Skip to main content
         </a>
         
-        {/* Structured Data */}
-        <OrganizationJsonLd />
-        <WebsiteJsonLd />
-        <SoftwareApplicationJsonLd />
-        <ServiceJsonLd />
         
         {/* Main content wrapper with loading fallback and error boundary */}
         <Suspense fallback={<GlobalLoadingFallback />}>
