@@ -456,7 +456,6 @@ export default function UsersPage() {
             ))}
           </div>
         </div>
-      </div>
 
       {/* User Details Modal */}
       {selectedUser && (

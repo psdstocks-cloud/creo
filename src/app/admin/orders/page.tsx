@@ -539,7 +539,6 @@ export default function AdminOrdersPage() {
             ))}
           </div>
         </div>
-      </div>
 
       {/* Order Details Modal */}
       {selectedOrder && (
