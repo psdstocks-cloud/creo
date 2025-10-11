@@ -1,0 +1,215 @@
+{
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "max-age=31536000"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "max-age=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "max-age=31536000"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "max-age=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/_next/image/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "max-age=2592000"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "max-age=2592000"
+        }
+      ]
+    },
+    {
+      "source": "/api/stock/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=1800, s-maxage=1800"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "max-age=1800"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "max-age=1800"
+        }
+      ]
+    },
+    {
+      "source": "/api/ai/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=3600"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "max-age=3600"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/api/system/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=300"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "max-age=300"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/api/auth/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "source": "/api/user/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "source": "/api/orders/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "source": "/api/payments/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "source": "/api/admin/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/api/v1/(.*)",
+      "destination": "/api/$1",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/cache/(.*)",
+      "destination": "/api/admin/cache/$1"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/admin/cache/warm",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}

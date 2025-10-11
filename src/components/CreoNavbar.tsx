@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useResponsive, useResponsiveNavigation } from '@/hooks/useResponsive';
+import { ResponsiveNavigation } from '@/components/layout/ResponsiveNavigation';
 
 interface CreoNavbarProps {
   locale: string;

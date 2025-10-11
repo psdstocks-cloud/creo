@@ -77,3 +77,212 @@ input[type="text"] {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
+
+/* Responsive Design Utilities */
+.responsive-container {
+  @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.responsive-grid {
+  @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.responsive-flex {
+  @apply flex flex-col sm:flex-row gap-4;
+}
+
+.responsive-text {
+  @apply text-sm sm:text-base lg:text-lg;
+}
+
+.responsive-heading {
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+}
+
+.responsive-spacing {
+  @apply space-y-4 sm:space-y-6 lg:space-y-8;
+}
+
+/* Touch-friendly utilities */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+.touch-friendly {
+  @apply p-3 sm:p-4;
+}
+
+/* Mobile-first utilities */
+.mobile-first {
+  @apply block sm:hidden;
+}
+
+.tablet-up {
+  @apply hidden sm:block;
+}
+
+.desktop-up {
+  @apply hidden lg:block;
+}
+
+/* Responsive typography */
+.responsive-h1 {
+  @apply text-2xl sm:text-3xl lg:text-4xl font-bold;
+}
+
+.responsive-h2 {
+  @apply text-xl sm:text-2xl lg:text-3xl font-semibold;
+}
+
+.responsive-h3 {
+  @apply text-lg sm:text-xl lg:text-2xl font-semibold;
+}
+
+.responsive-body {
+  @apply text-sm sm:text-base lg:text-lg;
+}
+
+.responsive-small {
+  @apply text-xs sm:text-sm;
+}
+
+/* Responsive spacing */
+.responsive-padding {
+  @apply p-4 sm:p-6 lg:p-8;
+}
+
+.responsive-margin {
+  @apply m-4 sm:m-6 lg:m-8;
+}
+
+.responsive-gap {
+  @apply gap-2 sm:gap-4 lg:gap-6;
+}
+
+/* Responsive visibility */
+.mobile-only {
+  @apply block sm:hidden;
+}
+
+.tablet-only {
+  @apply hidden sm:block lg:hidden;
+}
+
+.desktop-only {
+  @apply hidden lg:block;
+}
+
+/* Responsive layout */
+.responsive-layout {
+  @apply flex flex-col sm:flex-row;
+}
+
+.responsive-stack {
+  @apply flex flex-col space-y-4;
+}
+
+.responsive-inline {
+  @apply flex flex-row space-x-4;
+}
+
+/* Responsive forms */
+.responsive-form {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.responsive-input {
+  @apply w-full px-3 py-2 text-base sm:text-sm border border-gray-300 rounded-lg;
+}
+
+.responsive-button {
+  @apply w-full sm:w-auto px-4 py-2 text-base font-medium rounded-lg;
+}
+
+/* Responsive cards */
+.responsive-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6;
+}
+
+.responsive-card-hover {
+  @apply hover:shadow-md hover:scale-105 transition-all duration-200;
+}
+
+/* Responsive navigation */
+.responsive-nav {
+  @apply flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4;
+}
+
+.responsive-nav-item {
+  @apply block w-full sm:w-auto px-3 py-2 text-base font-medium rounded-lg;
+}
+
+/* Responsive images */
+.responsive-image {
+  @apply w-full h-auto object-cover;
+}
+
+.responsive-image-container {
+  @apply relative overflow-hidden rounded-lg;
+}
+
+/* Responsive modals */
+.responsive-modal {
+  @apply w-full h-full sm:w-auto sm:h-auto sm:max-w-md lg:max-w-lg;
+}
+
+.responsive-modal-content {
+  @apply p-4 sm:p-6 lg:p-8;
+}
+
+/* Responsive tables */
+.responsive-table {
+  @apply w-full overflow-x-auto;
+}
+
+.responsive-table-cell {
+  @apply px-2 py-1 sm:px-4 sm:py-2 text-sm;
+}
+
+/* Responsive utilities for common patterns */
+.responsive-hero {
+  @apply text-center sm:text-left;
+}
+
+.responsive-cta {
+  @apply flex flex-col sm:flex-row gap-4;
+}
+
+.responsive-features {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.responsive-testimonials {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.responsive-pricing {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* Responsive animations */
+.responsive-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.responsive-hover {
+  @apply hover:scale-105 hover:shadow-lg transition-all duration-200;
+}
+
+/* Responsive focus states */
+.responsive-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
+}
+
+/* Responsive accessibility */
+.responsive-sr-only {
+  @apply sr-only sm:not-sr-only;
+}
+
+.responsive-skip-link {
+  @apply absolute top-4 left-4 z-50 px-4 py-2 bg-orange-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500;
+}
