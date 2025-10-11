@@ -7,7 +7,7 @@
 
 import speakeasy from 'speakeasy'
 import QRCode from 'qrcode'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/browser'
 
 // 2FA configuration
 const TOTP_CONFIG = {
