@@ -545,6 +545,7 @@ export default function AdminOrdersPage() {
           onAction={handleOrderAction}
         />
       )}
+    </div>
   )
 }
 

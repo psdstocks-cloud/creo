@@ -462,6 +462,7 @@ export default function UsersPage() {
           onAction={handleUserAction}
         />
       )}
+    </div>
   )
 }
 
